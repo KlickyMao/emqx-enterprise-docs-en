@@ -1,28 +1,29 @@
 
 .. _bridge:
 
-========
-桥接转发
-========
+=====================
+Bridge and Forwarding
+=====================
 
-EMQ X企业版桥接转发MQTT消息到Kafka、RabbitMQ或其他EMQ X节点。同时支持mosquitto、rsmb以普通MQTT连接方式桥接到EMQ X。
+EMQ X can bridge and forward messages to Kafka, RabbitMQ or other EMQ X nodes. Meanwhile, mosquitto and rsm can be bridged to EMQ X using common MQTT connection.
 
 .. _kafka_bridge:
 
----------
-Kafka桥接
----------
+-------------
+Kafka Bridge
+-------------
 
-EMQ X桥接转发MQTT消息到Kafka集群::
+
+EMQ X bridges and forwards MQTT messages to Kafka cluster::
 
                   ---------             ---------
     Publisher --> | EMQ X | --Bridge--> | Kafka | --> Subscriber
                   ---------             ---------
 
-Kafka桥接插件配置文件: etc/plugins/emqx_bridge_kafka.conf。
+Config file for Kafka bridge plugin: etc/plugins/emqx_bridge_kafka.conf。
 
-配置Kafka集群地址
------------------
+Config Kafka Cluster
+---------------------
 
 .. code-block:: properties
 
@@ -35,8 +36,8 @@ Kafka桥接插件配置文件: etc/plugins/emqx_bridge_kafka.conf。
     ## Kafka Parition Strategy
     bridge.kafka.parition_strategy = random
 
-配置Kafka桥接规则
------------------
+Config Kafka Bridge Properties
+-------------------------------
 
 .. code-block:: properties
     
@@ -61,31 +62,31 @@ Kafka桥接插件配置文件: etc/plugins/emqx_bridge_kafka.conf。
     ## Message Acked Record Hook
     bridge.kafka.hook.message.acked.1 = {"action": "on_message_acked", "filter": "#", "pool": "pool1", "topic": "message_acked"}
 
-Kafka桥接规则说明
------------------
+Description of Kafka Bridge Properties
+----------------------------------------
 
 +------------------------+----------------------------------+
-| action                 | 说明                             |
+| action                 | Description                      |
 +========================+==================================+
-| on_client_connected    | 客户端登录                       |
+| on_client_connected    | Client connected                 |
 +------------------------+----------------------------------+
-| on_client_disconnected | 客户端退出                       |
+| on_client_disconnected | Client disconnected              |
 +------------------------+----------------------------------+
-| on_session_subscribed  | 订阅主题                         |
+| on_session_subscribed  | Topics subscribed                |
 +------------------------+----------------------------------+
-| on_session_unsubscribed| 取消订阅主题                     |
+| on_session_unsubscribed| Topics unsubscribed              |
 +------------------------+----------------------------------+
-| on_message_publish     | 发布消息                         |
+| on_message_publish     | Messages published               |
 +------------------------+----------------------------------+
-| on_message_delivered   | delivered消息                    |
+| on_message_delivered   | Messages delivered               |
 +------------------------+----------------------------------+
-| on_message_acked       | ACK消息                          |
+| on_message_acked       | Messages acknowledged            |
 +------------------------+----------------------------------+
 
-客户端上下线事件转发Kafka
--------------------------
+Forwarding Client Connected / Disconnected Events to Kafka
+-----------------------------------------------------------
 
-设备上线 EMQ X转发上线事件消息到Kafka:
+Client goes online, EMQ X forwards 'client_connected' event message to Kafka:
 
 .. code-block:: javascript
     
@@ -96,7 +97,7 @@ Kafka桥接规则说明
              "ts": ${ts}
             }
 
-设备下线 EMQ X转发下线事件消息到Kafka:
+Client goes offline, EMQ X forwards 'client_disconnected' event message to Kafka:
 
 .. code-block:: javascript
 
@@ -108,8 +109,8 @@ Kafka桥接规则说明
             "ts": ${ts}
             }
 
-客户端订阅主题事件转发Kafka
----------------------------
+Forwarding Subscription Event to Kafka
+---------------------------------------
 
 .. code-block:: javascript
     
@@ -123,8 +124,8 @@ Kafka桥接规则说明
              "ts": ${timestamp}
             }
 
-客户端取消订阅主题事件转发Kafka
---------------------------------
+Forwarding Unsubscription Event to Kafka
+----------------------------------------
 
 .. code-block:: javascript
     
@@ -138,8 +139,8 @@ Kafka桥接规则说明
              "ts": ${timestamp}
             }
 
-MQTT消息转发到Kafka
--------------------
+Frowarding MQTT Messages to Kafka
+---------------------------------
 
 .. code-block:: javascript
 
@@ -155,8 +156,8 @@ MQTT消息转发到Kafka
              "ts": ${timestamp}
             }
 
-MQTT消息派发(Deliver)事件转发Kafka
-----------------------------------
+Forwarding QTT Message Deliver Event to Kafka
+----------------------------------------------
 
 .. code-block:: javascript
     
@@ -172,8 +173,8 @@ MQTT消息派发(Deliver)事件转发Kafka
              "ts": ${timestamp}
             }
 
-MQTT消息确认(Ack)事件转发Kafka
--------------------------------
+Frowarding MQTT Message Ack Event to Kafka
+-------------------------------------------
 
 .. code-block:: javascript
     
@@ -190,35 +191,35 @@ MQTT消息确认(Ack)事件转发Kafka
              "ts": ${timestamp}
             }
 
-Kafka消费示例
--------------
+Examples of Kafka Message Consumption
+--------------------------------------
 
-Kafka读取MQTT客户端上下线事件消息::
+Kafka consumes MQTT clients connected / disconnected event messages::
 
     sh kafka-console-consumer.sh --zookeeper localhost:2181 --topic client_connected --from-beginning
 
     sh kafka-console-consumer.sh --zookeeper localhost:2181 --topic client_disconnected --from-beginning
 
-Kafka读取MQTT主题订阅事件消息::
+Kafka consumes MQTT subscription messages::
 
     sh kafka-console-consumer.sh --zookeeper localhost:2181 --topic session_subscribed --from-beginning
 
     sh kafka-console-consumer.sh --zookeeper localhost:2181 --topic session_unsubscribed --from-beginning
 
-Kafka读取MQTT发布消息::
+Kafka consumes MQTT published messages::
 
     sh kafka-console-consumer.sh --zookeeper localhost:2181 --topic message_publish --from-beginning
     
-Kafka读取MQTT消息发布(Deliver)、确认(Ack)事件::
+Kafka consumes MQTT message Deliver and Ack event messages::
 
     sh kafka-console-consumer.sh --zookeeper localhost:2181 --topic message_delivered --from-beginning
     
     sh kafka-console-consumer.sh --zookeeper localhost:2181 --topic message_acked --from-beginning
     
-.. NOTE:: payload为base64编码
+.. NOTE:: the payload is base64 encoded 
 
-启用Kafka桥接插件
------------------
+Enable Kafka Bridge Plugin
+---------------------------
 
 .. code-block:: bash
 
@@ -226,20 +227,20 @@ Kafka读取MQTT消息发布(Deliver)、确认(Ack)事件::
 
 .. _rabbit_bridge:
 
-------------
-RabbitMQ桥接
-------------
+----------------
+RabbitMQ Bridge
+----------------
 
-EMQ X桥接转发MQTT消息到RabbitMQ集群::
+EMQ X bridges and forwards MQTT messages to RabbitMQ cluster::
 
                   ----------             ------------ 
     Publisher --> | EMQ X  | --Bridge--> | RabbitMQ |  --> Subscriber
                   ----------             ------------ 
 
-RabbitMQ桥接插件配置文件: etc/plugins/emqx_bridge_rabbit.conf。
+Config file of RabbitMQ bridge plugin: etc/plugins/emqx_bridge_rabbit.conf
 
-配置RabbitMQ集群地址
---------------------
+Config RabbitMQ Cluster
+-----------------------
 
 .. code-block:: properties
 
@@ -273,8 +274,8 @@ RabbitMQ桥接插件配置文件: etc/plugins/emqx_bridge_rabbit.conf。
 
     # bridge.rabbit.1.heartbeat = 0
 
-配置RabbitMQ桥接规则
---------------------
+config RabbitMQ Bridge Properties
+----------------------------------
 
 .. code-block:: properties
 
@@ -289,8 +290,8 @@ RabbitMQ桥接插件配置文件: etc/plugins/emqx_bridge_rabbit.conf。
 
     bridge.rabbit.hook.message.acked.1 = {"action": "on_message_acked", "rabbit": 1, "exchange": "topic:emq.acked"}
 
-客户端订阅主题事件转发RabbitMQ
-------------------------------
+Forwarding Subscription Event to RabbitMQ
+-----------------------------------------
 
 .. code-block:: javascript
 
@@ -299,8 +300,8 @@ RabbitMQ桥接插件配置文件: etc/plugins/emqx_bridge_rabbit.conf。
     headers = [{<<"x-emq-client-id">>, binary, ClientId}]
     payload = jsx:encode([{Topic, proplists:get_value(qos, Opts)} || {Topic, Opts} <- TopicTable])
 
-客户端取消订阅事件转发RabbitMQ
-------------------------------
+Forwarding Unsubscription Event to RabbitMQ
+--------------------------------------------
 
 .. code-block:: javascript
 
@@ -309,8 +310,8 @@ RabbitMQ桥接插件配置文件: etc/plugins/emqx_bridge_rabbit.conf。
     headers = [{<<"x-emq-client-id">>, binary, ClientId}]
     payload = jsx:encode([Topic || {Topic, _Opts} <- TopicTable]),
 
-MQTT消息转发RabbitMQ
---------------------
+Forwarding MQTT Messages to RabbitMQ
+-------------------------------------
 
 .. code-block:: javascript
 
@@ -321,8 +322,8 @@ MQTT消息转发RabbitMQ
                {<<"x-emq-publish-msgid">>, binary, emqx_base62:encode(Id)}]
     payload = Payload
 
-MQTT消息确认(Ack)事件转发RabbitMQ
----------------------------------
+Forwarding MQTT Message Ack Event to RabbitMQ
+----------------------------------------------
 
 .. code-block:: javascript
 
@@ -331,10 +332,10 @@ MQTT消息确认(Ack)事件转发RabbitMQ
     headers = [{<<"x-emq-msg-acked">>, binary, ClientId}],
     payload = emqx_base62:encode(Id)
 
-RabbitMQ订阅消费MQTT消息示例
-----------------------------
+Example of RabbitMQ Subscription Message Consumption
+-----------------------------------------------------
 
-Python RabbitMQ消费者代码示例:
+Sample code of Rabbit message Consumption in Python:
 
 .. code-block:: javascript
 
@@ -359,12 +360,12 @@ Python RabbitMQ消费者代码示例:
 
     channel.start_consuming()
 
-其他语言RabbitMQ客户端代码示例::
+Sample of RabbitMQ client coding in other programming languages::
 
     https://github.com/rabbitmq/rabbitmq-tutorials
     
-启用RabbitMQ桥接插件
---------------------
+Enable RabbitMQ Bridge Plugin
+------------------------------
 
 .. code-block:: bash
 
@@ -372,27 +373,27 @@ Python RabbitMQ消费者代码示例:
 
 .. _emqx_bridge:
 
--------------
-EMQ X节点桥接
--------------
+--------------------
+Bridging EMQ X Nodes
+--------------------
 
-EMQ X支持多节点间桥接模式互联::
+EMQ X supports bridging between multiple nodes::
 
                   ---------             ---------
     Publisher --> | EMQ X | --Bridge--> | EMQ X | --> Subscriber
                   ---------             --------- 
 
-假设创建emqx1, emqx2两个节点:
+Given EMQ nodes emqx1 and emqx2:
 
 +---------+--------------------+
-| 目录    | 节点               |
+| Name    | Node               |
 +---------+--------------------+
 | emqx1   | emqx1@192.168.1.10 |
 +---------+--------------------+
 | emqx2   | emqx2@192.168.1.20 |
 +---------+--------------------+
 
-启用emqx1, emqx2节点后，emqx1节点创建到emqx2桥接，转发全部'sensor/#'主题消息到emqx2:
+Start nodes emqx1 and emqx2, bridge emqx1 to emqx2, forward all message with topic 'sensor/#' to emqx2:
 
 .. code-block:: bash
 
@@ -404,19 +405,19 @@ EMQ X支持多节点间桥接模式互联::
 
     bridge: emqx1@127.0.0.1--sensor/#-->emqx2@127.0.0.1
 
-测试emqx1--sensor/#-->emqx2的桥接:
+Test the bridge: emqx1--sensor/#-->emqx2:
 
 .. code-block:: bash
 
-    #emqx2节点上
+    #on node emqx2
 
     mosquitto_sub -t sensor/# -p 2883 -d
 
-    #emqx1节点上
+    #on node emqx1
 
     mosquitto_pub -t sensor/1/temperature -m "37.5" -d
 
-删除桥接:
+Delete the bridge:
 
 .. code-block:: bash
 
@@ -424,11 +425,11 @@ EMQ X支持多节点间桥接模式互联::
 
 .. _mosquitto_bridge:
 
--------------
-mosquitto桥接
--------------
+-----------------
+mosquitto Bridge
+-----------------
 
-mosquitto可以普通MQTT连接方式，桥接到EMQ X服务器集群::
+mosquitto can be bridged to EMQ X cluster using common MQTT connection:: 
 
                  -------------             -----------------
     Sensor ----> | mosquitto | --Bridge--> |               |
@@ -437,7 +438,7 @@ mosquitto可以普通MQTT连接方式，桥接到EMQ X服务器集群::
     Sensor ----> | mosquitto | --Bridge--> |               |
                  -------------             -----------------
 
-mosquitto.conf桥接配置示例::
+An example of mosquitto bridge plugin config file: mosquitto.conf::
 
     connection emqx
     address 192.168.0.10:1883
@@ -449,13 +450,13 @@ mosquitto.conf桥接配置示例::
 
 .. _rsmb_bridge:
 
---------
-rsmb桥接
---------
+------------
+rsmb Bridge
+------------
 
-rsmb以普通MQTT连接方式，桥接到 EMQ X服务器集群。
+rsmb van be bridged to EMQ X cluster using common MQTT connection.
 
-rsmb broker.cfg示例配置::
+An example of rsmb bridge config file: broker.cfg::
 
     connection emqx
     addresses 127.0.0.1:2883
