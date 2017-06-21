@@ -1,19 +1,18 @@
 
 .. _cluster:
 
-========
-分布集群
-========
+===========
+Clustering
+===========
 
 .. _cluster_erlang:
 
---------------------
-Erlang/OTP分布式编程
---------------------
+----------------------
+Distributed Erlang/OTP
+----------------------
 
-Erlang/OTP最初是爱立信为开发电信设备系统设计的编程语言平台，电信设备(路由器、接入网关、...)典型设计是通过背板连接主控板卡与多块业务板卡的分布式系统。
+Erlang/OTP is a concurrent, fault-tolerant, distributed programming platform. A distributed Erlang/OTP system consists of a number of Erlang runtime systems called ‘node’. Nodes connect to each other with TCP/IP sockets and communicate by Message Passing::
 
-Erlang/OTP语言平台的分布式程序，由分布互联的Erlang运行系统组成，每个Erlang运行系统被称为节点(Node)，节点(Node)间通过TCP互联，消息传递的方式通信::
 
     ---------         ---------
     | Node1 | --------| Node2 |
@@ -27,10 +26,12 @@ Erlang/OTP语言平台的分布式程序，由分布互联的Erlang运行系统�
     ---------         ---------
 
 
-节点(Node)
+Node
 ----------
 
-Erlang节点由唯一的节点名称标识，节点间通过名称进行通信寻址。 例如在本机启动四个Erlang节点，节点名称分别为:
+An erlang runtime system called ‘node’ is identified by a unique name like email addreass. Erlang nodes communicate with each other by the name.
+
+Suppose we start four Erlang nodes on localhost:
 
 .. code:: shell
 
@@ -39,7 +40,7 @@ Erlang节点由唯一的节点名称标识，节点间通过名称进行通信�
     erl -name node3@127.0.0.1
     erl -name node4@127.0.0.1
 
-node1@127.0.0.1控制台下建立与其他节点的连接::
+Connecting node1@127.0.0.1 to the other nodes::
 
     (node1@127.0.0.1)1> net_kernel:connect_node('node2@127.0.0.1').
     true
@@ -53,7 +54,7 @@ node1@127.0.0.1控制台下建立与其他节点的连接::
 epmd
 ----
 
-epmd(Erlang Port Mapper Daemon) - Erlang端口映射服务程序，在Erlang节点运行主机上自启动，负责映射节点名称到通信TCP端口号::
+epmd(Erlang Port Mapper Daemon) is a daemon service that is responsible for mapping node names to machine addresses(TCP sockets). The daemon is started automatically on every host where an Erlang node started::
 
     (node1@127.0.0.1)6> net_adm:names().
     {ok,[{"node1",62740},
@@ -61,18 +62,18 @@ epmd(Erlang Port Mapper Daemon) - Erlang端口映射服务程序，在Erlang节�
          {"node3",62877},
          {"node4",62895}]}
 
-安全
-----
+Cookie
+-------
 
-Erlang节点间通过一个相同的cookie进行互连认证。
+Erlang nodes authenticate each other by a magic cookie when communicating. 
 
-Erlang节点Cookie设置::
+The cookie could be configured by::
 
     1. $HOME/.erlang.cookie文件
 
     2. erl -setcookie <Cookie>
 
-本节内容来自: http://erlang.org/doc/reference_manual/distributed.html
+.. note: 本节内容来自: http://erlang.org/doc/reference_manual/distributed.html
 
 .. _cluster_emqx:
 
