@@ -1,47 +1,47 @@
 
 .. _authentication:
 
-========
-认证鉴权
-========
+==============
+AuthN/AuthZ
+==============
 
-------------
-MQTT认证设计
-------------
+------------------------------
+Design of MQTT Auth
+------------------------------
 
-EMQ X认证鉴权由一系列认证插件(Plugin)提供，系统支持按用户名密码、ClientID或匿名认证，支持与MySQL、PostgreSQL、Redis、MongoDB、HTTP、LDAP集成认证。
+EMQ X utilizes plugins to provide Auth. EMQ X supports username / password, ClientID and anonymous Auth. It also supports Auth integration with MySQL, PostgreSQL, Redis, MongoDB, HTTP and LDAP.
 
-系统默认开启匿名认证(anonymous)，通过加载认证插件可开启的多个认证模块组成认证链::
+By default, anonymous Auth is enabled by the system. By means of loading multiple Auth plugins, an Auth chain can be thus built:: 
 
-               ----------------           ----------------           ------------
-    Client --> | Username认证 | -ignore-> | ClientID认证 | -ignore-> | 匿名认证 |
-               ----------------           ----------------           ------------
-                      |                         |                         |
-                     \|/                       \|/                       \|/
-                allow | deny              allow | deny              allow | deny
+               -----------------           -----------------           ------------------
+    Client --> | Username Auth | -ignore-> | ClientID Auth | -ignore-> | Anonymous Auth |
+               -----------------           -----------------           ------------------
+                      |                         |                                 |
+                     \|/                       \|/                               \|/
+                allow | deny              allow | deny                      allow | deny
 
-------------
-匿名认证设置
-------------
+-------------------------------
+Config Anonymous Auth
+-------------------------------
 
-匿名认证是认证链条最后一个环节， etc/emqx.conf中默认启用匿名认证，产品部署建议关闭:
+Anonymous Auth is a last measure of Auth chain. By default, it is enabled in file 'etc/emqx.conf'. We suggest disabling it by deployment:
 
 .. code-block:: properties
 
     ## Allow Anonymous authentication
     mqtt.allow_anonymous = true
 
--------------
-访问控制(ACL)
--------------
+-------------------------
+Access Control List (ACL)
+-------------------------
 
-EMQ X消息服务器通过ACL(Access Control List)实现MQTT客户端访问控制。
+EMQ X Server utilizing Access Control List (ACL) to realize the access control on the clients.
 
-ACL访问控制规则定义::
+ACL defines::
 
-    允许(Allow)|拒绝(Deny) 谁(Who) 订阅(Subscribe)|发布(Publish) 主题列表(Topics)
+    Allow|Deny Whom Subscribe|Publish Topics
 
-MQTT客户端发起订阅/发布请求时，EMQ X消息服务器的访问控制模块，会逐条匹配ACL规则，直到匹配成功为止::
+When MQTT clients subscribe to topics or published messages, The EMQ X access control module tries to match the rules in the list till successfully matching or t fallbacks to default routine::
 
               ---------              ---------              ---------
     Client -> | Rule1 | --nomatch--> | Rule2 | --nomatch--> | Rule3 | --> Default
@@ -51,18 +51,18 @@ MQTT客户端发起订阅/发布请求时，EMQ X消息服务器的访问控制�
                  \|/                    \|/                    \|/
             allow | deny           allow | deny           allow | deny
 
-----------------
-默认访问控制设置
-----------------
+-------------------------------------
+Default Access Control Configuration
+-------------------------------------
 
-EMQ X消息服务器默认访问控制，通过acl.conf配置文件设置:
+The default access control of EMQ X server is configured by the file: acl.conf:
 
 .. code-block:: properties
 
     ## Default ACL File
     mqtt.acl_file = etc/acl.conf
 
-ACL规则定义在etc/acl.conf，EMQ X启动时加载到内存:
+ACL is defined in 'etc/acl.conf'，it is loaded when EMQ X starts:
 
 .. code-block:: erlang
 
@@ -78,7 +78,7 @@ ACL规则定义在etc/acl.conf，EMQ X启动时加载到内存:
     %% Allow all by default
     {allow, all}.
 
-ACL规则修改后可通过命令行重新加载:
+If ACL is modified, it can be reloaded using CLI:
 
 .. code-block:: console
 
@@ -86,39 +86,39 @@ ACL规则修改后可通过命令行重新加载:
 
     reload acl_internal successfully
 
-------------
-认证插件列表
-------------
+-------------------------------
+List of Auth Plugins
+-------------------------------
 
-EMQ X支持ClientId、用户名、HTTP、LDAP、MySQL、Redis、Postgre、MongoDB多种认集成方式，以认证插件方式提供可同时加载多个形成认证链。
+EMQ X supports integrated authentications using ClientId, Username, HTTP, LDAP, MySQL, Redis, PostgreSQL and MongoDB. Multiple Auth plugins can be loaded simultaneously to build a authentication chain.
 
-EMQ X认证插件配置文件，在/etc/emqx/plugins/(RPM/DEB安装)或etc/plugins/(独立安装)目录:
+The config files of Auth plugins are located in '/etc/emqx/plugins/'(RPM/DEB installation) or in 'etc/plugins/'(standalone installation):
 
-+-------------------------+---------------------------+---------------------------+
-| 认证插件                | 配置文件                  | 说明                      |
-+=========================+===========================+===========================+
-| emqx_auth_clientid      | emqx_auth_clientid.conf   | ClientId认证/鉴权插件     |
-+-------------------------+---------------------------+---------------------------+
-| emqx_auth_username      | emqx_auth_username.conf   | 用户名密码认证/鉴权插件   |
-+-------------------------+---------------------------+---------------------------+
-| emqx_auth_ldap          | emqx_auth_ldap.conf       | LDAP认证/鉴权插件         |
-+-------------------------+---------------------------+---------------------------+
-| emqx_auth_http          | emqx_auth_http.conf       | HTTP认证/鉴权插件         |
-+-------------------------+---------------------------+---------------------------+
-| emqx_auth_mysql         | emqx_auth_redis.conf      | MySQL认证/鉴权插件        |
-+-------------------------+---------------------------+---------------------------+
-| emqx_auth_pgsql         | emqx_auth_mysql.conf      | Postgre认证/鉴权插件      |
-+-------------------------+---------------------------+---------------------------+
-| emqx_auth_redis         | emqx_auth_pgsql.conf      | Redis认证/鉴权插件        |
-+-------------------------+---------------------------+---------------------------+
-| emqx_auth_mongo         | emqx_auth_mongo.conf      | MongoDB认证/鉴权插件      |
-+-------------------------+---------------------------+---------------------------+
++-------------------------+---------------------------+---------------------------------------+
+| Auth Plugin             | Config file               | Description                           |
++=========================+===========================+=======================================+
+| emqx_auth_clientid      | emqx_auth_clientid.conf   | ClientId AuthN/AuthZ Plugin           |
++-------------------------+---------------------------+---------------------------------------+
+| emqx_auth_username      | emqx_auth_username.conf   | username/password AuthN/AuthZ Plugin  |
++-------------------------+---------------------------+---------------------------------------+
+| emqx_auth_ldap          | emqx_auth_ldap.conf       | LDAP AuthN/AuthZ Plugin               |
++-------------------------+---------------------------+---------------------------------------+
+| emqx_auth_http          | emqx_auth_http.conf       | HTTP AuthN/AuthZ                      |
++-------------------------+---------------------------+---------------------------------------+
+| emqx_auth_mysql         | emqx_auth_redis.conf      | MySQL AuthN/AuthZ                     |
++-------------------------+---------------------------+---------------------------------------+
+| emqx_auth_pgsql         | emqx_auth_mysql.conf      | Postgre AuthN/AuthZ                   |
++-------------------------+---------------------------+---------------------------------------+
+| emqx_auth_redis         | emqx_auth_pgsql.conf      | Redis AuthN/AuthZ                     |
++-------------------------+---------------------------+---------------------------------------+
+| emqx_auth_mongo         | emqx_auth_mongo.conf      | MongoDB AuthN/AuthZ                   |
++-------------------------+---------------------------+---------------------------------------+
 
---------------------
-ClientID认证插件配置
---------------------
+-------------------------------
+Configure ClientID Auth Plugin
+-------------------------------
 
-配置文件emqx_auth_clientid.conf，配置ClientID、密码列表:
+Modify the 'emqx_auth_clientid.conf' to configure th ClientID / Password list:
 
 .. code-block:: properties
 
@@ -135,17 +135,17 @@ ClientID认证插件配置
     auth.client.4.clientid = client~!@#$%^&*()_+
     auth.client.4.password = passwd~!@#$%^&*()_+
 
-加载ClientId认证插件:
+Load ClientId Auth plugin:
 
 .. code-block:: console
 
     ./bin/emqx_ctl plugins load emqx_auth_clientid
 
-------------------
-用户名认证插件配置
-------------------
+-------------------------------
+Configure Username Auth Plugin
+-------------------------------
 
-配置文件emqx_auth_username.conf，配置用户名、密码列表:
+Modify the 'emqx_auth_username.conf' to configure the Username / Password list:
 
 .. code-block:: properties
 
@@ -160,30 +160,30 @@ ClientID认证插件配置
     ##auth.user.3.username = name~!@#$%^&*()_+
     ##auth.user.3.password = pwsswd~!@#$%^&*()_+
 
-加载用户名认证插件:
+Load Username Auth plugin:
 
 .. code-block:: console
 
     ./bin/emqx_ctl plugins load emqx_auth_username
 
-该插件加载后，两种方式添加用户:
+After the plugin is loaded, there are two possibilities to add users:
 
-1. 直接在emqx_auth_username.conf中明文配置用户::
+1. Modify the 'emqx_auth_username.conf' and add user using plain text::
 
     auth.user.1.username = admin
     auth.user.1.password = public
 
-2. 通过'./bin/emqx_ctl'管理命令行添加用户:
+2. Use the './bin/emqx_ctl' CLI tool to add users:
 
 .. code-block:: console
 
    $ ./bin/emqx_ctl users add <Username> <Password>
 
-----------------
-LDAP认证插件配置
-----------------
+-------------------------------
+Configure LDAP Auth Plugin
+-------------------------------
 
-配置文件emqx_auth_ldap.conf，配置LDAP服务器参数:
+Modify the 'emqx_auth_ldap.conf'file and configure the LDAP Auth Plugin:
 
 .. code-block:: properties
 
@@ -197,17 +197,17 @@ LDAP认证插件配置
 
     auth.ldap.ssl = false
 
-加载LDAP认证插件:
+Load the LDAP Auth plugin:
 
 .. code-block:: console
 
     ./bin/emqx_ctl plugins load emqx_auth_ldap
 
-----------------
-HTTP认证插件配置
-----------------
+----------------------------
+Configure HTTP Auth Plugin
+----------------------------
 
-配置文件emqx_auth_http.conf，设置认证URL与参数:
+Modify the 'emqx_auth_http.conf' and configure the HTTP Auth plugin:
 
 .. code-block:: properties
 
@@ -217,7 +217,7 @@ HTTP认证插件配置
     auth.http.auth_req.method = post
     auth.http.auth_req.params = clientid=%c,username=%u,password=%P
 
-设置超级用户URL与参数:
+Setup the Super User URL and arguements:
 
 .. code-block:: properties
 
@@ -225,7 +225,7 @@ HTTP认证插件配置
     auth.http.super_req.method = post
     auth.http.super_req.params = clientid=%c,username=%u
 
-设置访问控制(ACL)URL与参数:
+Setup the ACL URL and arguments:
 
 .. code-block:: properties
 
@@ -236,26 +236,26 @@ HTTP认证插件配置
 
     auth.http.acl_nomatch = deny
 
-HTTP认证/访问控制(ACL)服务器API设计::
+Design of HTTP Auth and ACL server API::
 
-    认证/ACL成功，API返回200
+    If Auth/ACL sucesses, API returns 200
 
-    认证/ACL失败，API返回4xx
+    If Auth/ACL fails, API return 4xx
 
-加载HTTP认证插件:
+Load HTTP Auth plugin:
 
 .. code-block:: console
 
     ./bin/emqx_ctl plugins load emqx_auth_http
 
------------------
-MySQL认证插件配置
------------------
+----------------------------
+Configure MySQL Auth Plugin
+----------------------------
 
-配置文件emqx_auth_mysql.conf, 默认的MQTT用户、ACL库表和认证设置:
+Modify the 'emqx_auth_mysql.conf' to configure the default MQTT user, ACL and Auth:
 
-MQTT认证用户表
---------------
+MQTT Auth User List
+-------------------
 
 .. code-block:: sql
 
@@ -270,10 +270,10 @@ MQTT认证用户表
       UNIQUE KEY `mqtt_username` (`username`)
     ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-.. NOTE:: 用户可自定义认证用户表，通过'authquery'配置查询语句。
+.. NOTE:: User can define the user list table and configure it in the 'authquery' statement.
 
-MQTT访问控制表
---------------
+MQTT Access Control List
+------------------------
 
 .. code-block:: sql
 
@@ -297,8 +297,8 @@ MQTT访问控制表
         (6,1,'127.0.0.1',NULL,NULL,2,'#'),
         (7,1,NULL,'dashboard',NULL,1,'$SYS/#');
 
-配置MySQL服务器地址
--------------------
+MySQL Server Address
+--------------------
 
 .. code-block:: properties
 
@@ -317,8 +317,8 @@ MQTT访问控制表
     ## Mysql Database
     auth.mysql.database = mqtt
 
-配置MySQL认证查询语句
----------------------
+Configure MySQL Auth Query Statement
+------------------------------------
 
 .. code-block:: properties
 
@@ -339,8 +339,8 @@ MQTT访问控制表
     ## %% Superuser Query
     auth.mysql.super_query = select is_superuser from mqtt_user where username = '%u' limit 1
 
-配置MySQL访问控制查询语句
--------------------------
+Configure MySQL ACL Qeury Statement
+------------------------------------
 
 .. code-block:: properties
 
@@ -350,21 +350,21 @@ MQTT访问控制表
     ## ACL nomatch
     auth.mysql.acl_nomatch = deny
 
-加载MySQL认证插件
------------------
+Load MySQL Auth Plugin
+-----------------------
 
 .. code-block:: console
 
     ./bin/emqx_ctl plugins load emqx_auth_mysql
 
----------------------
-Postgre认证制插件配置
----------------------
+-----------------------------
+Configure Postgre Auth Plugin
+-----------------------------
 
-配置文件emqx_auth_pgsql.conf, 默认的MQTT用户、ACL库表和认证设置:
+Modify the 'emqx_auth_pgsql.conf' file to configure the MQTT user, ACL and Auth:
 
-Postgre MQTT用户表
-------------------
+Postgre MQTT User List
+----------------------
 
 .. code-block:: sql
 
@@ -376,10 +376,10 @@ Postgre MQTT用户表
       salt character varying(40)
     );
 
-.. NOTE:: 用户可自定义认证用户表，通过'authquery'配置查询语句。
+.. NOTE:: User can define the user list table and configure it in the 'authquery' statement.
 
-Postgre MQTT访问控制表
-----------------------
+Postgre MQTT Access Control List
+--------------------------------
 
 .. code-block:: sql
 
@@ -402,8 +402,8 @@ Postgre MQTT访问控制表
         (6,1,'127.0.0.1',NULL,NULL,2,'#'),
         (7,1,NULL,'dashboard',NULL,1,'$SYS/#');
 
-配置Postgre服务器地址
----------------------
+Postgre Server Address
+----------------------
 
 .. code-block:: properties
 
@@ -422,8 +422,8 @@ Postgre MQTT访问控制表
 
     auth.pgsql.ssl = false
 
-配置Postgre认证查询语句
------------------------
+Configure PostgreSQL Auth Query Statement
+----------------------------------------------
 
 .. code-block:: properties
 
@@ -444,8 +444,8 @@ Postgre MQTT访问控制表
     ## Superuser Query
     auth.pgsql.super_query = select is_superuser from mqtt_user where username = '%u' limit 1
 
-配置Postgre访问控制语句
------------------------
+Configure PostgreSQL ACL Query Statement
+------------------------------------------
 
 .. code-block:: properties
 
@@ -455,21 +455,21 @@ Postgre MQTT访问控制表
     ## If no rules matched, return...
     auth.pgsql.acl_nomatch = deny
 
-加载Postgre认证插件
--------------------
+Load Postgre Auth Plugin
+-------------------------
 
 .. code-block:: bash
 
     ./bin/emqx_ctl plugins load emqx_auth_pgsql
 
------------------
-Redis认证插件配置
------------------
+----------------------------
+Configure Redis Auth Plugin
+----------------------------
 
-配置文件emqx_auth_redis.conf:
+Config file 'emqx_auth_redis.conf':
 
-配置Redis服务器地址
--------------------
+Redis Server Address 
+---------------------
 
 .. code-block:: properties
 
@@ -485,8 +485,8 @@ Redis认证插件配置
     ## Redis Password
     ## auth.redis.password =
 
-配置认证查询命令
-----------------
+Configure Auth Query Command
+-----------------------------
 
 .. code-block:: properties
 
@@ -501,8 +501,8 @@ Redis认证插件配置
     ## Superuser Query Command
     auth.redis.super_cmd = HGET mqtt_user:%u is_superuser
 
-配置访问控制查询命令
---------------------
+Configure ACL Query Command
+----------------------------
 
 .. code-block:: properties
 
@@ -512,18 +512,18 @@ Redis认证插件配置
     ## ACL nomatch
     auth.redis.acl_nomatch = deny
 
-Redis认证用户Hash
------------------
+Redis Authed Users Hash
+------------------------
 
-默认采用Hash存储认证用户::
+By default, Hash is used to store Authed users::
 
     HSET mqtt_user:<username> is_superuser 1
     HSET mqtt_user:<username> password "passwd"
 
-Redis ACL规则Hash
------------------
+Redis ACL Rules Hash
+---------------------
 
-默认采用Hash存储ACL规则::
+By default, Hash is used to store ACL rules::
 
     HSET mqtt_acl:<username> topic1 1
     HSET mqtt_acl:<username> topic2 2
@@ -531,20 +531,20 @@ Redis ACL规则Hash
 
 .. NOTE:: 1: subscribe, 2: publish, 3: pubsub
 
-加载Redis认证插件
------------------
+Load Redis Auth Plugin
+-----------------------
 
 .. code-block:: bash
 
     ./bin/emqx_ctl plugins load emqx_auth_redis
 
--------------------
-MongoDB认证插件配置
--------------------
+-----------------------------
+Configure MongoDB Auth Plugin
+-----------------------------
 
-配置文件emqx_auth_mongo.conf, MongoDB、MQTT用户、ACL集合设置:
+Modify the 'emqx_auth_mongo.conf' file to configure MongoDB, MQTT users and ACL Collection:
 
-配置MongoDB服务器
+MongoDB Server
 -----------------
 
 .. code-block:: properties
@@ -564,8 +564,8 @@ MongoDB认证插件配置
     ## Mongo Database
     auth.mongo.database = mqtt
 
-配置认证查询集合
-----------------
+Configure Auth Query Collection
+--------------------------------
 
 .. code-block:: properties
 
@@ -593,8 +593,8 @@ MongoDB认证插件配置
     ## acl_nomatch
     auth.mongo.acl_nomatch = deny
 
-配置ACL查询集合
----------------
+Configure ACL Query Collection
+------------------------------
 
 .. code-block:: properties
 
@@ -606,8 +606,8 @@ MongoDB认证插件配置
     ## acl_nomatch
     auth.mongo.acl_nomatch = deny
 
-MongoDB数据库
--------------
+MongoDB Database
+----------------
 
 .. code-block:: console
 
@@ -616,10 +616,10 @@ MongoDB数据库
     db.createCollection("mqtt_acl")
     db.mqtt_user.ensureIndex({"username":1})
 
-.. NOTE:: 数据库、集合名称可自定义
+.. NOTE:: The DB name and Collection name are free of choice
 
-MongoDB 用户集合示例
---------------------
+Example of a MongoDB User Collection 
+------------------------------------
 
 .. code-block:: javascript
 
@@ -633,8 +633,8 @@ MongoDB 用户集合示例
     db.mqtt_user.insert({username: "test", password: "password hash", is_superuser: false})
     db.mqtt_user:insert({username: "root", is_superuser: true})
 
-MongoDB ACL集合示例
--------------------
+Example of a MongoDB ACL Collection
+------------------------------------
 
 .. code-block:: javascript
 
@@ -649,8 +649,8 @@ MongoDB ACL集合示例
     db.mqtt_acl.insert({username: "test", publish: ["t/1", "t/2"], subscribe: ["user/%u", "client/%c"]})
     db.mqtt_acl.insert({username: "admin", pubsub: ["#"]})
 
-加载Mognodb认证插件
--------------------
+Load Mognodb Auth Plugin
+-------------------------
 
 .. code-block:: bash
 
