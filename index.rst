@@ -3,9 +3,9 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-============
-EMQ X 企业版
-============
+====================
+EMQ X Enterprise
+====================
 
 .. toctree::
    :maxdepth: 2
@@ -24,21 +24,21 @@ EMQ X 企业版
    tune
    mqtt
 
-支持与联系:
+Contact & service:
 
 +------------+--------------------------------+
-| 官网:      | http://emqtt.com               |
+| Web :      | http://emqtt.com               |
 +------------+--------------------------------+
-| 电话:      | 400-696-5502                   |
+| Tel.:      | 400-696-5502                   |
 +------------+--------------------------------+
-| 邮箱:      | contact@emqtt.io               |
+| email:     | contact@emqtt.io               |
 +------------+--------------------------------+
-| 微信:      | emqttd                         |
+| WeChat:    | emqttd                         |
 +------------+--------------------------------+
-| 微博:      | http://weibo.com/emqtt         |
+| Weibo:     | http://weibo.com/emqtt         |
 +------------+--------------------------------+
 | Twitter:   | @emqtt                         |
 +------------+--------------------------------+
-| 公司:      | 杭州小莉科技有限公司           |
+| Company:   | EMQ Enterprise, inc            |
 +------------+--------------------------------+
 
