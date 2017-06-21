@@ -69,39 +69,40 @@ Erlang nodes authenticate each other by a magic cookie when communicating.
 
 The cookie could be configured by::
 
-    1. $HOME/.erlang.cookie文件
+    1. $HOME/.erlang.cookie
 
     2. erl -setcookie <Cookie>
 
-.. note: 本节内容来自: http://erlang.org/doc/reference_manual/distributed.html
+.. NOTE:: Some content in this section is from: http://erlang.org/doc/reference_manual/distributed.html
 
 .. _cluster_emqx:
 
------------------
-EMQ X分布集群设计
------------------
+------------------------
+Cluster Design of EMQ X
+------------------------
 
-EMQ X集群基于Erlang/OTP分布式设计，集群原理可简述为下述两条规则:
+The cluster architecture of EMQ X is based on distrubuted Erlang/OTP and Mnesia database.
 
-1. MQTT客户端订阅主题时，所在节点订阅成功后广播通知其他节点：某个主题(Topic)被本节点订阅。
+The cluster design could be summarized by the following two rules::
 
-2. MQTT客户端发布消息时，所在节点会根据消息主题(Topic)，检索订阅并路由消息到相关节点。
+    When a MQTT client SUBSCRIBE a Topic on a node, the node will tell all the other nodes in the cluster: I subscribed a Topic.
+    When a MQTT Client PUBLISH a message to a node, the node will lookup the Topic table and forward the message to nodes that subscribed the Topic.
 
-EMQ X同一集群的所有节点，都会复制一份主题(Topic) -> 节点(Node)映射的路由表，例如::
+Finally there will be a global route table(Topic -> Node) that replicated to all nodes in the cluster::
 
     topic1 -> node1, node2
     topic2 -> node3
     topic3 -> node2, node4
 
-主题树(Topic Trie)与路由表(Route Table)
+Topic Trie and Route Table
 ---------------------------------------
 
-EMQ X同一集群内每个节点，都保存一份主题树(Topic Trie)和路由表。
+Every node in the cluster will store a topic trie and route table in mnesia database.
 
-例如下述主题订阅关系:
+Suppose that we create subscriptions:
 
 +----------------+-------------+----------------------------+
-| 客户端         | 节点        |  订阅主题                  |
+| Client         | Node        |  Topics                    |
 +----------------+-------------+----------------------------+
 | client1        | node1       | t/+/x, t/+/y               |
 +----------------+-------------+----------------------------+
@@ -110,7 +111,7 @@ EMQ X同一集群内每个节点，都保存一份主题树(Topic Trie)和路由
 | client3        | node3       | t/+/x, t/a                 |
 +----------------+-------------+----------------------------+
 
-最终会生成如下主题树(Topic Trie)和路由表(Route Table)::
+Finally the topic trie and route table in the cluster::
 
     --------------------------
     |             t          |
@@ -125,12 +126,12 @@ EMQ X同一集群内每个节点，都保存一份主题树(Topic Trie)和路由
     | t/a   -> node3         |
     --------------------------
 
-订阅(Subscription)与消息派发
+Message Route and Deliver
 ----------------------------
 
-客户端的主题订阅(Subscription)关系，只保存在客户端所在节点，用于本节点内派发消息到客户端。
+The brokers in the cluster route messages by topic trie and route table, deliver messages to MQTT clients by subscriptions. Subscriptions are mapping from topic to subscribers, are stored only in the local node, will not be replicated to other nodes.
 
-例如client1向主题't/a'发布消息，消息在节点间的路由与派发流程::
+Suppose client1 PUBLISH a message to the topic ‘t/a’, the message Route and Deliver process::
 
     title: Message Route and Deliver
 
@@ -142,101 +143,104 @@ EMQ X同一集群内每个节点，都保存一份主题树(Topic Trie)和路由
 
 .. image:: ./_static/images/route.png
 
------------------
-EMQ X集群配置管理
------------------
+--------------------
+EMQ X Cluster Setup 
+--------------------
 
-假设部署两台服务器s1.emqtt.io, s2.emqtt.io上部署集群:
+Suppose we deploy two nodes cluster on s1.emqtt.io, s2.emqtt.io:
 
 +----------------------+-----------------+---------------------+
-| 节点名               | 主机名(FQDN)    |    IP地址           |
+| Node                 | Host (FQDN)     |    IP               |
 +----------------------+-----------------+---------------------+
-| emqx@s1.emqtt.io 或  | s1.emqtt.io     | 192.168.0.10        |
+| emqx@s1.emqtt.io or  | s1.emqtt.io     | 192.168.0.10        |
 | emqx@192.168.0.10    |                 |                     |
 +----------------------+-----------------+---------------------+
-| emqx@s2.emqtt.io 或  | s2.emqtt.io     | 192.168.0.20        |
+| emqx@s2.emqtt.io or  | s2.emqtt.io     | 192.168.0.20        |
 | emqx@192.168.0.20    |                 |                     |
 +----------------------+-----------------+---------------------+
 
-.. WARNING:: 节点名格式: Name@Host, Host必须是IP地址或FQDN(主机名.域名)
+.. WARNING:: The node name is Name@Host, where Host is IP address or the fully qualified host name.
 
-emqx@s1.emqtt.io节点设置
+emqx@s1.emqtt.io Config
 ------------------------
 
 .. code-block:: properties
 
     node.name = emq@s1.emqtt.io
 
-    或
+    or
 
     node.name = emq@192.168.0.10
 
-也可通过环境变量::
+Or using the environment variable:: 
 
     export EMQX_NODE_NAME=emqx@s1.emqtt.io && ./bin/emqx start
 
-.. WARNING:: 节点启动加入集群后，节点名称不能变更。
+.. WARNING:: The name cannot be changed after node joined the cluster.
 
-emqx@s2.emqtt.io节点设置
+emqx@s2.emqtt.io Config
 ------------------------
 
 .. code-block:: properties
 
     node.name = emq@s2.emqtt.io
 
-    或
+    or
 
     node.name = emq@192.168.0.20
 
-节点加入集群
-------------
+Join the Cluter
+----------------
 
-启动两台节点后，emqx@s2.emqtt.io上执行::
+Start the two broker nodes, and execute ‘cluster join‘ on emqttd@s2.emqtt.io::
 
     $ ./bin/emqx_ctl cluster join emqx@s1.emqtt.io
 
     Join the cluster successfully.
     Cluster status: [{running_nodes,['emqx@s1.emqtt.io','emqx@s2.emqtt.io']}]
 
-或，emqx@s1.emqtt.io上执行::
+or, execute 'cluster join' on emqx@s1.emqtt.io::
 
     $ ./bin/emqx_ctl cluster join emqx@s2.emqtt.io
 
     Join the cluster successfully.
     Cluster status: [{running_nodes,['emqx@s1.emqtt.io','emqx@s2.emqtt.io']}]
 
-任意节点上查询集群状态::
+Query the cluster status::
 
     $ ./bin/emqx_ctl cluster status
 
     Cluster status: [{running_nodes,['emqx@s1.emqtt.io','emqx@s2.emqtt.io']}]
 
-节点退出集群
-------------
+Leave the Cluster
+-------------------
 
-节点退出集群，两种方式:
+Two ways to leave the cluster:
 
-1. leave: 本节点退出集群
+1.  leave: this node leaves the cluster
 
-2. remove: 从集群删除其他节点
+2.  remove: remove other nodes from the cluster
 
-emqx@s2.emqtt.io主动退出集群::
+emqx@s2.emqtt.io tries to leave the cluster::
 
     $ ./bin/emqx_ctl cluster leave
 
-或emqx@s1.emqtt.io节点上，从集群删除emqx@s2.emqtt.io节点::
+ Or remove emqttd@s2.emqtt.io node from the cluster on emqttd@s1.emqtt.io::
 
     $ ./bin/emqx_ctl cluster remove emqx@s2.emqtt.io
 
 .. _cluster_session:
 
--------------------
-跨节点会话(Session)
--------------------
+--------------------
+Session across Nodes
+--------------------
 
-EMQ X消息服务器集群模式下，MQTT连接的持久会话(Session)跨节点。
+The persistent MQTT sessions (clean session = false) are across nodes in the EMQ X cluster.
 
-例如负载均衡的两台集群节点:node1与node2，同一MQTT客户端先连接node1，node1节点会创建持久会话；客户端断线重连到node2时，MQTT的连接在node2节点，持久会话仍在node1节点::
+
+.. 例如负载均衡的两台集群节点:node1与node2，同一MQTT客户端先连接node1，node1节点会创建持久会话；客户端断线重连到node2时，MQTT的连接在node2节点，持久会话仍在node1节点::
+
+Consider two load-balanced nodes in a cluster: node1 and node2. A MQTT client connects to node1 at the first place, node1 creates persistent session for the client, and then disconnects from node1. Later when this client tries connect to node2, the connection is then created on node2, but the persistent session will be still on where is was (in this case node1)::
 
                                       node1
                                    -----------
@@ -250,24 +254,24 @@ EMQ X消息服务器集群模式下，MQTT连接的持久会话(Session)跨节�
 .. _cluster_firewall:
 
 ----------
-防火墙设置
+Firewalls
 ----------
 
-如果集群节点间存在防火墙，防火墙需要开启4369端口、5369端口和一个TCP端口段。4369由epmd端口映射服务使用，5369用于节点间数据通信，TCP端口段用于节点间集群通信。
+If there are firewalls between the nodes, the 4369 port, 5369 port and a TCP port range shall be made available. The 4369 is for epmd port mapping and the 5369 is used for nodes' data communication and the tcp port range is for nodes' clustering communication. 
 
-默认节点间集群默认需要开启的端口:
+Ports shall be made available on firewall:
 
-+--------------+-----------------------+
-| 端口         | 用途                  |
-+--------------+-----------------------+
-| 4369         | epmd端口映射服务      | 
-+--------------+-----------------------+
-| 5369         | 节点间数据通道        | 
-+--------------+-----------------------+
-| 6369         | 节点间集群通道        | 
-+--------------+-----------------------+
++--------------+----------------------------------+
+| Port         | Usage                            |
++--------------+----------------------------------+
+| 4369         | epmd port mapping                | 
++--------------+----------------------------------+
+| 5369         | Nodes' data communication        | 
++--------------+----------------------------------+
+| 6369         | Nodes's clustering communication | 
++--------------+----------------------------------+
 
-防火墙设置后，emqx.conf需要配置相同的端口段:
+Modify the 'emqx.conf' in line with the firewall configuration:
 
 .. code-block:: properties
 
@@ -278,18 +282,18 @@ EMQ X消息服务器集群模式下，MQTT连接的持久会话(Session)跨节�
 .. _cluster_netsplit:
 
 ------------------
-注意事项: NetSplit
+Network Partitions
 ------------------
 
-EMQ X集群需要稳定网络连接以避免发生NetSplit故障。集群设计上默认不自动处理NetSplit，如集群节点间发生NetSplit，需手工重启某个分片上的相关节点。
+EMQ X cluster requires reliable network to avoid network partition. The cluster will not recover from a network partition automatically. If network partition occurs, manual intervention is expected.
 
-.. NOTE:: NetSplit是指节点运行正常但因网络断开互相认为对方宕机。EMQ 2.2版本将支持NetSplit自动恢复。
+.. NOTE:: Network partition means the nodes works fine but they can't reach each other (due to network failure) and thus consider the communication partner is down. EMQ X 2.2 will support Network partition automatic recovery.
 
 .. _cluster_hash:
 
----------------
-一致性Hash与DHT
----------------
+-----------------------
+Consistent Hash and DHT
+-----------------------
 
-NoSQL数据库领域分布式设计，大多会采用一致性Hash或DHT。EMQ消息服务器集群架构可支持千万级的路由，更大级别的集群可采用一致性Hash、DHT或Shard方式切分路由表。
+Consistent Hash and DHT are popular in the design of NoSQL databases. Cluster of emqttd broker could support 10 million size of global routing table now. We could use the Consistent Hash or DHT to partition the routing table, and evolve the cluster to larger size.
 
