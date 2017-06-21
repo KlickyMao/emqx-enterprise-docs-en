@@ -1,89 +1,88 @@
-
 .. _backends:
 
-========
-数据存储
-========
+=================
+Data Persistence
+=================
 
-------------
-数据存储设计
-------------
+--------------------------
+Disign of Data Persistence
+--------------------------
 
-一对一消息存储
---------------
+One to one message Persistence
+---------------------------------
 
 .. image:: ./_static/images/backend_queue.png
 
-1. PUB端发布一条消息；
+1. PUB publishes a message;
 
-2. Backend将消息记录数据库中；
+2. Backend records this message in DB;
 
-3. SUB端订阅主题；
+3. SUB subscribes to a topic;
 
-4. Backend从数据库中获取该主题的消息；
+4. Backend retrieves the messages of this topic from DB;
 
-5. 发送消息给SUB端；
+5. Messages are sent to SUB;
 
-6. SUB端确认后Backend从数据库中移除该消息；
+6. After the SUB acknowledged / received the message, backend removes the message from DB.
 
-一对多消息存储
----------------
+One to many message Persistence 
+---------------------------------
 
 .. image:: ./_static/images/backend_pubsub.png
 
-1. PUB端发布一条消息；
+1. PUB publishes a message;
 
-2. Backend将消息记录在数据库中；
+2. Backend records the message in DB;
 
-3. SUB1和SUB2订阅主题；
+3. SUB1 and SUB2 subscribe to a topic;
 
-4. Backend从数据库中获取该主题的消息；
+4. Backend retrieves the messages of this topic;
 
-5. 发送消息给SUB1和SUB2；
+5. Messages are sent to SUB1 and SUB2; 
 
-6. Backend记录SUB1和SUB2已读消息位置，下次获取消息从该位置开始。
+6. Backend records the read position of SUB1 and SUB2, next message retrieval starts from this position.
 
-客户端在线状态存储
-------------------
+Ratainment of Client Connection State
+---------------------------------------
 
-EMQ X存储支持将设备上下线状态，直接存储到Redis或数据库。
+EMQ X supports retaining the client's connection state in Redis or DB.
 
-客户端代理订阅
---------------
+Client Subscription Agent
+-----------------------------
 
-EMQ X存储支持代理订阅功能。设备客户端上线时，由存储模块直接从数据库，代理加载订阅主题。
+EMQ X Persistence supports Subscription agent. When a client goes online, the persistence module loads the subscribed topics from the DB. 
 
-存储插件列表
-------------
+List of Persistence Plugins
+----------------------------
 
-EMQ X支持MQTT消息直接存储Redis、MySQL、PostgreSQL、MongoDB、Cassandra数据库:
+EMQ X supports storing messages in Redis, MySQL, PostgreSQL, MongoDB and Cassandra:
 
-+-----------------------+--------------------------+---------------------------+
-| 存储插件              | 配置文件                 | 说明                      |
-+=======================+==========================+===========================+
-| emqx_backend_redis    | emqx_backend_redis.conf  | Redis消息存储             |
-+-----------------------+--------------------------+---------------------------+
-| emqx_backend_mysql    | emqx_backend_mysql.conf  | MySQL消息存储             |
-+-----------------------+--------------------------+---------------------------+
-| emqx_backend_pgsql    | emqx_backend_pgsql.conf  | PostgreSQL消息存储        |
-+-----------------------+--------------------------+---------------------------+
-| emqx_backend_mongo    | emqx_backend_mongo.conf  | MongoDB消息存储           |
-+-----------------------+--------------------------+---------------------------+
-| emqx_backend_cassa    | emqx_backend_cassa.conf  | Cassandra消息存储         |
-+-----------------------+--------------------------+---------------------------+
++-----------------------+--------------------------+-------------------------------+
+| Persistence Plugins   | Config File              | Description                   |
++=======================+==========================+===============================+
+| emqx_backend_redis    | emqx_backend_redis.conf  | Redis Message Persistence     |
++-----------------------+--------------------------+-------------------------------+
+| emqx_backend_mysql    | emqx_backend_mysql.conf  | MySQL Message Persistence     |
++-----------------------+--------------------------+-------------------------------+
+| emqx_backend_pgsql    | emqx_backend_pgsql.conf  | PostgreSQL Message Persistence|
++-----------------------+--------------------------+-------------------------------+
+| emqx_backend_mongo    | emqx_backend_mongo.conf  | MongoDB Message Persistence   |
++-----------------------+--------------------------+-------------------------------+
+| emqx_backend_cassa    | emqx_backend_cassa.conf  | Cassandra Message Persistence |
++-----------------------+--------------------------+-------------------------------+
 
 .. _redis_backend:
 
--------------
-Redis数据存储
--------------
+----------------------------
+Data Persistence using Redis
+----------------------------
 
-配置文件: emqx_backend_redis.conf
+Config file: emqx_backend_redis.conf
 
-配置Redis服务器
----------------
+Config the Redis Server
+-------------------------
 
-支持配置多台Redis服务器连接池:
+Config Connection Pool of Multiple Redis Servers:
 
 .. code-block:: properties
 
@@ -99,8 +98,8 @@ Redis数据存储
     ## Redis subscribe channel
     backend.redis.pool1.channel = mqtt_channel
 
-配置Redis存储规则
-------------------
+Config Redis Properties:
+--------------------------
 
 .. code-block:: properties
     
@@ -140,71 +139,71 @@ Redis数据存储
     ## Store Ack for many
     backend.redis.hook.message.acked.2       = {"topic": "pubsub/#", "action": {"function": "on_message_acked_for_pubsub"}, "pool": "pool1"}
 
-Redis存储规则说明
------------------
+Description of Redis Properties
+--------------------------------
 
-+------------------------+------------------------+-----------------------------+----------------------------------+
-| hook                   | topic                  | action/function             | 说明                             |
-+========================+========================+=============================+==================================+
-| client.connected       |                        | on_client_connected         | 存储客户端在线状态               |
-+------------------------+------------------------+-----------------------------+----------------------------------+
-| client.connected       |                        | on_subscribe_lookup         | 订阅主题                         |
-+------------------------+------------------------+-----------------------------+----------------------------------+
-| client.disconnected    |                        | on_client_disconnected      | 存储客户端离线状态               |
-+------------------------+------------------------+-----------------------------+----------------------------------+
-| session.subscribed     | queue/#                | on_message_fetch_for_queue  | 获取一对一离线消息               |
-+------------------------+------------------------+-----------------------------+----------------------------------+
-| session.subscribed     | pubsub/#               | on_message_fetch_for_pubsub | 获取一对多离线消息               |
-+------------------------+------------------------+-----------------------------+----------------------------------+
-| session.subscribed     | #                      | on_retain_lookup            | 获取retain消息                   |
-+------------------------+------------------------+-----------------------------+----------------------------------+
-| message.publish        | #                      | on_message_publish          | 存储发布消息                     |
-+------------------------+------------------------+-----------------------------+----------------------------------+
-| message.publish        | #                      | on_message_retain           | 存储retain消息                   |
-+------------------------+------------------------+-----------------------------+----------------------------------+
-| message.publish        | #                      | on_retain_delete            | 删除retain消息                   |
-+------------------------+------------------------+-----------------------------+----------------------------------+
-| message.acked          | queue/#                | on_message_acked_for_queue  | 一对一消息ACK处理                |
-+------------------------+------------------------+-----------------------------+----------------------------------+
-| message.acked          | pubsub/#               | on_message_acked_for_pubsub | 一对多消息ACK处理                |
-+------------------------+------------------------+-----------------------------+----------------------------------+
++------------------------+------------------------+-----------------------------+-------------------------------------+
+| hook                   | topic                  | action/function             | Description                         |
++========================+========================+=============================+=====================================+
+| client.connected       |                        | on_client_connected         | Store client connected state        |
++------------------------+------------------------+-----------------------------+-------------------------------------+
+| client.connected       |                        | on_subscribe_lookup         | Subscribe to topics                 |
++------------------------+------------------------+-----------------------------+-------------------------------------+
+| client.disconnected    |                        | on_client_disconnected      | Store the client disconnected state |
++------------------------+------------------------+-----------------------------+-------------------------------------+
+| session.subscribed     | queue/#                | on_message_fetch_for_queue  | Fetch one to one offline message    |
++------------------------+------------------------+-----------------------------+-------------------------------------+
+| session.subscribed     | pubsub/#               | on_message_fetch_for_pubsub | Fetch one to many offline message   |
++------------------------+------------------------+-----------------------------+-------------------------------------+
+| session.subscribed     | #                      | on_retain_lookup            | Lookup retained message             |
++------------------------+------------------------+-----------------------------+-------------------------------------+
+| message.publish        | #                      | on_message_publish          | Store the published messages        |
++------------------------+------------------------+-----------------------------+-------------------------------------+
+| message.publish        | #                      | on_message_retain           | Store retained messages             |
++------------------------+------------------------+-----------------------------+-------------------------------------+
+| message.publish        | #                      | on_retain_delete            | Delete retained messages            |
++------------------------+------------------------+-----------------------------+-------------------------------------+
+| message.acked          | queue/#                | on_message_acked_for_queue  | Process ACK of one to one messages  |
++------------------------+------------------------+-----------------------------+-------------------------------------+
+| message.acked          | pubsub/#               | on_message_acked_for_pubsub | Process ACK of one to many messages |
++------------------------+------------------------+-----------------------------+-------------------------------------+
 
-Redis 命令行参数说明
---------------------
+Redis Command Line Arguments
+-----------------------------
 
-+----------------------+-----------------------------------------------+-----------------------------------------+
-| hook                 | 可用参数                                      | 示例(每个字段分隔，必须是一个空格)      |
-+======================+===============================================+=========================================+
-| client.connected     | clientid                                      | SET conn:${clientid} clientid           |
-+----------------------+-----------------------------------------------+-----------------------------------------+
-| client.disconnected  | clientid                                      | SET disconn:${clientid} clientid        |
-+----------------------+-----------------------------------------------+-----------------------------------------+
-| session.subscribed   | clientid, topic, qos                          | HSET sub:${clientid} topic qos          |
-+----------------------+-----------------------------------------------+-----------------------------------------+
-| session.unsubscribed | clientid, topic                               | SET unsub:${clientid} topic             |
-+----------------------+-----------------------------------------------+-----------------------------------------+
-| message.publish      | message, msgid, topic, payload, qos, clientid | RPUSH pub:${topic} msgid                |
-+----------------------+-----------------------------------------------+-----------------------------------------+
-| message.acked        | msgid, topic, clientid                        | HSET ack:${clientid} topic msgid        |
-+----------------------+-----------------------------------------------+-----------------------------------------+
-| message.delivered    | msgid, topic, clientid                        | HSET delivered:${clientid} topic msgid  |
-+----------------------+-----------------------------------------------+-----------------------------------------+
++----------------------+-----------------------------------------------+-------------------------------------------------+
+| hook                 | Argument                                      | Example (Fields separated exactly by one space) |
++======================+===============================================+=================================================+
+| client.connected     | clientid                                      | SET conn:${clientid} clientid                   |
++----------------------+-----------------------------------------------+-------------------------------------------------+
+| client.disconnected  | clientid                                      | SET disconn:${clientid} clientid                |
++----------------------+-----------------------------------------------+-------------------------------------------------+
+| session.subscribed   | clientid, topic, qos                          | HSET sub:${clientid} topic qos                  |
++----------------------+-----------------------------------------------+-------------------------------------------------+
+| session.unsubscribed | clientid, topic                               | SET unsub:${clientid} topic                     |
++----------------------+-----------------------------------------------+-------------------------------------------------+
+| message.publish      | message, msgid, topic, payload, qos, clientid | RPUSH pub:${topic} msgid                        |
++----------------------+-----------------------------------------------+-------------------------------------------------+
+| message.acked        | msgid, topic, clientid                        | HSET ack:${clientid} topic msgid                |
++----------------------+-----------------------------------------------+-------------------------------------------------+
+| message.delivered    | msgid, topic, clientid                        | HSET delivered:${clientid} topic msgid          |
++----------------------+-----------------------------------------------+-------------------------------------------------+
 
-Redis 命令行配置Action
-------------------------
+config 'action' utilizing Redis Command Line
+---------------------------------------------
 
-Redis存储支持用户采用Redis Commands语句配置Action，例如:
+Redis backend supports using 'commands' in 'action', e.g.:
 
 .. code-block:: properties
     
-    ## 在客户端连接到EMQ服务器后，执行一条redis命令(支持多条redis命令) 
+    ## After a client connected to the EMQ X server, it excutes a redis command (multiple redis commands also supported)
     backend.redis.hook.client.connected.3 = {"action": {"commands": ["SET conn:${clientid} clientid"]}, "pool": "pool1"}
 
 
-Redis 设备在线状态Hash
------------------------
+Using Redis Hash for Devices' Connection State
+-----------------------------------------------
 
-*mqtt:client* Hash存储设备在线状态::
+*mqtt:client* hashes devices' connection state::
 
     hmset
     key = mqtt:client:${clientid} 
@@ -215,11 +214,11 @@ Redis 设备在线状态Hash
     field = ${clientid}
     value = ${ts}
 
-查询设备在线状态::
+Lookup devices' connection state::
 
     HGETALL "mqtt:client:${clientId}"
     
-例如ClientId为test客户端上线::
+E.g.: Client with ClientId 'test' goes online::
     
     HGETALL mqtt:client:test
     1) "state"
@@ -229,7 +228,7 @@ Redis 设备在线状态Hash
     5) "offline_at"
     6) "undefined"
     
-例如ClientId为test客户端下线::
+Client with ClientId 'test' goes offline::
     
     HGETALL mqtt:client:test
     1) "state"
@@ -239,20 +238,20 @@ Redis 设备在线状态Hash
     5) "offline_at"
     6) "1481685924"
 
-Redis 保留消息Hash
-------------------
+Using Redis Hash for Retained Messages
+---------------------------------------
 
-*mqtt:retain* Hash存储Retain消息::
+*mqtt:retain* hashes retained messages::
 
     hmset
     key = mqtt:retain:${topic}
     value = {id: string, from: string, qos: int, topic: string, retain: int, payload: string, ts: timestamp}
 
-查询retain消息::
+Lookup retained message::
 
     HGETALL "mqtt:retain:${topic}"
 
-例如查看topic为topic的retain消息::
+Lookup retained messages with a topic of 'retain'::
     
     HGETALL mqtt:retain:topic
      1) "id"
@@ -270,10 +269,10 @@ Redis 保留消息Hash
     13) "ts"
     14) "1481690659"
 
-Redis 消息存储Hash
--------------------
+Using Redis Hash for messages
+------------------------------
 
-*mqtt:msg* Hash存储MQTT消息::
+*mqtt:msg* hashes MQTT messages::
 
     hmset
     key = mqtt:msg:${msgid}
@@ -284,35 +283,35 @@ Redis 消息存储Hash
     field = 1
     value = ${msgid}
 
-Redis 消息确认SET
------------------
+Using Redis Set for Message Acknowledgements
+---------------------------------------------
 
-*mqtt:acked* SET存储客户端消息确认::
+*mqtt:acked* SET stores acknowledgements from the clients::
 
     set
     key = mqtt:acked:${clientid}:${topic}
     value = ${msgid}
 
-Redis 订阅存储Hash
--------------------
+Using Redis Hash for Subscription
+------------------------------------
 
-*mqtt:sub* Hash存储订阅关系::
+*mqtt:sub* hashes relationship of Subscription::
 
     hset
     key = mqtt:sub:${clientid}
     field = ${topic}
     value = ${qos}
 
-某个客户端订阅主题::
+A client subscribes to a topic::
     
     HSET mqtt:sub:${clientid} ${topic} ${qos}
     
-例如为ClientId为"test"的客户端订阅主题topic1, topic2::
+A client with ClientId of 'test' subscribes to topic1 and topic2::
 
     HSET "mqtt:sub:test" "topic1" 1
     HSET "mqtt:sub:test" "topic2" 2
     
-查询ClientId为"test"的客户端已订阅主题::
+Lookup the subscribed topics of client with ClientId of 'test::
  
     HGETALL mqtt:sub:test
     1) "topic1"
@@ -320,26 +319,26 @@ Redis 订阅存储Hash
     3) "topic2"
     4) "2"
  
-Redis SUB/UNSUB事件发布
+Redis SUB/UNSUB Publish
 -----------------------
 
-设备需要订阅/取消订阅主题时，业务服务器向Redis发布事件消息::
+When a device subscribes / unsubscribes tpoics, EMQ X server publish to the Redis::
 
     PUBLISH
     channel = "mqtt_channel"
     message = {type: string , topic: string, clientid: string, qos: int} 
     \*type: [subscribe/unsubscribe]
 
-例如ClientId为test客户端订阅主题topic0::
+client with ClientID 'test' subscribe to 'topic0'::
 
     PUBLISH "mqtt_channel" "{\"type\": \"subscribe\", \"topic\": \"topic0\", \"clientid\": \"test\", \"qos\": \"0\"}"
 
-例如ClientId为test客户端取消订阅主题::
+Client with ClientId 'test' unsubscribes to 'test_topic0'::
 
     PUBLISH "mqtt_channel" "{\"type\": \"unsubscribe\", \"topic\": \"test_topic0\", \"clientid\": \"test\"}"
 
-启用Redis存储插件
------------------
+Enable Redis Plugin
+--------------------
 
 .. code-block:: bash
 
@@ -347,16 +346,16 @@ Redis SUB/UNSUB事件发布
 
 .. _mysql_backend:
 
--------------
-MySQL数据存储
--------------
+-----------------------------
+Data Persistence Using MySQL
+-----------------------------
 
-配置文件: emqx_backend_mysql.conf
+Config file: emqx_backend_mysql.conf
 
-配置MySQL服务器
-----------------
+Config MySQL Server
+--------------------
 
-支持配置多台MySQL服务器连接池:
+Connection pool of multiple MySQL servers is supported::
 
 .. code-block:: properties
 
@@ -375,8 +374,8 @@ MySQL数据存储
     ## Mysql Database
     backend.mysql.pool1.database = mqtt
 
-配置MySQL存储规则
------------------
+Config MySQL Properties
+-----------------------
 
 .. code-block:: properties
 
@@ -407,36 +406,36 @@ MySQL数据存储
     ## Store Ack
     backend.mysql.hook.message.acked.1       = {"topic": "#", "action": {"function": "on_message_acked"}, "pool": "pool1"}
 
-MySQL 存储规则说明
-------------------
+Description of MySQL Properties
+---------------------------------
 
 +------------------------+------------------------+-------------------------+----------------------------------+
-| hook                   | topic                  | action                  | 说明                             |
+| hook                   | topic                  | action                  | Description                      |
 +========================+========================+=========================+==================================+
-| client.connected       |                        | on_client_connected     | 存储客户端在线状态               |
+| client.connected       |                        | on_client_connected     | Store client connected state     |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| client.connected       |                        | on_subscribe_lookup     | 订阅主题                         |
+| client.connected       |                        | on_subscribe_lookup     | Subscribed topics                |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| client.disconnected    |                        | on_client_disconnected  | 存储客户端离线状态               |
+| client.disconnected    |                        | on_client_disconnected  | Store client disconnected state  |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| session.subscribed     | #                      | on_message_fetch        | 获取离线消息                     |
+| session.subscribed     | #                      | on_message_fetch        | Fetch offline messages           |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| session.subscribed     | #                      | on_retain_lookup        | 获取retain消息                   |
+| session.subscribed     | #                      | on_retain_lookup        | Lookup retained messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_message_publish      | 存储发布消息                     |
+| message.publish        | #                      | on_message_publish      | Store published messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_message_retain       | 存储retain消息                   |
+| message.publish        | #                      | on_message_retain       | Store retained messages          |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_retain_delete        | 删除retain消息                   |
+| message.publish        | #                      | on_retain_delete        | Delete retained messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.acked          | #                      | on_message_acked        | 消息ACK处理                      |
+| message.acked          | #                      | on_message_acked        | Process ACK                      |
 +------------------------+------------------------+-------------------------+----------------------------------+
 
-SQL语句参数说明
----------------
+SQL Arguments Description 
+--------------------------
 
 +----------------------+---------------------------------------+----------------------------------------------------------------+
-| hook                 | 可用参数                              | 示例(sql语句中${name} 表示可获取的参数)                        |
+| hook                 | Arguments                             | Example (${name} represents available argument)                |
 +======================+=======================================+================================================================+
 | client.connected     | clientid                              | insert into conn(clientid) values(${clientid})                 |
 +----------------------+---------------------------------------+----------------------------------------------------------------+
@@ -453,36 +452,36 @@ SQL语句参数说明
 | message.delivered    | msgid, topic, clientid                | insert into delivered(msgid, topic) values(${msgid}, ${topic}) |
 +----------------------+---------------------------------------+----------------------------------------------------------------+
 
-SQL语句配置Action
-------------------
+Config 'action' utilizing SQL
+------------------------------
 
-MySQL存储支持用户采用SQL语句配置Action:
+MySQL backend supports using SQL in 'action':
 
 .. code-block:: properties
 
-    ## 在客户端连接到EMQ服务器后，执行一条sql语句(支持多条sql语句) 
+    ## After a client is connected to the EMQ X servcer, it excutes a SQL command (multiple SQL commands also supported)
     backend.mysql.hook.client.connected.3 = {"action": {"sql": ["insert into conn(clientid) values(${clientid})"]}, "pool": "pool1"}
 
-创建MySQL数据库表
------------------
+Create MySQL DB
+----------------------
 
 .. code-block:: sql
 
     create database mqtt;
 
-导入MySQL库表结构
------------------
+Import MySQL DB & Table Structures
+----------------------------------
     
 .. code-block:: bash
     
     mysql -u root -p mqtt < etc/sql/emqx_backend_mysql.sql
 
-.. NOTE:: 数据库名称可自定义
+.. NOTE:: DB name is free of choice
 
-MySQL 设备在线状态表
---------------------
+MySQL Client Connection Table
+------------------------------
 
-*mqtt_client* 存储设备在线状态:
+*mqtt_client* stores client connection states:
 
 .. code-block:: sql
 
@@ -500,13 +499,13 @@ MySQL 设备在线状态表
       UNIQUE KEY `mqtt_client_key` (`clientid`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-查询设备在线状态:
+Inquire the client connection state:
 
 .. code-block:: sql
 
     select * from mqtt_client where clientid = ${clientid};
     
-例如ClientId为test客户端上线:
+If client 'test' is online:
 
 .. code-block:: sql
 
@@ -519,7 +518,7 @@ MySQL 设备在线状态表
     +----+----------+-------+----------------+---------------------+---------------------+---------------------+
     1 rows in set (0.00 sec)
 
-例如ClientId为test客户端下线:
+If client 'test' is offline:
 
 .. code-block:: sql
 
@@ -532,10 +531,10 @@ MySQL 设备在线状态表
     +----+----------+-------+----------------+---------------------+---------------------+---------------------+
     1 rows in set (0.00 sec)
 
-MySQL 主题订阅表
-----------------
+MySQL Subscription TABLE
+-------------------------
 
-*mqtt_sub* 存储设备的主题订阅关系:
+*mqtt_sub* stores subscriptions of clients:
 
 .. code-block:: sql
 
@@ -551,20 +550,20 @@ MySQL 主题订阅表
       UNIQUE KEY `mqtt_sub_key` (`clientid`,`topic`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-例如ClientId为"test"客户端订阅主题test_topic1 test_topic2:
+E.g., client 'test' subscribes to 'test_topic1' and 'test_topic2':
 
 .. code-block:: sql
 
     insert into mqtt_sub(clientid, topic, qos) values("test", "test_topic1", 1);
     insert into mqtt_sub(clientid, topic, qos) values("test", "test_topic2", 2);
 
-某个客户端订阅主题:
+Inquire subscription of a client:
 
 .. code-block:: sql
     
     select * from mqtt_sub where clientid = ${clientid};
 
-查询ClientId为"test"的客户端已订阅主题:
+E.g., inquiring the Subscription of client 'test':
 
 .. code-block:: sql
     
@@ -578,10 +577,10 @@ MySQL 主题订阅表
     +----+--------------+-------------+------+---------------------+
     2 rows in set (0.00 sec)
 
-MySQL 消息存储表
-----------------
+MySQL Message Table
+--------------------
 
-*mqtt_msg* 存储MQTT消息:
+*mqtt_msg* stores MQTT messages:
 
 .. code-block:: sql
     
@@ -599,13 +598,13 @@ MySQL 消息存储表
       PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-查询某个客户端发布的消息:
+Inquiring messages published by a client:
 
 .. code-block:: sql
 
     select * from mqtt_msg where sender = ${clientid};
 
-查询ClientId为"test"的客户端发布的消息:
+Inquiring messages published by client 'test':
 
 .. code-block:: sql
 
@@ -619,10 +618,10 @@ MySQL 消息存储表
     +----+-------------------------------+----------+--------+------+-----+--------+---------+---------------------+
     2 rows in set (0.00 sec)
 
-MySQL 保留消息表
-----------------
+MySQL Retained Message Table
+----------------------------
 
-mqtt_retain 存储Retain消息:
+mqtt_retain stores retained messages:
 
 .. code-block:: sql
     
@@ -640,13 +639,13 @@ mqtt_retain 存储Retain消息:
       UNIQUE KEY `mqtt_retain_key` (`topic`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-查询retain消息:
+Inquiring retained messages:
 
 .. code-block:: sql
 
     select * from mqtt_retain where topic = ${topic};
 
-查询topic为"retain"的retain消息:
+Inquiring retained messages with topic 'retain':
 
 .. code-block:: sql
 
@@ -659,10 +658,10 @@ mqtt_retain 存储Retain消息:
     +----+----------+-------------------------------+---------+------+------+---------+---------------------+
     1 rows in set (0.00 sec)
 
-MySQL 消息确认表
-----------------
+MySQL Acknowledgement Table
+----------------------------
 
-*mqtt_acked* 存储客户端消息确认:
+*mqtt_acked* stores acknowledgements from the clients:
 
 .. code-block:: sql
     
@@ -677,8 +676,8 @@ MySQL 消息确认表
       UNIQUE KEY `mqtt_acked_key` (`clientid`,`topic`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-启用MySQL数据存储
------------------
+Enable MySQL Backend
+---------------------
 
 .. code-block:: bash
 
@@ -687,16 +686,16 @@ MySQL 消息确认表
 
 .. _postgre_backend:
 
---------------------
-PostgreSQL 数据存储
---------------------
+-----------------------------------
+Data Persistence using PostgreSQL
+-----------------------------------
 
-配置文件: emqx_backend_pgsql.conf
+Config file: emqx_backend_pgsql.conf
 
-配置PostgreSQL服务器
---------------------
+Config PostgreSQL Server
+-------------------------
 
-支持配置多台PostgreSQL服务器连接池:
+Connection pool of multiple PostgreSQL servers is supported:
 
 .. code-block:: properties
 
@@ -718,8 +717,8 @@ PostgreSQL 数据存储
     ## Pgsql Ssl
     backend.pgsql.pool1.ssl = false  
 
-配置PostgreSQL存储规则
-----------------------
+Config PostgreSQL Properties
+----------------------------
 
 .. code-block:: properties
 
@@ -750,36 +749,36 @@ PostgreSQL 数据存储
     ## Store Ack
     backend.pgsql.hook.message.acked.1       = {"topic": "#", "action": {"function": "on_message_acked"}, "pool": "pool1"}
 
-PostgreSQL 存储规则说明
------------------------
+Description of PostgreSQL Properties 
+-------------------------------------
 
 +------------------------+------------------------+-------------------------+----------------------------------+
-| hook                   | topic                  | action                  | 说明                             |
+| hook                   | topic                  | action                  | Description                      |
 +========================+========================+=========================+==================================+
-| client.connected       |                        | on_client_connected     | 存储客户端在线状态               |
+| client.connected       |                        | on_client_connected     | Store client connected state     |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| client.connected       |                        | on_subscribe_lookup     | 订阅主题                         |
+| client.connected       |                        | on_subscribe_lookup     | Subscribed topics                |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| client.disconnected    |                        | on_client_disconnected  | 存储客户端离线状态               |
+| client.disconnected    |                        | on_client_disconnected  | Store client disconnected state  |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| session.subscribed     | #                      | on_message_fetch        | 获取离线消息                     |
+| session.subscribed     | #                      | on_message_fetch        | Fetch offline messages           |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| session.subscribed     | #                      | on_retain_lookup        | 获取retain消息                   |
+| session.subscribed     | #                      | on_retain_lookup        | Lookup retained messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_message_publish      | 存储发布消息                     |
+| message.publish        | #                      | on_message_publish      | Store published messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_message_retain       | 存储retain消息                   |
+| message.publish        | #                      | on_message_retain       | Store retained messages          |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_retain_delete        | 删除retain消息                   |
+| message.publish        | #                      | on_retain_delete        | Delete retained messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.acked          | #                      | on_message_acked        | 消息ACK处理                      |
+| message.acked          | #                      | on_message_acked        | Process ACK                      |
 +------------------------+------------------------+-------------------------+----------------------------------+
 
-SQL语句参数说明
----------------
+SQL Arguments Description 
+--------------------------
 
 +----------------------+---------------------------------------+----------------------------------------------------------------+
-| hook                 | 可用参数                              | 示例(sql语句中${name} 表示可获取的参数)                        |
+| hook                 | Arguments                             | Example (${name} represents available argument)                |
 +======================+=======================================+================================================================+
 | client.connected     | clientid                              | insert into conn(clientid) values(${clientid})                 |
 +----------------------+---------------------------------------+----------------------------------------------------------------+
@@ -796,36 +795,36 @@ SQL语句参数说明
 | message.delivered    | msgid, topic, clientid                | insert into delivered(msgid, topic) values(${msgid}, ${topic}) |
 +----------------------+---------------------------------------+----------------------------------------------------------------+
 
-SQL语句配置Action
-------------------
+Config 'action' utilizing SQL
+------------------------------
 
-PostgreSQL存储支持用户采用SQL语句配置Action，例如:
+PostgreSQL backend supports using SQL in 'action':
 
 .. code-block:: properties
 
-    ## 在客户端连接到EMQ服务器后，执行一条sql语句(支持多条sql语句) 
+    ## After a client is connected to the EMQ X server, it excutes a SQL command (multiple command also supported)
     backend.pgsql.hook.client.connected.3 = {"action": {"sql": ["insert into conn(clientid) values(${clientid})"]}, "pool": "pool1"}
 
-创建PostgreSQL数据库
+Create PostgreSQL DB
 --------------------
     
 .. code-block:: bash
 
     createdb mqtt -E UTF8 -e
 
-导入PostgreSQL库表结构
-----------------------
+Import PostgreSQL DB & Table Structures
+----------------------------------------
     
 .. code-block:: bash
     
     \i etc/sql/emqx_backend_pgsql.sql
 
-.. NOTE:: 数据库名称可自定义
+.. NOTE:: DB name is free of choice 
 
-PostgreSQL 设备在线状态表
--------------------------
+PostgreSQL Client Connection Table
+------------------------------------
 
-*mqtt_client* 存储设备在线状态::
+*mqtt_client* stores client connection states::
 
     CREATE TABLE mqtt_client(
       id SERIAL primary key,
@@ -838,11 +837,11 @@ PostgreSQL 设备在线状态表
       UNIQUE (clientid)
     );
 
-查询设备在线状态::
+Inquiring a client's connection state::
 
     select * from mqtt_client where clientid = ${clientid};
 
-例如ClientId为test客户端上线::
+E.g., if client 'test' is online::
 
     select * from mqtt_client where clientid = 'test';
 
@@ -851,7 +850,7 @@ PostgreSQL 设备在线状态表
       1 | test     | 1     | emqx@127.0.0.1 | 2016-11-15 09:40:40 | NULL                | 2016-12-24 09:40:22
     (1 rows)
 
-例如ClientId为test客户端下线::
+Client 'test" is offline::
 
     select * from mqtt_client where clientid = 'test';
 
@@ -860,10 +859,10 @@ PostgreSQL 设备在线状态表
       1 | test     | 0     | emqx@127.0.0.1 | 2016-11-15 09:40:40 | 2016-11-15 09:46:10 | 2016-12-24 09:40:22
     (1 rows)
 
-PostgreSQL 代理订阅表
----------------------
+PostgreSQL Subscription Table
+-----------------------------
     
-*mqtt_sub* 存储订阅关系::
+*mqtt_sub* stores subscriptions of clients::
 
     CREATE TABLE mqtt_sub(
       id SERIAL primary key,
@@ -874,18 +873,18 @@ PostgreSQL 代理订阅表
       UNIQUE (clientid, topic)
     );
 
-例如ClientId为'test'客户端订阅主题test_topic1 test_topic2:
+E.g., client 'test' subscribes to topic 'test_topic1' and 'test_topic2':
 
 .. code-block:: sql
 
     insert into mqtt_sub(clientid, topic, qos) values('test', 'test_topic1', 1);
     insert into mqtt_sub(clientid, topic, qos) values('test', 'test_topic2', 2);
 
-某个客户端订阅主题::
+Inquiring subscription of a client::
     
     select * from mqtt_sub where clientid = ${clientid};
 
-查询ClientId为test的客户端已订阅主题::
+Inquiring subscription of client 'test'::
     
     select * from mqtt_sub where clientid = 'test';
 
@@ -895,10 +894,10 @@ PostgreSQL 代理订阅表
       2 | test         | test_topic2 |    2 | 2016-12-24 17:12:51
     (2 rows) 
 
-PostgreSQL 消息存储表
----------------------
+PostgreSQL Message Table
+--------------------------
 
-*mqtt_msg* 存储MQTT消息:
+*mqtt_msg* stores MQTT messages:
 
 .. code-block:: sql
 
@@ -913,11 +912,11 @@ PostgreSQL 消息存储表
       arrived timestamp without time zone
     );
 
-查询某个客户端发布的消息::
+Inquiring messages published by a client::
     
     select * from mqtt_msg where sender = ${clientid};
 
-查询ClientId为"test"的客户端发布的消息::
+Inquiring messages published by client 'test'::
 
     select * from mqtt_msg where sender = 'test';
 
@@ -927,10 +926,10 @@ PostgreSQL 消息存储表
      2  | 53F98F9FE42AD7005000004A60004 | world    | test   | NULL |   1 |      0 | world   | 2016-12-24 17:25:45 
     (2 rows)
 
-PostgreSQL 保留消息表
----------------------
+PostgreSQL Retained Message Table
+----------------------------------
 
-*mqtt_retain* 存储Retain消息:
+*mqtt_retain* stores retained messages:
 
 .. code-block:: sql
 
@@ -945,11 +944,11 @@ PostgreSQL 保留消息表
       UNIQUE (topic)
     );
 
-查询retain消息::
+Inquiring retained messages::
 
     select * from mqtt_retain where topic = ${topic};
 
-查询topic为retain的retain消息::
+Inquiring retained messages with topic 'retain'::
 
     select * from mqtt_retain where topic = 'retain';
 
@@ -958,10 +957,10 @@ PostgreSQL 保留消息表
       1 | retain   | 53F33F7E4741E7007000004B70001 | test    | NULL |    1 | www     | 2016-12-24 16:55:18 
     (1 rows)
     
-PostgreSQL 消息确认表
----------------------
+PostgreSQL Acknowledgement Table
+---------------------------------
 
-*mqtt_acked* 存储客户端消息确认:
+*mqtt_acked* stores acknowledgements from the clients:
 
 .. code-block:: sql
     
@@ -974,8 +973,8 @@ PostgreSQL 消息确认表
       UNIQUE (clientid, topic)
     );
 
-启用PostgreSQL存储插件
-----------------------
+Enable PostgreSQL Backend
+--------------------------
 
 .. code-block:: bash    
 
@@ -985,16 +984,16 @@ PostgreSQL 消息确认表
 
 .. _mongodb_backend:
 
----------------
-MongoDB数据存储
----------------
+---------------------------------
+Data Persistence using MongoDB
+---------------------------------
 
-配置文件: emqx_backend_mongo.conf
+Config file: emqx_backend_mongo.conf
 
-配置MongoDB服务器
------------------
+Config MongoDB Server
+-----------------------
 
-支持配置多台MongoDB数据库连接池:
+Connection pool of multiple PostgreSQL servers is supported:
 
 .. code-block:: properties
 
@@ -1007,8 +1006,8 @@ MongoDB数据存储
     ## MongoDB Database
     backend.mongo.pool1.database = mqtt
 
-配置MongoDB存储规则
--------------------
+Config MongoDB Properties 
+--------------------------
 
 .. code-block:: properties
 
@@ -1039,33 +1038,33 @@ MongoDB数据存储
     ## Store Ack
     backend.mongo.hook.message.acked.1       = {"topic": "#", "action": {"function": "on_message_acked"}, "pool": "pool1"}
 
-MongoDB存储规则说明
--------------------
+Description of MongoDB Properties
+-----------------------------------
 
 +------------------------+------------------------+-------------------------+----------------------------------+
-| hook                   | topic                  | action                  | 说明                             |
+| hook                   | topic                  | action                  | Description                      |
 +========================+========================+=========================+==================================+
-| client.connected       |                        | on_client_connected     | 存储客户端在线状态               |
+| client.connected       |                        | on_client_connected     | Store client connected state     |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| client.connected       |                        | on_subscribe_lookup     | 订阅主题                         |
+| client.connected       |                        | on_subscribe_lookup     | Subscribed topics                |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| client.disconnected    |                        | on_client_disconnected  | 存储客户端离线状态               |
+| client.disconnected    |                        | on_client_disconnected  | Store client disconnected state  |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| session.subscribed     | #                      | on_message_fetch        | 获取离线消息                     |
+| session.subscribed     | #                      | on_message_fetch        | Fetch offline messages           |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| session.subscribed     | #                      | on_retain_lookup        | 获取retain消息                   |
+| session.subscribed     | #                      | on_retain_lookup        | Lookup retained messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_message_publish      | 存储发布消息                     |
+| message.publish        | #                      | on_message_publish      | Store published messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_message_retain       | 存储retain消息                   |
+| message.publish        | #                      | on_message_retain       | Store retained messages          |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_retain_delete        | 删除retain消息                   |
+| message.publish        | #                      | on_retain_delete        | Delete retained messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.acked          | #                      | on_message_acked        | 消息ACK处理                      |
+| message.acked          | #                      | on_message_acked        | Process ACK                      |
 +------------------------+------------------------+-------------------------+----------------------------------+
 
-创建MongoDB数据库集合
----------------------
+Create MongoDB DB & Collections
+---------------------------------
 
 .. code-block:: javascript
 
@@ -1081,12 +1080,12 @@ MongoDB存储规则说明
     db.mqtt_msg.ensureIndex({sender:1, topic:2})
     db.mqtt_retain.ensureIndex({topic:1})
 
-.. NOTE:: 数据库名称可自定义
+.. NOTE:: DB name is free of choice
 
-MongoDB 设备在线状态集合
-------------------------
+MongoDB Client Connection Collection
+-------------------------------------
 
-*mqtt_client* 存储设备在线状态:
+*mqtt_client* stores client connection states:
 
 .. code-block:: javascript
 
@@ -1098,13 +1097,13 @@ MongoDB 设备在线状态集合
         offline_at: timestamp
     }
 
-查询设备在线状态:
+Inquiring client's connection state:
 
 .. code-block:: javascript
 
     db.mqtt_client.findOne({clientid: ${clientid}})
 
-例如ClientId为test客户端上线:
+E.g., if client 'test' is online:
 
 .. code-block:: javascript
 
@@ -1119,7 +1118,7 @@ MongoDB 设备在线状态集合
         "offline_at" : null
     }
 
-例如ClientId为test客户端下线:
+Client 'test' is offline:
 
 .. code-block:: javascript
 
@@ -1134,10 +1133,10 @@ MongoDB 设备在线状态集合
         "offline_at" : 1482976501
     }
 
-MongoDB 主题订阅集合
---------------------
+MongoDB Subscription Collection
+---------------------------------
 
-*mqtt_sub* 存储订阅关系:
+*mqtt_sub* stores subscriptions of clients:
 
 .. code-block:: javascript
 
@@ -1147,14 +1146,14 @@ MongoDB 主题订阅集合
         qos: 0,1,2
     }
 
-例如ClientId为test的客户端订阅主题test_topic1 test_topic2:
+E.g., client 'test' subscribes to topic 'test_topic1' and 'test_topic2':
 
 .. code-block:: javascript
 
     db.mqtt_sub.insert({clientid: "test", topic: "test_topic1", qos: 1})
     db.mqtt_sub.insert({clientid: "test", topic: "test_topic2", qos: 2})
 
-查询ClientId为"test"的客户端的代理订阅主题:
+Inquiring subscription of client 'test':
 
 .. code-block:: javascript
     
@@ -1163,10 +1162,10 @@ MongoDB 主题订阅集合
     { "_id" : ObjectId("58646d90c65dff6ac9668ca1"), "clientid" : "test", "topic" : "test_topic1", "qos" : 1 }
     { "_id" : ObjectId("58646d96c65dff6ac9668ca2"), "clientid" : "test", "topic" : "test_topic2", "qos" : 2 }
 
-MongoDB 消息存储集合
---------------------
+MongoDB Message Collection
+---------------------------
 
-*mqtt_msg* 存储MQTT消息:
+*mqtt_msg* stores MQTT messages:
 
 .. code-block:: javascript
 
@@ -1181,13 +1180,13 @@ MongoDB 消息存储集合
         arrived: timestamp
     }
 
-查询某个客户端发布的消息:
+Inquiring messages published by a client:
 
 .. code-block:: javascript
 
     db.mqtt_msg.find({sender: ${clientid}})
 
-例如查询ClientId为"test"的客户端发布的消息:
+Inquiring messages published by client 'test': 
 
 .. code-block:: javascript
     
@@ -1203,10 +1202,10 @@ MongoDB 消息存储集合
         "arrived" : 1482976729 
     }
 
-MongoDB 保留消息集合
---------------------
+MongoDB Retained Message Collection
+------------------------------------
 
-*mqtt_retain* 存储Retain消息:
+*mqtt_retain* stores retained messages:
 
 .. code-block:: javascript
 
@@ -1219,13 +1218,13 @@ MongoDB 保留消息集合
         arrived: timestamp
     }
 
-查询retain消息:
+Inquiring retained messages:
 
 .. code-block:: javascript
 
     db.mqtt_retain.findOne({topic: ${topic}})
 
-查询topic为"retain"的retain消息:
+Inquiring retained messages with topic 'retain':
 
 .. code-block:: javascript
 
@@ -1240,10 +1239,10 @@ MongoDB 保留消息集合
         "arrived" : 1482976729
     }
 
-MongoDB 消息确认集合
---------------------
+MongoDB Acknowledgement Collection
+-------------------------------------
 
-*mqtt_acked* 集合存储客户端消息确认:
+*mqtt_acked* stores acknowledgements from the clients:
 
 .. code-block:: javascript
 
@@ -1253,8 +1252,8 @@ MongoDB 消息确认集合
         mongo_id: int
     }
 
-启用MongoDB数据存储
--------------------
+Enable MongoDB Backend
+-----------------------
 
 .. code-block:: console
 
@@ -1262,16 +1261,16 @@ MongoDB 消息确认集合
 
 .. _cassandra_backend:
 
------------------
-Cassandra数据存储
------------------
+----------------------------------
+Data Persistence using Cassandra
+----------------------------------
 
-配置文件: etc/plugins/emqx_backend_cassa.conf
+Config file: etc/plugins/emqx_backend_cassa.conf
 
-配置Cassandra集群地址
----------------------
+Config Cassandra Cluster
+-------------------------
 
-支持配置多台Cassandra服务器连接池:
+Multi node Cassandra cluster is supported: 
 
 .. code-block:: properties
     
@@ -1296,8 +1295,8 @@ Cassandra数据存储
     ## Cassandra Logger type
     backend.ecql.pool1.logger = info
 
-配置Cassandra存储规则
----------------------
+Config Cassandra Properties
+-----------------------------
 
 .. code-block:: properties
 
@@ -1331,38 +1330,38 @@ Cassandra数据存储
     ## Store Ack
     backend.cassa.hook.message.acked.1       = {"topic": "#", "action": {"function": "on_message_acked"}, "pool": "pool1"}
 
-Cassandra存储规则说明
----------------------
+Description of Cassandra Properties
+------------------------------------
 
 +------------------------+------------------------+-------------------------+----------------------------------+
-| hook                   | topic                  | action                  | 说明                             |
+| hook                   | topic                  | action                  | Description                      |
 +========================+========================+=========================+==================================+
-| client.connected       |                        | on_client_connected     | 存储客户端在线状态               |
+| client.connected       |                        | on_client_connected     | Store client connected state     |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| client.connected       |                        | on_subscribe_lookup     | 订阅主题                         |
+| client.connected       |                        | on_subscribe_lookup     | Subscribed topics                |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| client.disconnected    |                        | on_client_disconnected  | 存储客户端离线状态               |
+| client.disconnected    |                        | on_client_disconnected  | Store client disconnected state  |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| session.subscribed     | #                      | on_message_fetch        | 获取离线消息                     |
+| session.subscribed     | #                      | on_message_fetch        | Fetch offline messages           |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| session.subscribed     | #                      | on_retain_lookup        | 获取retain消息                   |
+| session.subscribed     | #                      | on_retain_lookup        | Lookup retained messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_message_publish      | 存储发布消息                     |
+| message.publish        | #                      | on_message_publish      | Store published messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_message_retain       | 存储retain消息                   |
+| message.publish        | #                      | on_message_retain       | Store retained messages          |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.publish        | #                      | on_retain_delete        | 删除retain消息                   |
+| message.publish        | #                      | on_retain_delete        | Delete retained messages         |
 +------------------------+------------------------+-------------------------+----------------------------------+
-| message.acked          | #                      | on_message_acked        | 消息ACK处理                      |
+| message.acked          | #                      | on_message_acked        | Process ACK                      |
 +------------------------+------------------------+-------------------------+----------------------------------+
 
-CQL语句参数说明
----------------
+CQL Arguments Description
+-------------------------
 
-自定义CQL语句可用参数包括:
+Custmized CQL command arguments includes:
 
 +----------------------+---------------------------------------+----------------------------------------------------------------+		
-| hook                 | 可用参数                              | 示例(cql语句中${name} 表示可获取的参数)                        |		
+| hook                 | Argument                              | Example (${name} in CQL represents available argument          |		
 +======================+=======================================+================================================================+		
 | client.connected     | clientid                              | insert into conn(clientid) values(${clientid})                 |		
 +----------------------+---------------------------------------+----------------------------------------------------------------+		
@@ -1379,38 +1378,38 @@ CQL语句参数说明
 | message.delivered    | msgid, topic, clientid                | insert into delivered(msgid, topic) values(${msgid}, ${topic}) |		
 +----------------------+---------------------------------------+----------------------------------------------------------------+		
 
-CQL语句方式配置Action
----------------------
+Config 'action' utlizing CQL
+-------------------------------
 
-Cassandra存储支持用户采用CQL语句配置规则Action，例如:
+Cassandra backend supports using CLQ in 'action':
 
 .. code-block:: properties
 
-    ## 在客户端连接到EMQ服务器后，执行一条cql语句(支持多条cql语句) 
+    ## After a client is connected to the EMQ X server, it excutes a CQL command(multiple command also supported):
     backend.cassa.hook.client.connected.3 = {"action": {"cql": ["insert into conn(clientid) values(${clientid})"]}, "pool": "pool1"}
 
-Cassandra初始化
----------------
+Initializing Cassandra 
+-----------------------
 
-创建KeySpace:
+Create KeySpace:
 
 .. code-block:: sql
 
     CREATE KEYSPACE mqtt WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };
     USR mqtt;
 
-导入Cassandra表:
+Import Cassandra tables:
 
 .. code-block:: sql
 
     cqlsh -e "SOURCE 'emqx_backend_cassa.cql'" 
 
-.. NOTE:: 数据库名称可自定义
+.. NOTE:: KeySpace is free of choice
 
-Cassandra 设备在线状态表
-------------------------
+Cassandra Client Connection Table
+----------------------------------
 
-*mqtt.client* 存储设备在线状态::
+*mqtt.client* stores client connection states::
 
     CREATE TABLE mqtt.client (
         client_id text,
@@ -1421,11 +1420,11 @@ Cassandra 设备在线状态表
         PRIMARY KEY(client_id)
     );
 
-查询设备在线状态::
+Inquiring a client's connection state::
 
     select * from mqtt.client where clientid = ${clientid};
     
-例如ClientId为test客户端上线::
+If client 'test' is online::
 
     select * from mqtt.client where clientid = 'test';
     
@@ -1433,7 +1432,7 @@ Cassandra 设备在线状态表
     -----------+---------------------------------+---------------+---------------+-------
           test | 2017-02-14 08:27:29.872000+0000 |          null | emqx@127.0.0.1|     1
 
-例如ClientId为test客户端下线::
+Client 'test' is offline::
 
     select * from mqtt.client where clientid = 'test';
     
@@ -1441,10 +1440,10 @@ Cassandra 设备在线状态表
     -----------+---------------------------------+---------------------------------+---------------+-------
           test | 2017-02-14 08:27:29.872000+0000 | 2017-02-14 08:27:35.872000+0000 | emqx@127.0.0.1|     0
 
-Cassandra 主题订阅表
---------------------
+Cassandra Subscription Table
+----------------------------
 
-*mqtt.sub* 存储设备订阅关系::
+*mqtt.sub* stores subscriptions of clients::
 
     CREATE TABLE mqtt.sub (
         client_id text,
@@ -1453,16 +1452,16 @@ Cassandra 主题订阅表
         PRIMARY KEY(client_id, topic)
     );
 
-例如为ClientId为"test"订阅主题test_topic1, test_topic2::
+Client 'test' subscribes to topic 'test_topic1' and 'test_topic2'::
 
     insert into mqtt.sub(client_id, topic, qos) values('test', 'test_topic1', 1);
     insert into mqtt.sub(client_id, topic, qos) values('test', 'test_topic2', 2);
 
-查询某个客户端订阅主题::
+Inquiring subscriptions of a client::
     
     select * from mqtt_sub where clientid = ${clientid};
 
-查询ClientId为'test'的客户端已订阅主题::
+Inquiring subscriptions of client 'test'::
     
     select * from mqtt_sub where clientid = 'test';
 
@@ -1471,10 +1470,10 @@ Cassandra 主题订阅表
           test | test_topic1 |   1
           test | test_topic2 |   2
     
-Cassandra 消息存储表
---------------------
+Cassandra Message Table
+------------------------
 
-*mqtt.msg* 存储MQTT消息::
+*mqtt.msg* stores MQTT messages::
     
     CREATE TABLE mqtt.msg (
         topic text,
@@ -1487,11 +1486,11 @@ Cassandra 消息存储表
         PRIMARY KEY(topic, msgid)
       ) WITH CLUSTERING ORDER BY (msgid DESC);
 
-查询某个客户端发布的消息::
+Inquiring messages published by a client::
 
     select * from mqtt_msg where sender = ${clientid};
 
-查询ClientId为'test'的客户端发布的消息::
+Inquiring messages published by client 'test'::
 
     select * from mqtt_msg where sender = 'test';
     
@@ -1500,10 +1499,10 @@ Cassandra 消息存储表
      hello | 2PguFrHsrzEvIIBdctmb | 2017-02-14 09:07:13.785000+0000 | Hello world! |   1 |      0 |   test
      world | 2PguFrHsrzEvIIBdctmb | 2017-02-14 09:07:13.785000+0000 | Hello world! |   1 |      0 |   test
 
-Cassandra 保留消息表
---------------------
+Cassandra Retained Message Table
+---------------------------------
 
-*mqtt.retain* 存储Retain消息::
+*mqtt.retain* stores retained messages::
     
     CREATE TABLE mqtt.retain (
         topic text,
@@ -1511,11 +1510,11 @@ Cassandra 保留消息表
         PRIMARY KEY(topic)
     );
 
-查询retain消息::
+Inquiring retained messages::
 
     select * from mqtt_retain where topic = ${topic};
 
-查询topic为'retain'的retain消息::
+Inquiring retained messages with topic 'retain'::
 
     select * from mqtt_retain where topic = 'retain';
 
@@ -1523,10 +1522,10 @@ Cassandra 保留消息表
     --------+----------------------
      retain | 2PguFrHsrzEvIIBdctmb 
 
-Cassandra 消息确认表
---------------------
+Cassandra Acknowledgement Table
+--------------------------------
 
-*mqtt.acked* 存储客户端消息确认::
+*mqtt.acked* stores acknowledgements from the clients::
     
     CREATE TABLE mqtt.acked (
         client_id text,
@@ -1535,8 +1534,8 @@ Cassandra 消息确认表
         PRIMARY KEY(client_id, topic)
       );
 
-启用Cassandra存储插件
----------------------
+Enable Cassandra Backend
+-------------------------
 
 .. code-block:: bash
 
