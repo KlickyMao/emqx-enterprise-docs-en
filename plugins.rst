@@ -2,41 +2,42 @@
 .. _plugins:
 
 ========
-扩展插件
+Plugins
 ========
 
-EMQ X消息服务器通过模块注册和钩子(Hooks)机制，扩展插件方式定制认证鉴权、数据存储、桥接转发与管理维护功能。
+EMQ X message broker can be extended by plugins. Ultilizing the module registration and hook mechanism, developers can customize the broker with plugins to extended the authentication, access control, data persitence, bridge and management functions.
 
-EMQ X企业版提供的管理维护插件:
+EMQ X provides plugins for management and maintenance: 
 
 +---------------------+-------------------------+----------------+---------------------------+
-| 插件                | 配置文件                | 默认加载       | 说明                      |
+| Plugin              | Config file             | Load by default| Description               |
 +=====================+=========================+================+===========================+
-| emqx_dashboard      | emqx_dashboard.conf     | 是             | Web控制台插件(默认加载)   |
+| emqx_dashboard      | emqx_dashboard.conf     | Y              | Web dashboard (defalut)   |
 +---------------------+-------------------------+----------------+---------------------------+
-| emqx_modules        | emqx_modules.conf       | 是             | Modules插件               |
+| emqx_modules        | emqx_modules.conf       | Y              | Modules plugins           |
 +---------------------+-------------------------+----------------+---------------------------+
-| emq_retainer        | emqx_retainer.conf      | 是             | Retain消息存储插件        |
+| emq_retainer        | emqx_retainer.conf      | Y              | Store retained message    |
 +---------------------+-------------------------+----------------+---------------------------+
-| emq_recon           | emqx_recon.conf         | 是             | Recon性能调试插件         |
+| emq_recon           | emqx_recon.conf         | Y              | Recon plugin              |
 +---------------------+-------------------------+----------------+---------------------------+
-| emq_reloader        | emqx_reloader.conf      | 否             | Reloader代码热加载插件    |
+| emq_reloader        | emqx_reloader.conf      | Y              | Reloader plugin           |
 +---------------------+-------------------------+----------------+---------------------------+
 
 -------------
-Dashboard插件
+Dashboard
 -------------
 
-EMQ X Web管理控制台，系统默认加载。URL地址: http://host:18083 ，缺省用户名/密码: admin/public。
+EMQ X Web Dashboard, loaded by default. URL: http://host:18083, default username/password: admin/public。
 
-控制台可查询 EMQ X消息服务器基本信息、统计数据、度量数据，查询系统客户端(Client)、会话(Session)、主题(Topic)、订阅(Subscription)。
+On the dashboard, following information can be queried: Status of EMQ X, statistics and metrics of clients, sessions, tpoics and subscriptions.
+
 
 .. image:: ./_static/images/dashboard.png
 
-Dashboard监听器设置
+Dashboard Listener
 -------------------
 
-配置文件emqx_dashboard.conf，Dashboard监听器默认端口 - 18083:
+Config file: 'emqx_dashboard.conf'，default port of listener: 18083.
 
 .. code-block:: properties
 
@@ -57,10 +58,10 @@ Dashboard监听器设置
     ## dashboard.listener.https.fail_if_no_peer_cert = true
 
 ------------
-Retainer插件
+Retainer
 ------------
 
-Retainer插件负责持久化MQTT Retained消息，配置文件emqx_retainer.conf:
+Retainer plugin is responsible for the persistence of MQTT retained messages. Config file: 'emqx_retainer.conf'.
 
 .. code-block:: properties
 
@@ -81,15 +82,15 @@ Retainer插件负责持久化MQTT Retained消息，配置文件emqx_retainer.con
     retainer.expiry_interval = 0
 
 -----------
-Modules插件
+Modules
 -----------
 
-Presence、Subscription、Rewrite等扩展模块插件。
+Consists of modules like Presence, Subscription, Rewrite and etc.
 
-Presence扩展模块设置
---------------------
+Configure the presence module
+------------------------------
 
-Presence扩展模块向$SYS/主题发布客户端上下线消息:
+Presence module published presence message to $SYS/ when a client connected or disconnected: 
 
 .. code-block:: properties
 
@@ -98,10 +99,10 @@ Presence扩展模块向$SYS/主题发布客户端上下线消息:
 
     module.presence.qos = 1
 
-Subscriptions扩展模块设置
+Subscriptions Module
 -------------------------
 
-Subscription扩展模块支持客户端上线时自动订阅主题:
+Subscription module forces clients to subscribe to some particular topics when connected to the EMQ X:
 
 .. code-block:: properties
 
@@ -116,10 +117,10 @@ Subscription扩展模块支持客户端上线时自动订阅主题:
     ## module.subscription.2.topic = $user/%u
     ## module.subscription.2.qos = 1
  
-Rewrite扩展模块设置
+Rewrite Module
 -------------------
 
-Rewrite扩展模块支持重写发布订阅主题:
+Rewrite module supports topic rewrite:
 
 .. code-block:: properties
 
@@ -131,13 +132,13 @@ Rewrite扩展模块支持重写发布订阅主题:
     ## module.rewrite.rule.2 = "y/+/z/# ^y/(.+)/z/(.+)$ y/z/$2"
 
 -----------------
-Recon性能调试插件
+Recon Plugin
 -----------------
 
-Recon性能调测插件，配置文件emqx_recon.conf，插件支持周期性全局垃圾回收，并向'./bin/emqx_ctl'命令行注册recon命令。
+Recon plugin loads the recon library on a running EMQ X. Recon library helps by debugging and optimizing Erlang applications. It supports periodically global garbage collection. This plugin registers 'recon' command to the './bin/emqx_ctl' CLI tool. Config file: 'emqx_recon.conf'.
 
-设置全局GC周期
---------------
+Setup the interval of global GC
+-------------------------------
 
 .. code-block:: properties
 
@@ -147,8 +148,8 @@ Recon性能调测插件，配置文件emqx_recon.conf，插件支持周期性全
     ## s - second
     recon.gc_interval = 5m
 
-Recon插件命令
--------------
+Recon Plugin CLI
+-----------------
 
 .. code-block:: bash
 
@@ -161,15 +162,15 @@ Recon插件命令
     recon remote_load Mod   #recon:remote_load(Mod)
 
 ----------------------
-Reloader代码热加载插件
+Reloader
 ----------------------
 
-用于开发调试的代码热升级插件。加载该插件后，EMQ X服务器会自动热升级更新代码。
+Erlang Module Reloader for development. If this plugin is loaded, EMQ X hot-updates the codes automatically.
 
-配置热加载检测周期
--------------------
+Setup Reload Interval
+---------------------
 
-配置文件emqx_reloader.conf:
+Config file: 'emqx_reloader.conf':
 
 .. code-block:: properties
 
@@ -177,15 +178,15 @@ Reloader代码热加载插件
 
     reloader.logfile = reloader.log
 
-加载Reloader插件
-----------------
+Load Reloader Plugin
+--------------------
 
 .. code-block:: bash
 
     ./bin/emqx_ctl plugins load emqx_reloader
 
-Reloader插件命令
-----------------
+Reloader Plugin CLI
+-------------------
 
 .. code-block:: bash
 
