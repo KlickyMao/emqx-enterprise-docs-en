@@ -1,59 +1,59 @@
 
 .. _tune:
 
-========
-测试调优
-========
+============
+Tuning Guide
+============
 
-EMQ X企业版R2版本MQTT连接压力测试到100万，在一台8核心、32G内存的CentOS服务器上。
+In a stress test,  EMQ X R2 sustained 1 million concurrent MQTT connections on a 8 core/32GB CentOS server.
 
-100万连接测试所需的Linux内核参数，网络协议栈参数，Erlang虚拟机参数，EMQ X参数设置如下:
+Tuning the Linux Kernel, Networking, Erlang VM and the EMQ broker for one million concurrent MQTT connections.
 
------------------
-Linux操作系统参数
------------------
+-------------------
+Linux Kernel Tuning
+-------------------
 
-系统全局允许分配的最大文件句柄数::
+The system-wide limit on max opened file handles::
 
     # 2 millions system-wide
     sysctl -w fs.file-max=2097152
     sysctl -w fs.nr_open=2097152
     echo 2097152 > /proc/sys/fs/nr_open
 
-允许当前会话/进程打开文件句柄数::
+The limit on opened file handles for current session::
 
     ulimit -n 1048576
 
 /etc/sysctl.conf
 ----------------
 
-持久化'fs.file-max'设置到/etc/sysctl.conf文件::
+Add the ‘fs.file-max’ to /etc/sysctl.conf, make the changes permanent::
 
     fs.file-max = 1048576
 
 /etc/security/limits.conf
 -------------------------
 
-/etc/security/limits.conf持久化设置允许用户/进程打开文件句柄数::
+Persist the limits on opened file handles for users in /etc/security/limits.conf::
 
     *      soft   nofile      1048576
     *      hard   nofile      1048576
 
------------------
-TCP协议栈网络参数
------------------
+------------------
+TCP Network Tuning
+------------------
 
-并发连接backlog设置::
+Increase number of incoming connections backlog::
 
     sysctl -w net.core.somaxconn=32768
     sysctl -w net.ipv4.tcp_max_syn_backlog=16384
     sysctl -w net.core.netdev_max_backlog=16384
 
-可用知名端口范围::
+Local port range ::
 
     sysctl -w net.ipv4.ip_local_port_range='1000 65535'
 
-TCP Socket读写Buffer设置::
+TCP Socket read/write buffer::
 
     sysctl -w net.core.rmem_default=262144
     sysctl -w net.core.wmem_default=262144
@@ -65,29 +65,29 @@ TCP Socket读写Buffer设置::
     sysctl -w net.ipv4.tcp_rmem='1024 4096 16777216'
     sysctl -w net.ipv4.tcp_wmem='1024 4096 16777216'
 
-TCP连接追踪设置::
+TCP connection tracking::
 
     sysctl -w net.nf_conntrack_max=1000000
     sysctl -w net.netfilter.nf_conntrack_max=1000000
     sysctl -w net.netfilter.nf_conntrack_tcp_timeout_time_wait=30
 
-TIME-WAIT Socket最大数量、回收与重用设置::
+TIME-WAIT Bucket Pool, Recycling and Reuse::
 
     net.ipv4.tcp_max_tw_buckets=1048576
 
-    # 注意: 不建议开启該设置，NAT模式下可能引起连接RST
+    # Note: Enabling following option is not recommended. It could cause connection reset under NAT.
     # net.ipv4.tcp_tw_recycle = 1
     # net.ipv4.tcp_tw_reuse = 1
 
-FIN-WAIT-2 Socket超时设置::
+Timeout for FIN-WAIT-2 Sockets::
 
     net.ipv4.tcp_fin_timeout = 15
 
 ----------------
-Erlang虚拟机参数
+Erlang VM Tuning
 ----------------
 
-优化设置Erlang虚拟机启动参数，配置文件etc/emqx.conf:
+Tuning and optimize the Erlang VM in etc/emq.conf file:
 
 .. code-block:: properties
 
@@ -97,11 +97,11 @@ Erlang虚拟机参数
     ## Sets the maximum number of simultaneously existing ports for this system
     node.max_ports = 1048576
 
-----------
-EMQ X参数
-----------
+------------
+EMQ X Broker
+------------
 
-设置TCP监听器的Acceptor池大小，最大允许连接数。配置文件etc/emqx.conf:
+Tune the acceptor pool, max_clients limit and sockopts for TCP listener in etc/emqx.conf:
 
 .. code-block:: properties
 
@@ -111,10 +111,10 @@ EMQ X参数
     mqtt.listener.tcp.external.max_clients = 1000000
 
 --------------
-测试客户端设置
+Client Machine
 --------------
 
-测试客户端服务器在一个接口上，最多只能创建65000连接::
+Tune the client machine to benchmark emqttd broker::
 
     sysctl -w net.ipv4.ip_local_port_range="500 65535"
     echo 1000000 > /proc/sys/fs/nr_open
@@ -123,5 +123,5 @@ EMQ X参数
 mqtt-jmeter
 ------------
 
-MQTT模拟测试工具: https://github.com/emqtt/mqtt-jmeter
+Test tool for concurrent connections: https://github.com/emqtt/mqtt-jmeter
 
