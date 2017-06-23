@@ -1,30 +1,30 @@
 
 .. _guide:
 
-========
-用户指南
-========
+===========
+User Guide
+===========
 
-------------
-MQTT发布订阅
-------------
+---------------------------
+MQTT PUBLISH & SUBSCRIPTION
+---------------------------
 
-MQTT是为移动互联网、物联网设计的轻量发布订阅模式的消息服务器:
+MQTT is light weight publish/subscribe message transport protocol. EMQ X is a message broker implementing MQTT protocol:
 
 .. image:: ./_static/images/pubsub_concept.png
 
-EMQ X服务器安装启动后，任何设备或终端的MQTT客户端，可通过MQTT协议连接到服务器，发布订阅消息方式互通。
+EMQ X is running, any clients that support MQTT protocol can connect to the EMQ X broker and then publish / subscribe messages.
 
-MQTT协议客户端库: https://github.com/mqtt/mqtt.github.io/wiki/libraries
+MQTT client libraary: https://github.com/mqtt/mqtt.github.io/wiki/libraries
 
-例如，mosquitto_sub/pub命令行发布订阅消息::
+E.g., using mosquitto_sub/pub CLI to subscribe to topics and publish messages.
 
     mosquitto_sub -t topic -q 2
     mosquitto_pub -t topic -q 1 -m "Hello, MQTT!"
 
-MQTT V3.1.1版本协议规范: http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html
+MQTT V3.1.1 Standard: http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html
 
-EMQ X消息服务器的MQTT协议TCP监听器，可在emqx.conf文件中设置:
+EMQ X QTT protocol TCP listener. Configurable in 'emqx.conf:
 
 .. code-block:: properties
 
@@ -37,7 +37,7 @@ EMQ X消息服务器的MQTT协议TCP监听器，可在emqx.conf文件中设置:
     ## Maximum number of concurrent clients
     mqtt.listener.tcp.external.max_clients = 1024
 
-MQTT(SSL) TCP监听器，缺省端口8883:
+MQTT(SSL) TCP listener. Default port 8883:
 
 .. code-block:: properties
 
@@ -52,11 +52,11 @@ MQTT(SSL) TCP监听器，缺省端口8883:
 
 .. _shared_subscription:
 
---------
-共享订阅
---------
+-------------------
+Shared Subscription
+-------------------
 
-共享订阅(Shared Subscription)支持在多订阅者间采用分组负载平衡方式派发消息::
+Shared Subscription dispatches messages among multiple subscribers in a manner of client load balancing::
 
                                 ---------
                                 |       | --Msg1--> Subscriber1
@@ -64,23 +64,23 @@ MQTT(SSL) TCP监听器，缺省端口8883:
                                 |       | --Msg3--> Subscriber3
                                 ---------
 
-共享订阅支持两种使用方式:
+Usage of shared subscription: 
 
-+-----------------+-------------------------------------------+
-|  订阅前缀       | 使用示例                                  |
-+-----------------+-------------------------------------------+
-| $queue/         | mosquitto_sub -t '$queue/topic'           |
-+-----------------+-------------------------------------------+
-| $share/<group>/ | mosquitto_sub -t '$share/group/topic'     |
-+-----------------+-------------------------------------------+
++----------------------+-------------------------------------------+
+|  Subscription prefix | Example                                   |
++----------------------+-------------------------------------------+
+| $queue/              | mosquitto_sub -t '$queue/topic'           |
++----------------------+-------------------------------------------+
+| $share/<group>/      | mosquitto_sub -t '$share/group/topic'     |
++----------------------+-------------------------------------------+
 
 .. _local_subscription:
 
---------
-本地订阅
---------
+------------------
+Local Subscription
+------------------
 
-本地订阅(Local Subscription)只在本节点创建订阅与路由表，不会在集群节点间广播全局路由:
+By mean of Local Subscription, subscription and route table is created on localhost only:
 
 .. code-block:: shell
 
@@ -88,26 +88,26 @@ MQTT(SSL) TCP监听器，缺省端口8883:
 
     mosquitto_pub -t 'topic'
 
-使用方式: 订阅者在主题(Topic)前增加'$local/'前缀。
+Usage: add a '$local/' prefix before topic.
 
 .. _fastlane_subscription:
 
-------------
-Fastlane订阅
-------------
+---------------------
+Fastlane Subscription
+---------------------
 
-EMQ X企业版支持的快车道(Fastlane)订阅功能，提高到订阅者的消息派发效率:
+EMQ X supports Fastlane subcription, it improves the message dispatching efficiency:
 
 .. image:: _static/images/fastlane.png
 
-Fastlane订阅使用方式: 主题加 *$fastlane/* 前缀。
+Usage of Fastlane: *$fastlane/* prefix + topic
 
-Fastlane订阅限制:
+Limitation on Fastlane:
 
 1. CleanSession = true
 2. Qos = 0
 
-Fastlane订阅适合物联网传感器数据采集类应用::
+Fastlane is suitable for IoT sensor data colllection::
 
                  -----------------
     Sensor ----> |               |
@@ -118,43 +118,43 @@ Fastlane订阅适合物联网传感器数据采集类应用::
 
 .. _http_publish:
 
-------------
-HTTP发布接口
-------------
+-----------------------
+HTTP Publish Interface
+-----------------------
 
-EMQ X提供了一个HTTP发布接口，应用服务器或Web服务器可通过该接口发布MQTT消息::
+EMQ X provides a HTTP publish interface. Application server or Web server can publish MQTT messages through this interface::
 
     HTTP POST http://host:8083/mqtt/publish
 
-Web服务器例如PHP/Java/Python/NodeJS或Ruby on Rails，可通过HTTP POST请求发布MQTT消息:
+Web servers (PHP/Java/Python/NodeJS或Ruby on Rails) publishes MQTT messages using HTTP POST:
 
 .. code-block:: bash
 
     curl -v --basic -u user:passwd -d "qos=1&retain=0&topic=/a/b/c&message=hello from http..." -k http://localhost:8083/mqtt/publish
 
-HTTP接口参数:
+HTTP interface:
 
 +---------+----------------+
-| 参数    | 说明           |
+| Argument| Description    |
 +=========+================+
-| client  | MQTT客户端ID   |
+| client  | MQTT ClientID  |
 +---------+----------------+
 | qos     | QoS: 0 | 1 | 2 |
 +---------+----------------+
 | retain  | Retain: 0 | 1  |
 +---------+----------------+
-| topic   | 主题(Topic)    |
+| topic   | Topic          |
 +---------+----------------+
-| message | 消息           |
+| message | Message        |
 +---------+----------------+
 
-.. NOTE:: HTTP接口采用Basic认证
+.. NOTE:: HTTP interface uses Basic authentication
 
 ------------------
-MQTT WebSocket连接
+MQTT WebSocket
 ------------------
 
-EMQ X服务器支持MQTT WebSocket连接，Web浏览器可直接通过MQTT协议连接服务器:
+EMQ X supprts MQTT WebSocket connection, web browers can directly connect to broker through MQTT protocol:
 
 +-------------------------+----------------------------+
 | WebSocket URI:          | ws(s)://host:8083/mqtt     |
@@ -162,11 +162,11 @@ EMQ X服务器支持MQTT WebSocket连接，Web浏览器可直接通过MQTT协议
 | Sec-WebSocket-Protocol: | 'mqttv3.1' or 'mqttv3.1.1' |
 +-------------------------+----------------------------+
 
-Dashboard插件提供了一个MQTT WebSocket连接的测试页面::
+Dashboard plugin provides a test page for MQTT WebSocketconnection::
 
     http://127.0.0.1:18083/websocket.html
 
-EMQ X通过内嵌的HTTP服务器，实现MQTT WebSocket与HTTP发布接口，etc/emqx.conf设置:
+EMQ X uses an embed HTTP server to implement MQTT WebSocket and HTTP publish interface. Configurabl in file 'etc/emqx.conf':
 
 .. code-block:: properties
 
@@ -177,21 +177,21 @@ EMQ X通过内嵌的HTTP服务器，实现MQTT WebSocket与HTTP发布接口，et
 
 .. _sys_topic:
 
--------------
-$SYS-系统主题
--------------
+--------------------
+$SYS -- System Topic
+--------------------
 
-EMQ X服务器周期性发布自身运行状态、MQTT协议统计、客户端上下线状态到'$SYS/'开头系统主题。
+EMQ X periodically publish its server status, MQTT protocol statitics, client connection status to topics starting with '$SYS/'.
 
-$SYS主题路径以"$SYS/brokers/{node}/"开头，'${node}'是Erlang节点名称::
+$SYS topic path starts with "$SYS/brokers/{node}/", where '${node}' is the Erlang node nae::
 
     $SYS/brokers/emqx@127.0.0.1/version
 
     $SYS/brokers/emqx@host2/uptime
 
-.. NOTE:: 默认只允许localhost的MQTT客户端订阅$SYS主题，可通过etc/acl.config修改访问控制规则。
+.. NOTE:: By default, only clients on localhost are allowed to subscribe to $SYS topics, this can be changed in 'etc/acl.config'.
 
-$SYS系统消息发布周期，通过etc/emq.conf配置:
+$SYS publish interval can be changed in 'etc/emq.conf':
 
 .. code-block:: properties
 
@@ -200,32 +200,32 @@ $SYS系统消息发布周期，通过etc/emq.conf配置:
 
 .. _sys_brokers:
 
-服务器版本、启动时间与描述消息
-------------------------------
+Broker Version, Up-Time and Description
+---------------------------------------
 
-+--------------------------------+-----------------------+
-| 主题                           | 说明                  |
-+================================+=======================+
-| $SYS/brokers                   | 集群节点列表          |
-+--------------------------------+-----------------------+
-| $SYS/brokers/${node}/version   | EMQ X版本             |
-+--------------------------------+-----------------------+
-| $SYS/brokers/${node}/uptime    | EMQ X启动时间         |
-+--------------------------------+-----------------------+
-| $SYS/brokers/${node}/datetime  | EMQ X服务器时间       |
-+--------------------------------+-----------------------+
-| $SYS/brokers/${node}/sysdescr  | EMQ X版本描述         |
-+--------------------------------+-----------------------+
++--------------------------------+---------------------------+
+| Topic                          | Description               |
++================================+===========================+
+| $SYS/brokers                   | Node list in cluster      |
++--------------------------------+---------------------------+
+| $SYS/brokers/${node}/version   | EMQ X version             |
++--------------------------------+---------------------------+
+| $SYS/brokers/${node}/uptime    | EMQ X Up-Time             |
++--------------------------------+---------------------------+
+| $SYS/brokers/${node}/datetime  | EMQ X system time         |
++--------------------------------+---------------------------+
+| $SYS/brokers/${node}/sysdescr  | EMQ X version description |
++--------------------------------+---------------------------+
 
 .. _sys_clients:
 
-MQTT客户端上下线状态消息
-------------------------
+MQTT Client Connection status
+-----------------------------
 
-$SYS主题前缀: $SYS/brokers/${node}/clients/
+$SYS topic prefix: $SYS/brokers/${node}/clients/
 
 +--------------------------+--------------------------------------------+------------------------------------+
-| 主题(Topic)              | 数据(JSON)                                 | 说明                               |
+| Topic                    | Data(JSON)                                 | Description                        |
 +==========================+============================================+====================================+
 | ${clientid}/connected    | {ipaddress: "127.0.0.1", username: "test", | Publish when a client connected    |
 |                          |  session: false, version: 3, connack: 0,   |                                    |
@@ -235,7 +235,7 @@ $SYS主题前缀: $SYS/brokers/${node}/clients/
 |                          |  ts: 1432749431}                           |                                    |
 +--------------------------+--------------------------------------------+------------------------------------+
 
-'connected'消息JSON数据:
+'connected' message (JSON Data):
 
 .. code-block:: json
 
@@ -248,7 +248,7 @@ $SYS主题前缀: $SYS/brokers/${node}/clients/
         ts:        1432648482
     }
 
-'disconnected'消息JSON数据:
+'disconnected' message (JSON Data):
 
 .. code-block:: json
 
@@ -259,182 +259,182 @@ $SYS主题前缀: $SYS/brokers/${node}/clients/
 
 .. _sys_stats:
 
-Statistics - 系统统计消息
---------------------------
+Statistics -- System Statistics
+-------------------------------
 
-系统主题前缀: $SYS/brokers/${node}/stats/
+$SYS prefix: $SYS/brokers/${node}/stats/
 
-Clients - 客户端统计
-....................
-
-+---------------------+---------------------------------------------+
-| 主题(Topic)         | 说明                                        |
-+---------------------+---------------------------------------------+
-| clients/count       | 当前客户端总数                              |
-+---------------------+---------------------------------------------+
-| clients/max         | 最大客户端数量                              |
-+---------------------+---------------------------------------------+
-
-Sessions - 会话统计
-...................
+Clients -- Client Statistics
+............................
 
 +---------------------+---------------------------------------------+
-| 主题(Topic)         | 说明                                        |
+| Topic               | Description                                 |
 +---------------------+---------------------------------------------+
-| sessions/count      | 当前会话总数                                |
+| clients/count       | Current client count                        |
 +---------------------+---------------------------------------------+
-| sessions/max        | 最大会话数量                                |
-+---------------------+---------------------------------------------+
-
-Subscriptions - 订阅统计
-........................
-
-+---------------------+---------------------------------------------+
-| 主题(Topic)         | 说明                                        |
-+---------------------+---------------------------------------------+
-| subscriptions/count | 当前订阅总数                                |
-+---------------------+---------------------------------------------+
-| subscriptions/max   | 最大订阅数量                                |
+| clients/max         | Maximum concurrent clients allowed          |
 +---------------------+---------------------------------------------+
 
-Topics - 主题统计
-.................
+Sessions -- Sesseion Statistics 
+...............................
 
 +---------------------+---------------------------------------------+
-| 主题(Topic)         | 说明                                        |
+| Topic               | Description                                 |
 +---------------------+---------------------------------------------+
-| topics/count        | 当前Topic总数(跨节点)                       |
+| sessions/count      | Current session count                       |
++---------------------+---------------------------------------------+
+| sessions/max        | Maximum concurrent session allowed          |
++---------------------+---------------------------------------------+
+
+Subscriptions -- Sbuscription Statistics 
+........................................
+
++---------------------+---------------------------------------------+
+| Topic               | Description                                 |
++---------------------+---------------------------------------------+
+| subscriptions/count | Current subscription count                  |
++---------------------+---------------------------------------------+
+| subscriptions/max   | Maximum subscription allowed                |
++---------------------+---------------------------------------------+
+
+Topics -- Topic Statistics
+...........................
+
++---------------------+---------------------------------------------+
+| Topic               | Description                                 |
++---------------------+---------------------------------------------+
+| topics/count        | Current topic count (cross-node)            |
 +---------------------+---------------------------------------------+
 | topics/max          | Max number of topics                        |
 +---------------------+---------------------------------------------+
 
-Metrics-收发流量/报文/消息统计
-------------------------------
+Metrics -- Traffic/Packet/Message Statistics
+----------------------------------------------
 
-系统主题(Topic)前缀: $SYS/brokers/${node}/metrics/
+Topic prefix: $SYS/brokers/${node}/metrics/
 
-收发流量统计
+Traffic 
 ............
 
 +---------------------+---------------------------------------------+
-| 主题(Topic)         | 说明                                        |
+| Topic               | Description                                 |
 +---------------------+---------------------------------------------+
-| bytes/received      | 累计接收流量                                |
+| bytes/received      | Traffic received in bytes                   |
 +---------------------+---------------------------------------------+
-| bytes/sent          | 累计发送流量                                |
+| bytes/sent          | Traffic sent in bytes                       |
 +---------------------+---------------------------------------------+
 
-MQTT报文收发统计
-................
+MQTT Packet Statistics
+......................
+
++--------------------------+----------------------------------------------------+
+| Topic                    | Description                                        |
++--------------------------+----------------------------------------------------+
+| packets/received         | Accumulative count of received MQTT packets        |
++--------------------------+----------------------------------------------------+
+| packets/sent             | Accumulative count of sent MQTT packets            |
++--------------------------+----------------------------------------------------+
+| packets/connect          | Accumulative count of received CONNECT packets     |
++--------------------------+----------------------------------------------------+
+| packets/connack          | Accumulative count of sent CONNECT packets         |
++--------------------------+----------------------------------------------------+
+| packets/publish/received | Accumulative count of received PUBLISH packets     |
++--------------------------+----------------------------------------------------+
+| packets/publish/sent     | Accumulative count of sent PUBLISH packets         |
++--------------------------+----------------------------------------------------+
+| packets/subscribe        | Accumulative count of received SUBSCRIBE packets   |
++--------------------------+----------------------------------------------------+
+| packets/suback           | Accumulative count of sent SUBACK packets          |
++--------------------------+----------------------------------------------------+
+| packets/unsubscribe      | Accumulative count of received UNSUBSCRIBE packets |
++--------------------------+----------------------------------------------------+
+| packets/unsuback         | Accumulative count of sent UNSUBACK packets        |
++--------------------------+----------------------------------------------------+
+| packets/pingreq          | Accumulative count of received PINGREQ packets     |
++--------------------------+----------------------------------------------------+
+| packets/pingresp         | Accumulative count of sent PINGRESP packets        |
++--------------------------+----------------------------------------------------+
+| packets/disconnect       | Accumulative count of received DISCONNECT packets  |
++--------------------------+----------------------------------------------------+
+
+MQTT Message Statistic 
+......................
 
 +--------------------------+---------------------------------------------+
-| 主题(Topic)              | 说明                                        |
+| Topic                    | Description                                 |
 +--------------------------+---------------------------------------------+
-| packets/received         | 累计接收MQTT报文                            |
+| messages/received        | Accumulative count of  received messages    |
 +--------------------------+---------------------------------------------+
-| packets/sent             | 累计发送MQTT报文                            |
+| messages/sent            | Accumulative count of sent messages         |
 +--------------------------+---------------------------------------------+
-| packets/connect          | 累计接收MQTT CONNECT报文                    |
+| messages/retained        | Accumulative count of retained messages     |
 +--------------------------+---------------------------------------------+
-| packets/connack          | 累计发送MQTT CONNACK报文                    |
-+--------------------------+---------------------------------------------+
-| packets/publish/received | 累计接收MQTT PUBLISH报文                    |
-+--------------------------+---------------------------------------------+
-| packets/publish/sent     | 累计发送MQTT PUBLISH报文                    |
-+--------------------------+---------------------------------------------+
-| packets/subscribe        | 累计接收MQTT SUBSCRIBE报文                  |
-+--------------------------+---------------------------------------------+
-| packets/suback           | 累计发送MQTT SUBACK报文                     |
-+--------------------------+---------------------------------------------+
-| packets/unsubscribe      | 累计接收MQTT UNSUBSCRIBE报文                |
-+--------------------------+---------------------------------------------+
-| packets/unsuback         | 累计发送MQTT UNSUBACK报文                   |
-+--------------------------+---------------------------------------------+
-| packets/pingreq          | 累计接收MQTT PINGREQ报文                    |
-+--------------------------+---------------------------------------------+
-| packets/pingresp         | 累计发送MQTT PINGRESP报文数量               |
-+--------------------------+---------------------------------------------+
-| packets/disconnect       | 累计接收MQTT DISCONNECT数量                 |
-+--------------------------+---------------------------------------------+
-
-MQTT消息收发统计
-................
-
-+--------------------------+---------------------------------------------+
-| 主题(Topic)              | 说明                                        |
-+--------------------------+---------------------------------------------+
-| messages/received        | 累计接收消息                                |
-+--------------------------+---------------------------------------------+
-| messages/sent            | 累计发送消息                                |
-+--------------------------+---------------------------------------------+
-| messages/retained        | Retained消息总数                            |
-+--------------------------+---------------------------------------------+
-| messages/dropped         | 丢弃消息总数                                |
+| messages/dropped         | Accumulative count of dropped message       |
 +--------------------------+---------------------------------------------+
 
 .. _sys_alarms:
 
-Alarms-系统告警
----------------
+Alarms -- System Alarms
+------------------------
 
-系统主题(Topic)前缀: $SYS/brokers/${node}/alarms/
+$SYS prefix: $SYS/brokers/${node}/alarms/
 
 +------------------+------------------+
-| 主题(Topic)      | 说明             |
+| Topic            | Description      |
 +------------------+------------------+
-| ${alarmId}/alert | 新产生告警       |
+| ${alarmId}/alert | New alarm        |
 +------------------+------------------+
-| ${alarmId}/clear | 清除告警         |
+| ${alarmId}/clear | Clear alarm      |
 +------------------+------------------+
 
 .. _sys_sysmon:
 
-Sysmon-系统监控
----------------
+Sysmon -- System Monitor
+------------------------
 
-系统主题(Topic)前缀: $SYS/brokers/${node}/sysmon/
+$SYS prefix: $SYS/brokers/${node}/sysmon/
 
-+------------------+--------------------+
-| 主题(Topic)      | 说明               |
-+------------------+--------------------+
-| long_gc          | GC时间过长警告     |
-+------------------+--------------------+
-| long_schedule    | 调度时间过长警告   |
-+------------------+--------------------+
-| large_heap       | Heap内存占用警告   |
-+------------------+--------------------+
-| busy_port        | Port忙警告         |
-+------------------+--------------------+
-| busy_dist_port   | Dist Port忙警告    |
-+------------------+--------------------+
++------------------+----------------------+
+| Topic            | Description          |
++------------------+----------------------+
+| long_gc          | Long GC Time         |
++------------------+----------------------+
+| long_schedule    | Long Scheduling time |
++------------------+----------------------+
+| large_heap       | Large Heap           |
++------------------+----------------------+
+| busy_port        | Port busy            |
++------------------+----------------------+
+| busy_dist_port   | Dist Port busy       |
++------------------+----------------------+
 
 .. _trace:
 
-----
-追踪
-----
+-----
+Trace
+-----
 
-EMQ X支持追踪来自某个客户端(Client)的全部报文，或者发布到某个主题(Topic)的全部消息。
+EMQ X supports tracing of packets from a particular client or messages published to a particular topic.
 
-追踪客户端(Client):
+Tracing by client:
 
 .. code-block:: bash
 
     ./bin/emqx_ctl trace client "clientid" "trace_clientid.log"
 
-追踪主题(Topic):
+Tracing by tpoic:
 
 .. code-block:: bash
 
     ./bin/emqx_ctl trace topic "topic" "trace_topic.log"
 
-查询追踪:
+Query trace:
 
 .. code-block:: bash
 
     ./bin/emqx_ctl trace list
 
-停止追踪:
+Stop tracing:
 
 .. code-block:: bash
 
