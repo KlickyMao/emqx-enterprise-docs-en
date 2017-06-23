@@ -1,62 +1,63 @@
 
 .. _mqtt:
 
-========
-MQTT协议
-========
+=============
+MQTT Protocol
+=============
 
-------------------------
-MQTT轻量发布订阅消息协议
-------------------------
+------------------------------------------------------
+MQTT Light Weight Publish/Subscribe Messaging Protocol
+------------------------------------------------------
 
-概览
-----
+Introduction
+------------
 
-MQTT是一个轻量的发布订阅模式消息传输协议，专门针对低带宽和不稳定网络环境的物联网应用设计。
+MQTT is a light weight client server publish/subscribe messaging transport protocol. It is ideal for use in many situations, including constrained environments such as for communication in Machine to Machine (M2M) and Internet of Things context where a small code footprint is required and/or network bandwidth is at a premium. 
+----- OASIS MQTT Version 3.1.1
 
-MQTT官网: http://mqtt.org
+MQTT Web site: http://mqtt.org
 
-MQTT V3.1.1协议规范: http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html
+MQTT V3.1.1 standard: http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/os/mqtt-v3.1.1-os.html
 
-特点
-----
+Features
+--------
 
-1. 开放消息协议，简单易实现
+1. Open messaging transport protocol, easy to implement.
 
-2. 发布订阅模式，一对多消息发布
+2. Use of publish/subscribe message parttern, which provides one to many message distribution
 
-3. 基于TCP/IP网络连接
+3. Can base on TCP/IP network connection
 
-4. 1字节固定报头，2字节心跳报文，报文结构紧凑
+4. 1 byte Fixed header, 2bytes KeepAlive packet. Compact packet structure.
 
-5. 消息QoS支持，可靠传输保证
+5. Support QoS, reliable transmission. 
 
-应用
-----
+Application
+-----------
 
-MQTT协议广泛应用于物联网、移动互联网、智能硬件、车联网、电力能源等领域。
+MQTT protocol is widely used in Internet of Things, Mobile Internet, smart hardware, automobile, energy and other industry. 
 
-1. 物联网M2M通信，物联网大数据采集
+1. IoT M2M communication, IoT big data collection 
 
-2. Android消息推送，WEB消息推送
+2. Mobile message push, Web message push
 
-3. 移动即时消息，例如Facebook Messenger
+3. Mobile instant messenger
 
-4. 智能硬件、智能家具、智能电器
+4.Smart hardware, smart home, smart phone
 
-5. 车联网通信，电动车站桩采集
+5. Automobile communication, electric vehicle charging station/pole
 
-6. 智慧城市、远程医疗、远程教育
+6. Smart city, telemedicine, distance education
 
-7. 电力、石油与能源等行业市场
-
+7. Energy industry
+   
 .. _mqtt_topic:
 
----------------------------
-MQTT基于主题(Topic)消息路由
----------------------------
+---------------------------------
+MQTT Topic Based Message Routing
+---------------------------------
 
-MQTT协议基于主题(Topic)进行消息路由，主题(Topic)类似URL路径，例如::
+MQTT protocl uses topic to rote message. Topic is a hierarchical structured string, like::
 
     chat/room/1
 
@@ -68,39 +69,39 @@ MQTT协议基于主题(Topic)进行消息路由，主题(Topic)类似URL路径�
 
     $SYS/broker/metrics/#
 
-主题(Topic)通过'/'分割层级，支持'+', '#'通配符::
+A forward slash (/) is used to separate level within a topic tree and provide a hierarchical structure to the topic space. The number sigh (#) is a wildcard for multi-level in a topic and the plus sign (+) is a wildcard for single-level::
 
-    '+': 表示通配一个层级，例如a/+，匹配a/x, a/y
+    '+': a/+ matches a/x, a/y
 
-    '#': 表示通配多个层级，例如a/#，匹配a/x, a/b/c/d
+    '#': a/# matches a/x, a/b/c/d
 
-订阅者与发布者之间通过主题路由消息进行通信，例如采用mosquitto命令行发布订阅消息::
+Publisher and subscriber communicate using topic routing machenism. E.g., mosquitto CLI message pub/sub::
 
     mosquitto_sub -t a/b/+ -q 1
 
     mosquitto_pub -t a/b/c -m hello -q 1
 
-.. NOTE:: 订阅者可以订阅含通配符主题，但发布者不允许向含通配符主题发布消息。
+.. NOTE:: Wildcards are only allowed when subscribing, they are not allowed when publishing.
 
 .. _mqtt_protocol:
 
+----------------------------
+MQTT V3.1.1 Protocol Packet
+----------------------------
+
+MQTT Packet Format
 -------------------
-MQTT V3.1.1协议报文
--------------------
-
-报文结构
---------
 
 +--------------------------------------------------+
-| 固定报头(Fixed header)                           |
+| Fixed header                                     |
 +--------------------------------------------------+
-| 可变报头(Variable header)                        |
+| Variable header                                  |
 +--------------------------------------------------+
-| 报文有效载荷(Payload)                            |
+| Payload                                          |
 +--------------------------------------------------+
 
-固定报头
---------
+Fixed Header
+------------
 
 +----------+-----+-----+-----+-----+-----+-----+-----+-----+
 | Bit      |  7  |  6  |  5  |  4  |  3  |  2  |  1  |  0  |
@@ -110,61 +111,61 @@ MQTT V3.1.1协议报文
 | byte2... |   Remaining Length                            |
 +----------+-----------------------------------------------+
 
-报文类型
---------
+Packet Type
+-----------
 
-+-------------+---------+----------------------+
-| 类型名称    | 类型值  | 报文说明             |
-+-------------+---------+----------------------+
-| CONNECT     | 1       | 发起连接             |
-+-------------+---------+----------------------+
-| CONNACK     | 2       | 连接回执             |
-+-------------+---------+----------------------+
-| PUBLISH     | 3       | 发布消息             |
-+-------------+---------+----------------------+
-| PUBACK      | 4       | 发布回执             |
-+-------------+---------+----------------------+
-| PUBREC      | 5       | QoS2消息回执         |
-+-------------+---------+----------------------+
-| PUBREL      | 6       | QoS2消息释放         |
-+-------------+---------+----------------------+
-| PUBCOMP     | 7       | QoS2消息完成         |
-+-------------+---------+----------------------+
-| SUBSCRIBE   | 8       | 订阅主题             |
-+-------------+---------+----------------------+
-| SUBACK      | 9       | 订阅回执             |
-+-------------+---------+----------------------+
-| UNSUBSCRIBE | 10      | 取消订阅             |
-+-------------+---------+----------------------+
-| UNSUBACK    | 11      | 取消订阅回执         |
-+-------------+---------+----------------------+
-| PINGREQ     | 12      | PING请求             |
-+-------------+---------+----------------------+
-| PINGRESP    | 13      | PING响应             |
-+-------------+---------+----------------------+
-| DISCONNECT  | 14      | 断开连接             |
-+-------------+---------+----------------------+
++-------------+---------+--------------------------------------------+
+| Type Name   | Value   | Description                                |
++-------------+---------+--------------------------------------------+
+| CONNECT     | 1       | Client request to connect to Server        |
++-------------+---------+--------------------------------------------+
+| CONNACK     | 2       | Connect acknowledgement                    |
++-------------+---------+--------------------------------------------+
+| PUBLISH     | 3       | Publish message                            |
++-------------+---------+--------------------------------------------+
+| PUBACK      | 4       | Publish acknowledgement                    |
++-------------+---------+--------------------------------------------+
+| PUBREC      | 5       | Publish received (assured delivery part 1) |
++-------------+---------+--------------------------------------------+
+| PUBREL      | 6       | Publish release (assured delivery part 2)  |
++-------------+---------+--------------------------------------------+
+| PUBCOMP     | 7       | Publish complete (assured delivery part 3) |
++-------------+---------+--------------------------------------------+
+| SUBSCRIBE   | 8       | Client subscribe request                   |
++-------------+---------+--------------------------------------------+
+| SUBACK      | 9       | Subscribe acknowledgement                  |
++-------------+---------+--------------------------------------------+
+| UNSUBSCRIBE | 10      | Unsubscribe request                        |
++-------------+---------+--------------------------------------------+
+| UNSUBACK    | 11      | Unsubscribe acknowledgement                |
++-------------+---------+--------------------------------------------+
+| PINGREQ     | 12      | PING request                               |
++-------------+---------+--------------------------------------------+
+| PINGRESP    | 13      | PING response                              |
++-------------+---------+--------------------------------------------+
+| DISCONNECT  | 14      | Client is disconnecting                    |
++-------------+---------+--------------------------------------------+
 
-PUBLISH发布消息
+PUBLISH
 ---------------
 
-PUBLISH报文承载客户端与服务器间双向的发布消息。 PUBACK报文用于接收端确认QoS1报文，PUBREC/PUBREL/PUBCOMP报文用于QoS2消息流程。
+A PUBLISH Control Packet is sent from a client to a server or from a server to a client to transport an application message. PUBACK is used to acknowledge a QoS1 packet and PUBREC/PUBREL/PUBCOMP are used to complish a QoS2 message delivery.
 
-PINGREQ/PINGRESP心跳
+PINGREQ/PINGRESP
 --------------------
 
-客户端在无报文发送时，按保活周期(KeepAlive)定时向服务端发送PINGREQ心跳报文，服务端响应PINGRESP报文。PINGREQ/PINGRESP报文均2个字节。
+PINGREQ can be sent from a clien to server in a KeepAlive interval in absence of any other control packets. The server responses with a PINGRESP packet. PINGREQ and PINGRESP each have a length of 2 bytes.
 
 .. _mqtt_qos:
 
------------
-MQTT消息QoS
------------
+----------------
+MQTT Message QoS
+----------------
 
-MQTT发布消息QoS保证不是端到端的，是客户端与服务器之间的。订阅者收到MQTT消息的QoS级别，最终取决于发布消息的QoS和主题订阅的QoS。
+MQTT Message QoS is not end to end, but between the client and the server. The QoS level of a message being received, depends on both the message QoS and the topic QoS.
 
 +---------------+---------------+---------------+
-| 发布消息的QoS | 主题订阅的QoS | 接收消息的QoS |
+| Published QoS | Topic QoS     | Received QoS  |
 +---------------+---------------+---------------+
 |      0        |      0        |      0        |
 +---------------+---------------+---------------+
@@ -185,138 +186,139 @@ MQTT发布消息QoS保证不是端到端的，是客户端与服务器之间的�
 |      2        |      2        |      2        |
 +---------------+---------------+---------------+
 
-Qos0消息发布订阅
-----------------
+Qos0 Message Publish & Subscibe
+--------------------------------
 
 .. image:: ./_static/images/qos0_seq.png
 
-Qos1消息发布订阅
-----------------
+Qos1 Message Publish & Subscribe
+---------------------------------
 
 .. image:: ./_static/images/qos1_seq.png
 
-Qos2消息发布订阅
-----------------
+Qos2 Message Publish & Subscribe
+---------------------------------
 
 .. image:: ./_static/images/qos2_seq.png
 
 .. _mqtt_clean_session:
 
------------------------
-MQTT会话(Clean Session)
------------------------
+---------------------------------
+MQTT Session (Clean Session Flag)
+---------------------------------
 
-MQTT客户端向服务器发起CONNECT请求时，可以通过'Clean Session'标志设置会话。
+When a MQTT client sends CONNECT request to a server, it can use 'Clean Session' flag to set the session state.
 
-'Clean Session'设置为0，表示创建一个持久会话，在客户端断开连接时，会话仍然保持并保存离线消息，直到会话超时注销。
+'Clean Session' is 0 indicating a persistent session. When a client is disconnected the session retains and offline messages are also retained, until the session times out.
 
-'Clean Session'设置为1，表示创建一个新的临时会话，在客户端断开时，会话自动销毁。
+'Clean Session' is 1 indicating a transient session. If a client is disconnected, the session is destroyed.
 
 .. _mqtt_keepalive:
 
-----------------
-MQTT连接保活心跳
-----------------
+------------------------
+MQTT CONNECT Keep Alive
+------------------------
 
-MQTT客户端向服务器发起CONNECT请求时，通过KeepAlive参数设置保活周期。
+When MQTT client sends CONNECT packet to server, it uses KEEP Alive bytes to indicate the KeepAlive interval.
 
-客户端在无报文发送时，按KeepAlive周期定时发送2字节的PINGREQ心跳报文，服务端收到PINGREQ报文后，回复2字节的PINGRESP报文。
+In the absence of sending any other control packet, the client must send a PINGREQ packet in ther KeepAlive interval and the server responses with a PINGRESP packet.
 
-服务端在1.5个心跳周期内，既没有收到客户端发布订阅报文，也没有收到PINGREQ心跳报文时，主动心跳超时断开客户端TCP连接。
+If the server doesn't receive any packet from a client within 1.5 * KeepAlive time interval, it close the connect to the client.
 
-.. NOTE:: emqttd消息服务器默认按最长2.5心跳周期超时设计。
+.. NOTE:: By default EMQ X uses 2.5 * KeepAlive interval.
 
 .. _mqtt_willmsg:
 
 -----------------------
-MQTT遗愿消息(Last Will)
+MQTT Last Will
 -----------------------
 
-MQTT客户端向服务器端CONNECT请求时，可以设置是否发送遗愿消息(Will Message)标志，和遗愿消息主题(Topic)与内容(Payload)。
+When the MQTT client connecting to the server, it can indicate if there is a Will Message and the Topic and Payload of the Will Message.
 
-MQTT客户端异常下线时(客户端断开前未向服务器发送DISCONNECT消息)，MQTT消息服务器会发布遗愿消息。
+If the MQTT client goes offline abnormally (without sending a DISCONNECT), the server published the Will Message of this client.
 
 .. _mqtt_retained_msg:
 
 ------------------------------
-MQTT保留消息(Retained Message)
+MQTT Retained Message
 ------------------------------
 
-MQTT客户端向服务器发布(PUBLISH)消息时，可以设置保留消息(Retained Message)标志。保留消息(Retained Message)会驻留在消息服务器，后来的订阅者订阅主题时仍可以接收该消息。
+When a MQTT client sends PUBLISH, it can set the RETAIN flag to indicate a retained message. A retained message is stored by server and later subscriber also receives this message.
 
-例如mosquitto命令行发布一条保留消息到主题'a/b/c'::
+E.g.:
+A mosquitto client sent a retained message to topic 'a/b/c'::
 
     mosquitto_pub -r -q 1 -t a/b/c -m 'hello'
 
-之后连接上来的MQTT客户端订阅主题'a/b/c'时候，仍可收到该消息::
+Later, a client sbuscribes to topic 'a/b/c', it receives::
 
     $ mosquitto_sub -t a/b/c -q 1
     hello
 
-保留消息(Retained Message)有两种清除方式:
+Two ways to clean a retained message:
 
-1. 客户端向有保留消息的主题发布一个空消息::
+1. Client sends an empty message using the same topic of the retained message.::
 
     mosquitto_pub -r -q 1 -t a/b/c -m ''
 
-2. 消息服务器设置保留消息的超期时间。
+2. The server set a timeout interval for retained message.
 
 .. _mqtt_websocket:
 
-------------------
-MQTT WebSocket连接
-------------------
+-----------------------
+MQTT WebSocket Connect 
+-----------------------
 
-MQTT协议除支持TCP传输层外，还支持WebSocket作为传输层。通过WebSocket浏览器可以直连MQTT消息服务器，发布订阅模式与其他MQTT客户端通信。
+Besides TCP, MQTT Protocol supports WebSocket as transport layer. A client can connect to server and publish/subscribe through a WebSocket browser.
 
-MQTT协议的WebSocket连接，必须采用binary模式，并携带子协议Header::
+When using MQTT WebSocket protocol, binary mode must be used and header of sub-protocol must be carried::
 
-    Sec-WebSocket-Protocol: mqttv3.1 或 mqttv3.1.1
+    Sec-WebSocket-Protocol: mqttv3.1 （or mqttv3.1.)1
 
 .. _mqtt_client_libraries:
 
-----------------
-MQTT协议客户端库
-----------------
+---------------------
+MQTT Client Library 
+---------------------
 
-emqtt客户端库
--------------
-
-emqtt项目组: https://github.com/emqtt
-
-+--------------------+----------------------+
-| `emqttc`_          | Erlang MQTT客户端库  |
-+--------------------+----------------------+
-| `CocoaMQTT`_       | Swift语言MQTT客户端库|
-+--------------------+----------------------+
-| `QMQTT`_           | QT框架MQTT客户端库   |
-+--------------------+----------------------+
-
-Eclipse Paho客户端库
+emqtt Client Library 
 --------------------
 
-Paho官网: http://www.eclipse.org/paho/
+emqtt project: https://github.com/emqtt
 
-mqtt.org官网客户端库
---------------------
++--------------------+---------------------------------+
+| `emqttc`_          | Erlang MQTT Client Library      |
++--------------------+---------------------------------+
+| `CocoaMQTT`_       | Swift MQTT Client Library       |
++--------------------+---------------------------------+
+| `QMQTT`_           | QT Framework MQTT Client Library|
++--------------------+---------------------------------+
+
+Eclipse Paho Client Library
+----------------------------
+
+Paho's Website: http://www.eclipse.org/paho/
+
+mqtt.org Client Library
+------------------------
 
 mqtt.org: https://github.com/mqtt/mqtt.github.io/wiki/libraries
 
 .. _mqtt_vs_xmpp:
 
 ------------------
-MQTT与XMPP协议对比
+MQTT v.s. XMPP
 ------------------
 
-MQTT协议设计简单轻量、路由灵活，将在移动互联网物联网消息领域，全面取代PC时代的XMPP协议:
+MQTT is designed to be light weight and easy to use. It is suitable for the mobile Internet and the Internet of Things. While XMPP is a product of the PC era. 
 
-1. MQTT协议一个字节固定报头，两个字节心跳报文，报文体积小编解码容易。XMPP协议基于繁重的XML，报文体积大且交互繁琐。
+1. MQTT uses a one-byte fixed header and two-byte KeepAlive packet, its packet has a size and simple to en/decode. While XMPP is encapsulated in XML, it is large in size and complicated in interaction.
 
-2. MQTT协议基于主题(Topic)发布订阅模式消息路由，相比XMPP基于JID的点对点消息路由更为灵活。
+2. MQTT uses topic for routing, it is more flexible than XMPP's peer to peer routing based on JID.
 
-3. MQTT协议未定义报文内容格式，可以承载JSON、二进制等不同类型报文。XMPP协议采用XML承载报文，二进制必须Base64编码等处理。
+3. MQTT protocol doesn't define a payload format, thus it carries different higher level protocol with ease. While the XMPP uses XML for payload, it must encapsulate binary in Base64 format.   
 
-4. MQTT协议支持消息收发确认和QoS保证，XMPP主协议并未定义类似机制。MQTT协议有更好的消息可靠性保证。
+4. MQTT supports message acknowledgement and QoS mechanism, which is absent in XMPP, thus MQTT is more reliable. 
 
 .. _emqttc: https://github.com/emqtt/emqttc
 .. _CocoaMQTT: https://github.com/emqtt/CocoaMQTT
