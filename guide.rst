@@ -15,7 +15,7 @@ MQTT is light weight publish/subscribe message transport protocol. EMQ X is a me
 
 EMQ X is running, any clients that support MQTT protocol can connect to the EMQ X broker and then publish / subscribe messages.
 
-MQTT client libraary: https://github.com/mqtt/mqtt.github.io/wiki/libraries
+MQTT client library: https://github.com/mqtt/mqtt.github.io/wiki/libraries
 
 E.g., using mosquitto_sub/pub CLI to subscribe to topics and publish messages.
 
@@ -107,7 +107,7 @@ Limitation on Fastlane:
 1. CleanSession = true
 2. Qos = 0
 
-Fastlane is suitable for IoT sensor data colllection::
+Fastlane is suitable for IoT sensor data collection::
 
                  -----------------
     Sensor ----> |               |
@@ -154,7 +154,7 @@ HTTP interface:
 MQTT WebSocket
 ------------------
 
-EMQ X supprts MQTT WebSocket connection, web browers can directly connect to broker through MQTT protocol:
+EMQ X supports MQTT WebSocket connection, web browsers can directly connect to broker through MQTT protocol:
 
 +-------------------------+----------------------------+
 | WebSocket URI:          | ws(s)://host:8083/mqtt     |
@@ -181,9 +181,9 @@ EMQ X uses an embed HTTP server to implement MQTT WebSocket and HTTP publish int
 $SYS -- System Topic
 --------------------
 
-EMQ X periodically publish its server status, MQTT protocol statitics, client connection status to topics starting with '$SYS/'.
+EMQ X periodically publish its server status, MQTT protocol statistics, client connection status to topics starting with '$SYS/'.
 
-$SYS topic path starts with "$SYS/brokers/{node}/", where '${node}' is the Erlang node nae::
+$SYS topic path starts with "$SYS/brokers/{node}/", where '${node}' is the Erlang node name::
 
     $SYS/brokers/emqx@127.0.0.1/version
 
@@ -275,7 +275,7 @@ Clients -- Client Statistics
 | clients/max         | Maximum concurrent clients allowed          |
 +---------------------+---------------------------------------------+
 
-Sessions -- Sesseion Statistics 
+Sessions -- Session Statistics 
 ...............................
 
 +---------------------+---------------------------------------------+
@@ -286,7 +286,7 @@ Sessions -- Sesseion Statistics
 | sessions/max        | Maximum concurrent session allowed          |
 +---------------------+---------------------------------------------+
 
-Subscriptions -- Sbuscription Statistics 
+Subscriptions -- Subscription Statistics 
 ........................................
 
 +---------------------+---------------------------------------------+
@@ -422,7 +422,7 @@ Tracing by client:
 
     ./bin/emqx_ctl trace client "clientid" "trace_clientid.log"
 
-Tracing by tpoic:
+Tracing by topic:
 
 .. code-block:: bash
 

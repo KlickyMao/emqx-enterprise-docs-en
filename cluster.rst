@@ -29,7 +29,7 @@ Erlang/OTP is a concurrent, fault-tolerant, distributed programming platform. A 
 Node
 ----------
 
-An erlang runtime system called ‘node’ is identified by a unique name like email addreass. Erlang nodes communicate with each other by the name.
+An erlang runtime system called ‘node’ is identified by a unique name like email address. Erlang nodes communicate with each other by the name.
 
 Suppose we start four Erlang nodes on localhost:
 
@@ -81,7 +81,7 @@ The cookie could be configured by::
 Cluster Design of EMQ X
 ------------------------
 
-The cluster architecture of EMQ X is based on distrubuted Erlang/OTP and Mnesia database.
+The cluster architecture of EMQ X is based on distributed Erlang/OTP and Mnesia database.
 
 The cluster design could be summarized by the following two rules::
 
@@ -189,7 +189,7 @@ emqx@s2.emqtt.io Config
 
     node.name = emq@192.168.0.20
 
-Join the Cluter
+Join the Cluster
 ----------------
 
 Start the two broker nodes, and execute ‘cluster join‘ on emqttd@s2.emqtt.io::
@@ -236,9 +236,6 @@ Session across Nodes
 --------------------
 
 The persistent MQTT sessions (clean session = false) are across nodes in the EMQ X cluster.
-
-
-.. 例如负载均衡的两台集群节点:node1与node2，同一MQTT客户端先连接node1，node1节点会创建持久会话；客户端断线重连到node2时，MQTT的连接在node2节点，持久会话仍在node1节点::
 
 Consider two load-balanced nodes in a cluster: node1 and node2. A MQTT client connects to node1 at the first place, node1 creates persistent session for the client, and then disconnects from node1. Later when this client tries connect to node2, the connection is then created on node2, but the persistent session will be still on where is was (in this case node1)::
 

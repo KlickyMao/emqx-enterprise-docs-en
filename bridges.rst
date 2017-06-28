@@ -139,7 +139,7 @@ Forwarding Unsubscription Event to Kafka
              "ts": ${timestamp}
             }
 
-Frowarding MQTT Messages to Kafka
+Forwarding MQTT Messages to Kafka
 ---------------------------------
 
 .. code-block:: javascript
@@ -173,7 +173,7 @@ Forwarding QTT Message Deliver Event to Kafka
              "ts": ${timestamp}
             }
 
-Frowarding MQTT Message Ack Event to Kafka
+Forwarding MQTT Message Ack Event to Kafka
 -------------------------------------------
 
 .. code-block:: javascript

@@ -5,14 +5,14 @@
 Plugins
 ========
 
-EMQ X message broker can be extended by plugins. Ultilizing the module registration and hook mechanism, developers can customize the broker with plugins to extended the authentication, access control, data persitence, bridge and management functions.
+EMQ X message broker can be extended by plugins. Ultilizing the module registration and hook mechanism, developers can customize the broker with plugins to extended the authentication, access control, data persistence, bridge and management functions.
 
 EMQ X provides plugins for management and maintenance: 
 
 +---------------------+-------------------------+----------------+---------------------------+
 | Plugin              | Config file             | Load by default| Description               |
 +=====================+=========================+================+===========================+
-| emqx_dashboard      | emqx_dashboard.conf     | Y              | Web dashboard (defalut)   |
+| emqx_dashboard      | emqx_dashboard.conf     | Y              | Web dashboard (default)   |
 +---------------------+-------------------------+----------------+---------------------------+
 | emqx_modules        | emqx_modules.conf       | Y              | Modules plugins           |
 +---------------------+-------------------------+----------------+---------------------------+
@@ -29,7 +29,7 @@ Dashboard
 
 EMQ X Web Dashboard, loaded by default. URL: http://host:18083, default username/password: admin/public。
 
-On the dashboard, following information can be queried: Status of EMQ X, statistics and metrics of clients, sessions, tpoics and subscriptions.
+On the dashboard, following information can be queried: Status of EMQ X, statistics and metrics of clients, sessions, topics and subscriptions.
 
 
 .. image:: ./_static/images/dashboard.png

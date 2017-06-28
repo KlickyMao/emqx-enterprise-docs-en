@@ -22,7 +22,7 @@ Check EMQ X status::
 broker
 ----------
 
-Query basic information, statistics and performance metrics of the boker.
+Query basic information, statistics and performance metrics of the broker.
 
 +----------------+----------------------------------------------------+
 | broker         | Show version, description and up-time              |
@@ -186,7 +186,7 @@ Query MQTT clients connected to the broker:
 +-------------------------+-----------------------------+
 | clients show <ClientId> | Query client by ClientId    |
 +-------------------------+-----------------------------+
-| clients kick <ClientId> | Kich out by ClientId        |
+| clients kick <ClientId> | Kick out by ClientId        |
 +-------------------------+-----------------------------+
 
 clients list
@@ -528,7 +528,7 @@ Delete the bridge 'emqx1--sensor/#-->emqx2'::
 vm
 ------
 
-Query the load, cpu, memory, processes and IO iformation of the Erlang VM.
+Query the load, cpu, memory, processes and IO information of the Erlang VM.
 
 +-------------+-----------------------------------+
 | vm all      | Query all                         |
@@ -573,7 +573,7 @@ Query VM memory::
 vm process
 ----------
 
-Query number of Erlang prodesses::
+Query number of Erlang processes::
 
     $ ./bin/emqx_ctl vm process
 
@@ -594,7 +594,7 @@ Query max, active file descriptions of IO::
 trace
 ---------
 
-Trace MQTT packets, messages(sent/reveived) by ClientID or topic. Print logs to file.
+Trace MQTT packets, messages(sent/received) by ClientID or topic. Print logs to file.
 
 +-----------------------------------+-----------------------------------+
 | trace list                        | List all the traces               |

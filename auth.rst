@@ -339,7 +339,7 @@ Configure MySQL Auth Query Statement
     ## %% Superuser Query
     auth.mysql.super_query = select is_superuser from mqtt_user where username = '%u' limit 1
 
-Configure MySQL ACL Qeury Statement
+Configure MySQL ACL Query Statement
 ------------------------------------
 
 .. code-block:: properties
@@ -357,9 +357,9 @@ Load MySQL Auth Plugin
 
     ./bin/emqx_ctl plugins load emqx_auth_mysql
 
------------------------------
-Configure Postgre Auth Plugin
------------------------------
+--------------------------------
+Configure PostgreSQL Auth Plugin
+--------------------------------
 
 Modify the 'emqx_auth_pgsql.conf' file to configure the MQTT user, ACL and Auth:
 

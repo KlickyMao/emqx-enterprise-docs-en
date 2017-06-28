@@ -15,7 +15,7 @@ Typical deployment:
 Load Balancer (LB)
 -------------------
 
-The Load Balancer (LB) distributes MQTT connections and traffic across the device and the EMQ X cluster. LB enhances the HA of the clustern, balances the loads among the cluster and makes the dynamic expansion possible.
+The Load Balancer (LB) distributes MQTT connections and traffic across the device and the EMQ X cluster. LB enhances the HA of the clusters, balances the loads among the cluster and makes the dynamic expansion possible.
 
 Also, we recommend that the SSL connection terminates at the LB. The links between the devices and the LB are secured by SSL, while the LB and the EMQ X is connected per plain TCP. By this setup, a single EMQ X cluster can serve a million devices.
 
@@ -37,14 +37,14 @@ LB products by public cloud providers:
 LBs for Private Cloud:
 
 +----------------+-----------------+------------------------------------------------------+
-| Open-Scource LB| SSL Termination | DOC/URL                                              |
+| Open-Source LB| SSL Termination | DOC/URL                                              |
 +================+=================+======================================================+
 | `HAProxy`_     | Y               | https://www.haproxy.com/solutions/load-balancing.html|
 +----------------+-----------------+------------------------------------------------------+
-| `NGINX`_       | PLUS Edtion     | https://www.nginx.com/solutions/load-balancing/      |
+| `NGINX`_       | PLUS Edition     | https://www.nginx.com/solutions/load-balancing/      |
 +----------------+-----------------+------------------------------------------------------+
 
-We recommend AWS with LB for public cloud and HAProxy as LB for priavte cloud deployment.  
+We recommend AWS with LB for public cloud and HAProxy as LB for private cloud deployment.  
 
 --------------
 EMQ X Cluster
@@ -270,14 +270,14 @@ Operating System
 
 EMQ X is developed utilizing the Erlang/OTP language / platform. It runs on the following OS: Linux, FreeBSD, MAC OS X and Windows Server.
 
-We recommend the 64-bit Linux-based cloud host or servr for the deployment.
+We recommend the 64-bit Linux-based cloud host or server for the deployment.
 
 CPU/MEM
 --------
 
 In the test scenario, EMQ X with 1G memory sustains 80K TCP links or 15K SSL links.  
 
-In production environment, it is suggested to deploy at least 2 nodes in the cluster. Planning the CPU and Momery capacity on the basic of concurrent connections and the message throughput.
+In production environment, it is suggested to deploy at least 2 nodes in the cluster. Planning the CPU and Memory capacity on the basic of concurrent connections and the message throughput.
 
 ---------------------------------
 Naming Rule of Software Package
@@ -338,7 +338,7 @@ Start/Stop
 DEB package
 ----------------
 
-DEB is recommended for Debian and Ubuntu. After installation, EMQ X service is managed bu the OS.
+DEB is recommended for Debian and Ubuntu. After installation, EMQ X service is managed by the OS.
 
 .. code-block:: console
 
@@ -463,7 +463,7 @@ Installing on FreeBSD
 
 Please contact us for the software package: http://emqtt.com/about#contacts
 
-Installingon FreeBSD is the same as which on Linux.
+Installing on FreeBSD is the same as which on Linux.
 
 .. _install_on_mac:
 
@@ -506,11 +506,11 @@ Run the container::
 
     docker run -itd --net='host' --name emqx20 emqx-enterprise-docker-v2.1.0
 
-Stop the brocker::
+Stop the broker::
 
     docker stop emqx20
 
-Start the brocker::
+Start the broker::
 
     docker start emqx20
 
@@ -522,7 +522,7 @@ Enter the running container:
 Quick Setup
 ===========
 
-Assuming a EMQ X Cluster with two Linux nodes deplyed on cloud VPC network or private network:
+Assuming a EMQ X Cluster with two Linux nodes deployed on cloud VPC network or private network:
 
 +---------------------+---------------------+
 | Node name           |    IP               |
@@ -536,7 +536,7 @@ Assuming a EMQ X Cluster with two Linux nodes deplyed on cloud VPC network or pr
 System Parameters
 -----------------
 
-Deloyed under Linux, EMQ X sustains 100 concurrent connections. To achieve this, the system Kernel, Networking, the Erlang VM and EMQ X itself must be tuned.
+Deployed under Linux, EMQ X sustains 100 concurrent connections. To achieve this, the system Kernel, Networking, the Erlang VM and EMQ X itself must be tuned.
 
 System-Wide File Handles
 ------------------------
@@ -550,7 +550,7 @@ Maximun file handels:
     sysctl -w fs.nr_open=262144
     echo 262144 > /proc/sys/fs/nr_open
 
-Maximum of file handels for current session:
+Maximum of file handles for current session:
 
 .. code-block:: console
 

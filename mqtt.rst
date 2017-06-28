@@ -24,7 +24,7 @@ Features
 
 1. Open messaging transport protocol, easy to implement.
 
-2. Use of publish/subscribe message parttern, which provides one to many message distribution
+2. Use of publish/subscribe message pattern, which provides one to many message distribution
 
 3. Can base on TCP/IP network connection
 
@@ -57,7 +57,7 @@ MQTT protocol is widely used in Internet of Things, Mobile Internet, smart hardw
 MQTT Topic Based Message Routing
 ---------------------------------
 
-MQTT protocl uses topic to rote message. Topic is a hierarchical structured string, like::
+MQTT protocol uses topic to rote message. Topic is a hierarchical structured string, like::
 
     chat/room/1
 
@@ -75,7 +75,7 @@ A forward slash (/) is used to separate level within a topic tree and provide a 
 
     '#': a/# matches a/x, a/b/c/d
 
-Publisher and subscriber communicate using topic routing machenism. E.g., mosquitto CLI message pub/sub::
+Publisher and subscriber communicate using topic routing mechanism. E.g., mosquitto CLI message pub/sub::
 
     mosquitto_sub -t a/b/+ -q 1
 
@@ -149,12 +149,12 @@ Packet Type
 PUBLISH
 ---------------
 
-A PUBLISH Control Packet is sent from a client to a server or from a server to a client to transport an application message. PUBACK is used to acknowledge a QoS1 packet and PUBREC/PUBREL/PUBCOMP are used to complish a QoS2 message delivery.
+A PUBLISH Control Packet is sent from a client to a server or from a server to a client to transport an application message. PUBACK is used to acknowledge a QoS1 packet and PUBREC/PUBREL/PUBCOMP are used to accomplish a QoS2 message delivery.
 
 PINGREQ/PINGRESP
 --------------------
 
-PINGREQ can be sent from a clien to server in a KeepAlive interval in absence of any other control packets. The server responses with a PINGRESP packet. PINGREQ and PINGRESP each have a length of 2 bytes.
+PINGREQ can be sent from a client to server in a KeepAlive interval in absence of any other control packets. The server responses with a PINGRESP packet. PINGREQ and PINGRESP each have a length of 2 bytes.
 
 .. _mqtt_qos:
 
@@ -186,7 +186,7 @@ MQTT Message QoS is not end to end, but between the client and the server. The Q
 |      2        |      2        |      2        |
 +---------------+---------------+---------------+
 
-Qos0 Message Publish & Subscibe
+Qos0 Message Publish & Subscribe
 --------------------------------
 
 .. image:: ./_static/images/qos0_seq.png

@@ -26,11 +26,11 @@ Linux: If EMQ X is installed using binary package, the config files are located 
 +----------------------------+----------------------------------------------------+
 | Config file                | Description                                        |
 +============================+====================================================+
-| etc/emqx.conf              | EMQ X server configurtation                        |
+| etc/emqx.conf              | EMQ X server configuration                        |
 +----------------------------+----------------------------------------------------+
 | etc/acl.conf               | EMQ X default ACL file                             |
 +----------------------------+----------------------------------------------------+
-| etc/plugins/\*.conf        | EMQ X plugins, persitence and bridge configuration |
+| etc/plugins/\*.conf        | EMQ X plugins, persistence and bridge configuration |
 +----------------------------+----------------------------------------------------+
 
 ---------------------
@@ -137,7 +137,7 @@ Description of most important arguments of Erlang VM:
 EMQ X Cluster Communication
 ----------------------------
 
-EMQ X supports Scalable RPC architecture,the data channel and the cluster control channel are separated to improve the cluster reliability and performance:
+EMQ X supports Scalable RPC architecture, the data channel and the cluster control channel are separated to improve the cluster reliability and performance:
 
 .. code-block:: properties
 
@@ -263,7 +263,7 @@ Setting default rules in 'acl.conf':
     %% When non of above hits, allow
     {allow, all}.
 
-.. NOTE:: defualt rules allow only local user to subscribe to '$SYS/#' and '#'
+.. NOTE:: default rules allow only local user to subscribe to '$SYS/#' and '#'
 
 After EMQ X receives MQTT clients' PUBLISH or SUBSCRIBE requests, it match the ACL rules one by one till it hits, and return 'allow' or 'deny'.
 
@@ -312,7 +312,7 @@ Max time interval from Socket connection establishing to receiving CONNECT packe
 Client Connection Force GC
 --------------------------
 
-This argument is used to optimize the CPU / memory occupancy of MQTT connection. When certain amount of messages are tranferred, the connection is forced to GC: 
+This argument is used to optimize the CPU / memory occupancy of MQTT connection. When certain amount of messages are transferred, the connection is forced to GC: 
 
 .. code-block:: properties
 

@@ -11,7 +11,7 @@ Design of EMQ X
 Intro
 ------------
 
-Upgraded from EMQ R1, EMQ X R 2.0 seperated the Message Flow Plane and Monitor/Control Plane. This makes possible of sustaining million-level MQTT connections. Separating of Flow Plane and Monitor/Conctrol Plane also makes the EMQ cluster more reliable and provides higher performance. The Architecture of EMQ X R2 is like following::
+Upgraded from EMQ R1, EMQ X R 2.0 separated the Message Flow Plane and Monitor/Control Plane. This makes possible of sustaining million-level MQTT connections. Separating of Flow Plane and Monitor/Control Plane also makes the EMQ cluster more reliable and provides higher performance. The Architecture of EMQ X R2 is like following::
 
               Control Plane
            --------------------
@@ -23,7 +23,7 @@ Upgraded from EMQ R1, EMQ X R 2.0 seperated the Message Flow Plane and Monitor/C
                Monitor Plane
 
 
-EMQ X supports MQTT message persistence to Redis, MySQL, PostgreSQL,MongoDB and Cassandra. It can bridge and forward MQTT messages to enterprise middle-ware like Kafka and RabbitMQ.
+EMQ X supports MQTT message persistence to Redis, MySQL, PostgreSQL, MongoDB and Cassandra. It can bridge and forward MQTT messages to enterprise middle-ware like Kafka and RabbitMQ.
 
 Full Asynchronous Architecture
 ------------------------------
@@ -76,7 +76,7 @@ System Layers
 
 3. Route Layer: Dispatch MQTT messages to subscribers in a node.
 
-4. Distributed Layer: Route MQTT messages in the distibuted nodes.
+4. Distributed Layer: Route MQTT messages in the distributed nodes.
 
 5. Authentication and Access Control: The connection layer supports extensible Auth and ACL modules.
 
@@ -167,7 +167,7 @@ The PacketId and MessageId in a End-to-End Message PubSub Sequence::
 .. _route_layer:
 
 -------------
-PbuSub Layer
+PuBSub Layer
 -------------
 
 The PubSub layer maintains a subscription table and is responsible to dispatch MQTT messages to subscribers.

@@ -7,9 +7,9 @@ Oerview
 
 EMQ is one of the most deployed MQTT message broker which can sustain million level connection. It is chosen worldwide by more than 5000 enterprise user. More than 100,000 nodes are deployed and serve 30 million connections.
 
-EMQ X extends the function and prformance of  EMQ. It is a commercial version for enterprise. It improves the system architecture of EMQ, adopts Scalable RPC mechanism, provides more reliable clustering and higher performance of message routing.
+EMQ X extends the function and performance of EMQ. It is a commercial version for enterprise. It improves the system architecture of EMQ, adopts Scalable RPC mechanism, provides more reliable clustering and higher performance of message routing.
 
-EMQ X supprts persistence MQTT messages to Redis , MySQL, PostgreSQL, MongoDB, Cassandra and other Database. It also supprts bridging and forwarding messages to enterprise middleware like Kafka and RabbitMQ.
+EMQ X supports persistence MQTT messages to Redis , MySQL, PostgreSQL, MongoDB, Cassandra and other Database. It also supports bridging and forwarding messages to enterprise middleware like Kafka and RabbitMQ.
 
 EMQ X can be used as access platform for smart hardware, smart home, IoT, automotive networking applications that serve millions end device.
 
@@ -23,11 +23,11 @@ EMQ (Erlang MQTT Broker) is an open source MQTT broker written in Erlang/OTP. Er
 
 The design objectives of EMQ X focus on enterprise level applications which require high reliability, ability to sustain massive IoT end devices' MQTT connections and meanwhile to keep the message latency very low.
 
-1. Steadily sustains massive MQTT client connct, a single node handles 0.5 to 1 million connect.
+1. Steadily sustains massive MQTT client connect, a single node handles 0.5 to 1 million connect.
 
 2. Distributed clustering, low message routing latency. Single cluster handles 10 million level message routing.
 
-3. Extensible server design. Ability of customizition of various  Auth and high performance data persistencei.
+3. Extensible server design. Ability of customizition of various  Auth and high performance data persistence.
 
 4. Comprehensive IoT protocol supporting: MQTT, MQTT-SN, CoAP, WebSocket and other protocols by properties.
 
@@ -35,7 +35,7 @@ The design objectives of EMQ X focus on enterprise level applications which requ
 Features
 -------------
 
-1. Scalable RPC Arcitecture: segregated cluster management channel and data channel between nodes.
+1. Scalable RPC Architecture: segregated cluster management channel and data channel between nodes.
 
 2. Fastlane subscription: dedicated Fastlane message routing for IoT data collection.
 

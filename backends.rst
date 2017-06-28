@@ -5,7 +5,7 @@ Data Persistence
 =================
 
 --------------------------
-Disign of Data Persistence
+Design of Data Persistence
 --------------------------
 
 One to one message Persistence
@@ -42,7 +42,7 @@ One to many message Persistence
 
 6. Backend records the read position of SUB1 and SUB2, next message retrieval starts from this position.
 
-Ratainment of Client Connection State
+Retainment of Client Connection State
 ---------------------------------------
 
 EMQ X supports retaining the client's connection state in Redis or DB.
@@ -196,7 +196,7 @@ Redis backend supports using 'commands' in 'action', e.g.:
 
 .. code-block:: properties
     
-    ## After a client connected to the EMQ X server, it excutes a redis command (multiple redis commands also supported)
+    ## After a client connected to the EMQ X server, it executes a redis command (multiple redis commands also supported)
     backend.redis.hook.client.connected.3 = {"action": {"commands": ["SET conn:${clientid} clientid"]}, "pool": "pool1"}
 
 
@@ -322,7 +322,7 @@ Lookup the subscribed topics of client with ClientId of 'test::
 Redis SUB/UNSUB Publish
 -----------------------
 
-When a device subscribes / unsubscribes tpoics, EMQ X server publish to the Redis::
+When a device subscribes / unsubscribes topics, EMQ X server publish to the Redis::
 
     PUBLISH
     channel = "mqtt_channel"
@@ -459,7 +459,7 @@ MySQL backend supports using SQL in 'action':
 
 .. code-block:: properties
 
-    ## After a client is connected to the EMQ X servcer, it excutes a SQL command (multiple SQL commands also supported)
+    ## After a client is connected to the EMQ X server, it executes a SQL command (multiple SQL commands also supported)
     backend.mysql.hook.client.connected.3 = {"action": {"sql": ["insert into conn(clientid) values(${clientid})"]}, "pool": "pool1"}
 
 Create MySQL DB
@@ -802,7 +802,7 @@ PostgreSQL backend supports using SQL in 'action':
 
 .. code-block:: properties
 
-    ## After a client is connected to the EMQ X server, it excutes a SQL command (multiple command also supported)
+    ## After a client is connected to the EMQ X server, it executes a SQL command (multiple command also supported)
     backend.pgsql.hook.client.connected.3 = {"action": {"sql": ["insert into conn(clientid) values(${clientid})"]}, "pool": "pool1"}
 
 Create PostgreSQL DB
@@ -1091,7 +1091,7 @@ MongoDB Client Connection Collection
 
     {
         clientid: string,
-        state: 0,1, //0离线 1在线
+        state: 0,1, //0 disconnected 1 connected
         node: string,
         online_at: timestamp,
         offline_at: timestamp
@@ -1358,7 +1358,7 @@ Description of Cassandra Properties
 CQL Arguments Description
 -------------------------
 
-Custmized CQL command arguments includes:
+Customized CQL command arguments includes:
 
 +----------------------+---------------------------------------+----------------------------------------------------------------+		
 | hook                 | Argument                              | Example (${name} in CQL represents available argument          |		
@@ -1385,7 +1385,7 @@ Cassandra backend supports using CLQ in 'action':
 
 .. code-block:: properties
 
-    ## After a client is connected to the EMQ X server, it excutes a CQL command(multiple command also supported):
+    ## After a client is connected to the EMQ X server, it executes a CQL command(multiple command also supported):
     backend.cassa.hook.client.connected.3 = {"action": {"cql": ["insert into conn(clientid) values(${clientid})"]}, "pool": "pool1"}
 
 Initializing Cassandra 
