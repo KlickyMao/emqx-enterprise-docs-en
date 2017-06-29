@@ -143,7 +143,7 @@ For details please refer to the "Data Persistence" chapter.
 Message bridge & Forward 
 ------------------------
 
-EMQ X supports bridging and forwarding MQTT messages to systems like RabbitMQ and Kafka. It can be deployed as IoT Hub:
+EMQ X allows bridging and forwarding MQTT messages to systems such as RabbitMQ and Kafka. It can be deployed as an IoT Hub:
 
 .. image:: _static/images/iothub.png
 
