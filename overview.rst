@@ -11,7 +11,7 @@ EMQ X extends the function and performance of EMQ. It is a commercial version fo
 
 EMQ X supports persistence MQTT messages to Redis , MySQL, PostgreSQL, MongoDB, Cassandra and other Database. It also supports bridging and forwarding messages to enterprise middleware like Kafka and RabbitMQ.
 
-EMQ X can be used as access platform for smart hardware, smart home, IoT, automotive networking applications that serve millions end device.
+EMQ X can be used as access platform for smart hardware, smart home, IoT, automotive networking applications that serve millions of device terminals.
 
 .. image:: _static/images/emqx_enterprise.png
 
@@ -21,15 +21,15 @@ Design Objective
 
 EMQ (Erlang MQTT Broker) is an open source MQTT broker written in Erlang/OTP. Erlang/OTP is a concurrent, fault-tolerant, soft-realtime and distributed programming platform. MQTT is an extremely lightweight publish/subscribe messaging protocol powering IoT, M2M and Mobile applications.
 
-The design objectives of EMQ X focus on enterprise level applications which require high reliability, ability to sustain massive IoT end devices' MQTT connections and meanwhile to keep the message latency very low.
+The design objectives of EMQ X focus on enterprise level requirements, such as high reliability, massive connections and extremely low message latency.
 
-1. Steadily sustains massive MQTT client connect, a single node handles 0.5 to 1 million connect.
+1. Steadily sustains massive MQTT client connections. A single node is able to handles 0.5 to 1 million connections.
 
 2. Distributed clustering, low message routing latency. Single cluster handles 10 million level message routing.
 
-3. Extensible server design. Ability of customizition of various  Auth and high performance data persistence.
+3. Extensible server design. Allow customizing various Auth extensions and data persistence extensions.
 
-4. Comprehensive IoT protocol supporting: MQTT, MQTT-SN, CoAP, WebSocket and other protocols by properties.
+4. Support comprehensive IoT protocols: MQTT, MQTT-SN, CoAP, WebSocket and other proprietary protocols.
 
 -------------
 Features
