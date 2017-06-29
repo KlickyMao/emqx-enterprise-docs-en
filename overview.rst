@@ -5,7 +5,7 @@
 Oerview
 =========
 
-EMQ is one of the most deployed MQTT message broker which can sustain million level connection. It is chosen worldwide by more than 5000 enterprise user. More than 100,000 nodes are deployed and serve 30 million connections.
+EMQ is one of the most deployed MQTT message broker which can sustain million level connections. It is chosen by more than 5000 enterprises worldwide. More than 100,000 nodes are deployed and serve 30 million connections.
 
 EMQ X extends the function and performance of EMQ. It is a commercial version for enterprise. It improves the system architecture of EMQ, adopts Scalable RPC mechanism, provides more reliable clustering and higher performance of message routing.
 
