@@ -40,7 +40,7 @@ One to many message Persistence
 
 5. Messages are sent to SUB1 and SUB2; 
 
-6. Backend records the read position of SUB1 and SUB2, next message retrieval starts from this position.
+6. Backend records the read position of SUB1 and SUB2, the next message’s retrieval starts from this position.
 
 Retainment of Client Connection State
 ---------------------------------------
@@ -322,7 +322,7 @@ Lookup the subscribed topics of client with ClientId of 'test::
 Redis SUB/UNSUB Publish
 -----------------------
 
-When a device subscribes / unsubscribes topics, EMQ X server publish to the Redis::
+When a device subscribes / unsubscribes to topics, EMQ X server publish to the Redis::
 
     PUBLISH
     channel = "mqtt_channel"

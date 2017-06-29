@@ -20,7 +20,7 @@ EMQ X bridges and forwards MQTT messages to Kafka cluster::
     Publisher --> | EMQ X | --Bridge--> | Kafka | --> Subscriber
                   ---------             ---------
 
-Config file for Kafka bridge plugin: etc/plugins/emqx_bridge_kafka.conf。
+Config file for Kafka bridge plugin: etc/plugins/emqx_bridge_kafka.conf
 
 Config Kafka Cluster
 ---------------------
@@ -156,7 +156,7 @@ Forwarding MQTT Messages to Kafka
              "ts": ${timestamp}
             }
 
-Forwarding QTT Message Deliver Event to Kafka
+Forwarding MQTT Message Deliver Event to Kafka
 ----------------------------------------------
 
 .. code-block:: javascript
@@ -274,7 +274,7 @@ Config RabbitMQ Cluster
 
     # bridge.rabbit.1.heartbeat = 0
 
-config RabbitMQ Bridge Properties
+Config RabbitMQ Bridge Properties
 ----------------------------------
 
 .. code-block:: properties
@@ -429,7 +429,7 @@ Delete the bridge:
 mosquitto Bridge
 -----------------
 
-mosquitto can be bridged to EMQ X cluster using common MQTT connection:: 
+Mosquitto can be bridged to EMQ X cluster using common MQTT connection::
 
                  -------------             -----------------
     Sensor ----> | mosquitto | --Bridge--> |               |
@@ -454,7 +454,7 @@ An example of mosquitto bridge plugin config file: mosquitto.conf::
 rsmb Bridge
 ------------
 
-rsmb van be bridged to EMQ X cluster using common MQTT connection.
+Rsmb can be bridged to EMQ X cluster using common MQTT connection.
 
 An example of rsmb bridge config file: broker.cfg::
 
