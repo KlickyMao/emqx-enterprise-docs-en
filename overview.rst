@@ -57,7 +57,7 @@ Features
 Scalable RPC Architecture
 -------------------------
 
-EMQ X improved the communication mechanism between distributed nodes, the cluster management channel and the data channel are segregated, the message throughput and the cluster reliability are greatly improved.
+EMQ X improved the communication mechanism between distributed nodes, the cluster management channel and the data channel are seperated, the message throughput and the cluster reliability are greatly improved.
 
 .. NOTE:: the dash line indicates the cluster management and the solid line indicates the data exchange.
 
@@ -92,7 +92,7 @@ Scalable RPC configuration::
     ## Probes lost to close the connection
     rpc.socket_keepalive_count = 9
 
-.. NOTE:: If firewalls are deployed among the nodes, the 5369 port on them must be opened.
+.. NOTE:: If firewalls are deployed between nodes, the 5369 port on each node must be opened.
 
 .. _fastlane:
 
@@ -124,9 +124,9 @@ Fastlane subscription is suitable for IoT sensor data collection::
 Agent Subscription
 ------------------
 
-EMQ X supports agent subscription. It is not necessary that a client subscribes to any topics after connect, the EQM X agent can load the subscriptions for it from the database.
+EMQ X supports agent subscription. A client does not need an explicit subscribes action and will get some topics subscribed. The EMQ X agent will subscribe a specified topics on behalf of the client. The topics are load from database.
 
-In a context of low power consumption and low network bandwidth,EMQ X agent subscription saves the packets exchanged and the transport volume.
+EMQ X agent subscription is suitable for devices require low power consumption and narrow network bandwidth. The feature brings convenience to massive device management too.
 
 ------------------------
 Message Data Persistence
