@@ -24,7 +24,7 @@ By default, anonymous Auth is enabled by the system. By means of loading multipl
 Config Anonymous Auth
 ---------------------
 
-Anonymous Auth is a last measure of Auth chain. By default, it is enabled in file 'etc/emqx.conf'. We suggest disabling it by deployment:
+Anonymous Auth is the last measure of Auth chain. By default, it is enabled in file 'etc/emqx.conf'. We suggest disabling it in deployment:
 
 .. code-block:: properties
 
@@ -35,13 +35,13 @@ Anonymous Auth is a last measure of Auth chain. By default, it is enabled in fil
 Access Control List (ACL)
 -------------------------
 
-EMQ X Server utilizing Access Control List (ACL) to realize the access control on the clients.
+EMQ X Server utilizes Access Control List (ACL) to realize the access control on the clients.
 
 ACL defines::
 
     Allow|Deny Whom Subscribe|Publish Topics
 
-When MQTT clients subscribe to topics or published messages, The EMQ X access control module tries to match the rules in the list till successfully matching or t fallbacks to default routine::
+When MQTT clients subscribe to topics or publish messages, the EMQ X access control module tries to match the rules in the list till successfully matching otherwise it fallbacks to default routine::
 
               ---------              ---------              ---------
     Client -> | Rule1 | --nomatch--> | Rule2 | --nomatch--> | Rule3 | --> Default
@@ -55,14 +55,14 @@ When MQTT clients subscribe to topics or published messages, The EMQ X access co
 Default Access Control Configuration
 ------------------------------------
 
-The default access control of EMQ X server is configured by the file: acl.conf:
+The default access control of EMQ X server is configured by the file acl.conf:
 
 .. code-block:: properties
 
     ## Default ACL File
     mqtt.acl_file = etc/acl.conf
 
-ACL is defined in 'etc/acl.conf'，it is loaded when EMQ X starts:
+ACL is defined in ‘etc/acl.conf’, and is loaded when EMQ X starts:
 
 .. code-block:: erlang
 
@@ -90,7 +90,7 @@ If ACL is modified, it can be reloaded using CLI:
 List of AuthN/ACL Plugins
 -------------------------
 
-EMQ X supports integrated authentications using ClientId, Username, HTTP, LDAP, MySQL, Redis, PostgreSQL and MongoDB. Multiple Auth plugins can be loaded simultaneously to build an authentication chain.
+EMQ X supports integrated authentications by using ClientId, Username, HTTP, LDAP, MySQL, Redis, PostgreSQL and MongoDB. Multiple Auth plugins can be loaded simultaneously to build an authentication chain.
 
 The config files of Auth plugins are located in '/etc/emqx/plugins/'(RPM/DEB installation) or in 'etc/plugins/'(standalone installation):
 
@@ -118,7 +118,7 @@ The config files of Auth plugins are located in '/etc/emqx/plugins/'(RPM/DEB ins
 Configure ClientID Auth Plugin
 ------------------------------
 
-Modify the 'emqx_auth_clientid.conf' to configure th ClientID / Password list:
+Modify the 'emqx_auth_clientid.conf' to configure the ClientID / Password list:
 
 .. code-block:: properties
 
@@ -166,7 +166,7 @@ Load Username Auth plugin:
 
     ./bin/emqx_ctl plugins load emqx_auth_username
 
-After the plugin is loaded, there are two possibilities to add users:
+After the plugin is loaded, there are two possible ways to add users:
 
 1. Modify the 'emqx_auth_username.conf' and add user using plain text::
 
@@ -183,7 +183,7 @@ After the plugin is loaded, there are two possibilities to add users:
 Configure LDAP Auth Plugin
 --------------------------
 
-Modify the 'emqx_auth_ldap.conf'file and configure the LDAP Auth Plugin:
+Modify the 'emqx_auth_ldap.conf' file and configure the LDAP Auth Plugin:
 
 .. code-block:: properties
 

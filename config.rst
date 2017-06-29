@@ -37,10 +37,10 @@ Linux: If EMQ X is installed using binary package, the config files are located 
 Environment Variables
 ---------------------
 
-EMQ X supports setting system arguments using environment variables when it starts up:
+EMQ X supports setting system arguments by using environment variables when it starts up:
 
 +--------------------+-----------------------------------------------+
-| EMQX_NODE_NAME     | Erlang node name, e.g.: emqx@192.168.0.6      |
+| EMQX_NODE_NAME     | Erlang node name, e.g. emqx@192.168.0.6       |
 +--------------------+-----------------------------------------------+
 | EMQX_NODE_COOKIE   | Cookie for distributed erlang node            |
 +--------------------+-----------------------------------------------+
@@ -71,13 +71,13 @@ The node name and cookie of EMQ X should be configured when clustering:
 
 .. NOTE::
 
-    Erlang/OTP platform application consists of Erlang nodes(process). Each node(process) is assigned with a node name for communication between nodes. All the connected nodes share the same cookie to authenticate each other.
+    Erlang/OTP platform application consists of Erlang nodes(processes). Each node(process) is assigned with a node name for communication between nodes. All the connected nodes share the same cookie to authenticate each other.
 
 -------------------
 Erlang VM Arguments
 -------------------
 
-Erlang VM arguments, by default 100,000 concurrent connection:
+Erlang VM arguments, by default 100,000 concurrent connections:
 
 .. code-block:: properties
 
@@ -137,7 +137,7 @@ Description of most important arguments of Erlang VM:
 EMQ X Cluster Communication
 ---------------------------
 
-EMQ X supports Scalable RPC architecture, the data channel and the cluster control channel are separated to improve the cluster reliability and performance:
+EMQ X supports Scalable RPC architecture, the data channel and the cluster control channel are separated to improve the cluster’s reliability and performance:
 
 .. code-block:: properties
 
@@ -226,7 +226,7 @@ By default, EMQ X enables Anonymous Auth, any client can connect to the server:
 Access Control List (ACL) File
 ------------------------------
 
-Default ACL based on 'acl.conf'. If other Auth plugin(s), e.g.MySQL and PostgreSQL Auth, is(are) loaded, this config file will be disabled.
+Default ACL is based on 'acl.conf'. If other Auth plugin(s), e.g. MySQL and PostgreSQL Auth, is(are) loaded, this config file is then ignored.
 
 .. code-block:: properties
 
@@ -265,7 +265,7 @@ Setting default rules in 'acl.conf':
 
 .. NOTE:: default rules allow only local user to subscribe to '$SYS/#' and '#'
 
-After EMQ X receives MQTT clients' PUBLISH or SUBSCRIBE requests, it match the ACL rules one by one till it hits, and return 'allow' or 'deny'.
+After EMQ X receives MQTT clients' PUBLISH or SUBSCRIBE requests, it matches the ACL rules one by one till it hits, and return 'allow' or 'deny'.
 
 Cache of ACL Rule
 -----------------
@@ -375,7 +375,7 @@ EMQ X creates a session for every MQTT connection:
 | session.max_inflight      | Inflight window. Maximum allowed simultaneous QoS1/2 packet. 0 means unlimited. Higher      |
 |                           | value means higher throughput while lower value means stricter packet transmission order.   |        
 +---------------------------+---------------------------------------------------------------------------------------------+
-| session.retry_interval    | Retry interval between QoS1/2 messages and PUBACK message                                   |
+| session.retry_interval    | Retry interval between QoS1/2 messages and PUBACK messages                                  |
 +---------------------------+---------------------------------------------------------------------------------------------+
 | session.max_awaiting_rel  | Maximum number of packets awaiting PUBREL packet                                            |
 +---------------------------+---------------------------------------------------------------------------------------------+
@@ -383,18 +383,18 @@ EMQ X creates a session for every MQTT connection:
 +---------------------------+---------------------------------------------------------------------------------------------+
 | session.enable_stats      | Enable session stats                                                                        |
 +---------------------------+---------------------------------------------------------------------------------------------+
-| session.expiry_interval   | Session expiry time. Counting from disconnection of client, in minutes.                     |
+| session.expiry_interval   | Session expiry time. Start counting from disconnection of the client, in minutes.           |
 +---------------------------+---------------------------------------------------------------------------------------------+
 
 ------------------
 MQTT Message Queue
 ------------------
 
-For every session EMQ X creates a message queues caching QoS1/2 messages:
+For every session EMQ X creates a message queue caching QoS1/2 messages:
 
 1. Offline messages for persistent session.
 
-2. Pending messages for inflight window is full.
+2. Pending messages when inflight window is full.
 
 Queue Arguments:
 
@@ -432,7 +432,7 @@ Description of queue arguments:
 +-----------------------------+-------------------------------------------------------------+
 | mqueue.high_watermark       | High watermark                                              |
 +-----------------------------+-------------------------------------------------------------+
-| mqueue.store_qos0           | Maintain Queue for QoS0 message?                            |
+| mqueue.store_qos0           | Maintain Queue for QoS0 messages                            |
 +-----------------------------+-------------------------------------------------------------+
 
 ----------------------
@@ -492,7 +492,7 @@ EMQ X plugin config file location:
 MQTT Listeners
 --------------
 
-Default enabled EMQ X listener are: MQTT, MQTT/SSL, MQTT/WS and MQTT/WS/SSL listener:
+Default enabled EMQ X listeners are: MQTT, MQTT/SSL, MQTT/WS and MQTT/WS/SSL listeners:
 
 +-----------+-----------------------------------+
 | 1883      | MQTT/TCP port                     |
@@ -504,7 +504,7 @@ Default enabled EMQ X listener are: MQTT, MQTT/SSL, MQTT/WS and MQTT/WS/SSL list
 | 8084      | MQTT/WebSocket/SSL port           |
 +-----------+-----------------------------------+
 
-EMQ X allows enabling multiple listeners on a single servic, most important listener arguments:
+EMQ X allows enabling multiple listeners on a single server, and the most important listener arguments are listed below:
 
 +-----------------------------------+--------------------------------------------------+
 | listener.tcp.${name}.acceptors    | TCP Acceptor pool                                |

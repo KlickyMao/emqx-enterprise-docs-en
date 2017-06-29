@@ -40,7 +40,7 @@ One to many message Persistence
 
 5. Messages are sent to SUB1 and SUB2; 
 
-6. Backend records the read position of SUB1 and SUB2, next message retrieval starts from this position.
+6. Backend records the read position of SUB1 and SUB2, the next message’s retrieval starts from this position.
 
 Retainment of Client Connection State
 -------------------------------------
@@ -292,7 +292,7 @@ Using Redis Set for Message Acknowledgements
     value = ${msgid}
 
 Using Redis Hash for Subscription
-----------------------------------
+---------------------------------
 
 *mqtt:sub* Hash for Subscriptions::
 
@@ -304,12 +304,12 @@ Using Redis Hash for Subscription
 A client subscribes to a topic::
     
     HSET mqtt:sub:${clientid} ${topic} ${qos}
-    
+
 A client with ClientId of 'test' subscribes to topic1 and topic2::
 
     HSET "mqtt:sub:test" "topic1" 1
     HSET "mqtt:sub:test" "topic2" 2
-    
+
 Lookup the subscribed topics of client with ClientId of 'test::
  
     HGETALL mqtt:sub:test
@@ -321,7 +321,7 @@ Lookup the subscribed topics of client with ClientId of 'test::
 Redis SUB/UNSUB Publish
 -----------------------
 
-When a device subscribes / unsubscribes topics, EMQ X publish an event to the Redis::
+When a device subscribes / unsubscribes to topics, EMQ X broker publish an event to the Redis::
 
     PUBLISH
     channel = "mqtt_channel"

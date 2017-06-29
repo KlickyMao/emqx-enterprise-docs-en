@@ -5,21 +5,21 @@
 Deployment
 ==========
 
-EMQ X Cluster can be deployed as the IoT Hub on private cloud of an enterprise or on public cloud like AWS, Azure and QingCloud.
+EMQ X Cluster can be deployed as an IoT Hub on an enterprise's private cloud, or on public clouds such as AWS, Azure and QingCloud.
 
 Typical deployment architecture:
 
 .. image:: _static/images/emqx_deploy.png
 
--------------------
+------------------
 Load Balancer (LB)
--------------------
+------------------
 
-The Load Balancer (LB) distributes MQTT connections and traffic across the device and the EMQ X cluster. LB enhances the HA of the clusters, balances the loads among the cluster nodes and makes the dynamic expansion possible.
+The Load Balancer (LB) distributes MQTT connections and traffic from devices across the EMQ X clusters. LB enhances the HA of the clusters, balances the loads among the cluster noes and makes the dynamic expansion possible.
 
-Also, we recommend that the SSL connection terminates at the LB. The links between the devices and the LB are secured by SSL, while the LB and the EMQ X is connected per plain TCP. By this setup, a single EMQ X cluster can serve about a million devices.
+It is recommended that SSL connections are terminated by a LB. The links between devices and the LB are secured by SSL, while the links between the LB and EMQ X cluster nodes are plain TCP connections. By this setup, a single EMQ X cluster can serve a million devices.
 
-LB products by public cloud providers:
+LB products of public cloud providers:
 
 +---------------+-----------------+----------------------------------------------------+
 | Cloud provider| SSL Termination | LB Product DOC/URL                                 |
@@ -41,7 +41,7 @@ LBs for Private Cloud:
 | `NGINX`_       | PLUS Edition     | https://www.nginx.com/solutions/load-balancing/      |
 +----------------+-----------------+------------------------------------------------------+
 
-We recommend AWS with LB for public cloud and HAProxy as LB for private cloud deployment.
+Recommend AWS with LB for a public cloud deployment, and HAProxy for a private cloud deployment.  
 
 -------------
 EMQ X Cluster
@@ -49,7 +49,7 @@ EMQ X Cluster
 
 EMQ X cluster nodes are deployed behind LB. It is suggested that the nodes are deployed on VPCs or on a private network. Cloud provider -- like AWS, Azure or QingCloud  -- usually provides VPC network.
 
-EMQ X Provides the MQTT service on the following TCP ports by default:
+EMQ X Provides the MQTT service on following TCP ports by default:
 
 +-----------+-----------------------------------+
 | 1883      | MQTT                              |
@@ -61,7 +61,7 @@ EMQ X Provides the MQTT service on the following TCP ports by default:
 | 8084      | MQTT/WebSocket/SSL                |
 +-----------+-----------------------------------+
 
-According to the chosen protocol and ports, the firewall should make the relevant ports accessible. 
+According to the protocol and ports, the firewall should make the relevant ports accessible. 
 
 For the clustering, the following ports of EMQ X node are used:
 
@@ -265,16 +265,16 @@ System Requirements
 Operating System
 ----------------
 
-EMQ X is developed utilizing the Erlang/OTP language / platform. It runs on the following OS: Linux, FreeBSD, MAC OS X and Windows Server.
+EMQ X depends the Erlang/OTP language/platform, runs on following OSes: Linux, FreeBSD, MAC OS X and Windows Server.
 
-We recommend the 64-bit Linux-based cloud host or server for the deployment.
+Recommend a 64-bit Linux-based cloud host or server for the deployment.
 
 CPU/MEM
---------
+-------
 
-In the test scenario, EMQ X with 1G memory sustains about 80K TCP links or 15K SSL links.  
+In the test scenario, EMQ X with 1G memory is able to sustain 80K TCP links or 15K SSL links.  
 
-In production environment, it is suggested to deploy at least 2 nodes in the cluster. Planning the CPU and Memory capacity on the basic of concurrent connections and the message throughput.
+In production environment, it is recommended to deploy at least 2 nodes in a cluster. Evaluate CPU and Memory capacity on concurrent connections and the message throughput.
 
 -------------------------------
 Naming Rule of Software Package
@@ -452,20 +452,20 @@ Stop the server::
 .. _install_on_freebsd:
 
 ---------------------
-Installing on FreeBSD
+Installation on FreeBSD
 ---------------------
 
 Please contact us for the software package: http://emqtt.com/about#contacts
 
-Installing on FreeBSD is the same as which on Linux.
+Installation on FreeBSD is the same as on Linux.
 
 .. _install_on_mac:
 
 ----------------------
-Installing on Mac OS X
+Installation on Mac OS X
 ----------------------
 
-The to install and start EMQ X on Mac OS X is the same as which of on Linux.
+Same procedure as Linux.
 
 When developing MQTT applications on Mac, modify the 'etc/emqx.conf' file as following to check the MQTT massages on the console: 
 
@@ -516,7 +516,7 @@ Enter the running container:
 Quick Setup
 ===========
 
-Assuming a EMQ X Cluster with two Linux nodes deployed on cloud VPC network or private network:
+Suppose a EMQ X Cluster with two Linux nodes deployed on a cloud VPC network or a private network:
 
 +---------------------+---------------------+
 | Node name           |    IP               |
