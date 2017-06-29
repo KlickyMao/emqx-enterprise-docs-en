@@ -13,7 +13,6 @@ EMQ X can bridge and forward messages to Kafka, RabbitMQ or other EMQ X nodes. M
 Kafka Bridge
 -------------
 
-
 EMQ X bridges and forwards MQTT messages to Kafka cluster::
 
                   ---------             ---------
@@ -36,8 +35,8 @@ Config Kafka Cluster
     ## Kafka Parition Strategy
     bridge.kafka.parition_strategy = random
 
-Config Kafka Bridge Properties
--------------------------------
+Config Kafka Bridge Hooks
+-------------------------
 
 .. code-block:: properties
     
@@ -62,8 +61,8 @@ Config Kafka Bridge Properties
     ## Message Acked Record Hook
     bridge.kafka.hook.message.acked.1 = {"action": "on_message_acked", "filter": "#", "pool": "pool1", "topic": "message_acked"}
 
-Description of Kafka Bridge Properties
-----------------------------------------
+Description of Kafka Bridge Hooks
+---------------------------------
 
 +------------------------+----------------------------------+
 | action                 | Description                      |
@@ -156,8 +155,8 @@ Forwarding MQTT Messages to Kafka
              "ts": ${timestamp}
             }
 
-Forwarding QTT Message Deliver Event to Kafka
-----------------------------------------------
+Forwarding MQTT Message Deliver Event to Kafka
+-----------------------------------------------
 
 .. code-block:: javascript
     
@@ -218,8 +217,8 @@ Kafka consumes MQTT message Deliver and Ack event messages::
     
 .. NOTE:: the payload is base64 encoded 
 
-Enable Kafka Bridge Plugin
----------------------------
+Enable Kafka Bridge
+-------------------
 
 .. code-block:: bash
 
@@ -227,9 +226,9 @@ Enable Kafka Bridge Plugin
 
 .. _rabbit_bridge:
 
-----------------
+---------------
 RabbitMQ Bridge
-----------------
+---------------
 
 EMQ X bridges and forwards MQTT messages to RabbitMQ cluster::
 
@@ -274,8 +273,8 @@ Config RabbitMQ Cluster
 
     # bridge.rabbit.1.heartbeat = 0
 
-config RabbitMQ Bridge Properties
-----------------------------------
+Config RabbitMQ Bridge Hooks
+----------------------------
 
 .. code-block:: properties
 
@@ -301,7 +300,7 @@ Forwarding Subscription Event to RabbitMQ
     payload = jsx:encode([{Topic, proplists:get_value(qos, Opts)} || {Topic, Opts} <- TopicTable])
 
 Forwarding Unsubscription Event to RabbitMQ
---------------------------------------------
+-------------------------------------------
 
 .. code-block:: javascript
 
@@ -323,7 +322,7 @@ Forwarding MQTT Messages to RabbitMQ
     payload = Payload
 
 Forwarding MQTT Message Ack Event to RabbitMQ
-----------------------------------------------
+---------------------------------------------
 
 .. code-block:: javascript
 
@@ -333,7 +332,7 @@ Forwarding MQTT Message Ack Event to RabbitMQ
     payload = emqx_base62:encode(Id)
 
 Example of RabbitMQ Subscription Message Consumption
------------------------------------------------------
+----------------------------------------------------
 
 Sample code of Rabbit message Consumption in Python:
 
@@ -364,8 +363,8 @@ Sample of RabbitMQ client coding in other programming languages::
 
     https://github.com/rabbitmq/rabbitmq-tutorials
     
-Enable RabbitMQ Bridge Plugin
-------------------------------
+Enable RabbitMQ Bridge
+----------------------
 
 .. code-block:: bash
 
@@ -425,9 +424,9 @@ Delete the bridge:
 
 .. _mosquitto_bridge:
 
------------------
+----------------
 mosquitto Bridge
------------------
+----------------
 
 mosquitto can be bridged to EMQ X cluster using common MQTT connection:: 
 
