@@ -9,7 +9,7 @@ Design of Data Persistence
 --------------------------
 
 One to one message Persistence
----------------------------------
+------------------------------
 
 .. image:: ./_static/images/backend_queue.png
 
@@ -26,7 +26,7 @@ One to one message Persistence
 6. After the SUB acknowledged / received the message, backend removes the message from DB.
 
 One to many message Persistence 
----------------------------------
+-------------------------------
 
 .. image:: ./_static/images/backend_pubsub.png
 
@@ -40,17 +40,17 @@ One to many message Persistence
 
 5. Messages are sent to SUB1 and SUB2; 
 
-6. Backend records the read position of SUB1 and SUB2, next message retrieval starts from this position.
+6. Backend records the read position of SUB1 and SUB2, the next message’s retrieval starts from this position.
 
 Retainment of Client Connection State
----------------------------------------
+-------------------------------------
 
 EMQ X supports retaining the client's connection state in Redis or DB.
 
-Client Subscription Agent
+Client Subscription by Broker
 -----------------------------
 
-EMQ X Persistence supports Subscription agent. When a client goes online, the persistence module loads the subscribed topics from the DB. 
+EMQ X Persistence supports Subscription by broker. When a client goes online, the persistence module loads the subscriptions of the client from Redis or Databases.
 
 List of Persistence Plugins
 ----------------------------
@@ -80,7 +80,7 @@ Data Persistence using Redis
 Config file: emqx_backend_redis.conf
 
 Config the Redis Server
--------------------------
+-----------------------
 
 Config Connection Pool of Multiple Redis Servers:
 
@@ -98,8 +98,8 @@ Config Connection Pool of Multiple Redis Servers:
     ## Redis subscribe channel
     backend.redis.pool1.channel = mqtt_channel
 
-Config Redis Properties:
---------------------------
+Config Persistence Hooks
+------------------------
 
 .. code-block:: properties
     
@@ -139,7 +139,7 @@ Config Redis Properties:
     ## Store Ack for many
     backend.redis.hook.message.acked.2       = {"topic": "pubsub/#", "action": {"function": "on_message_acked_for_pubsub"}, "pool": "pool1"}
 
-Description of Redis Properties
+Description of Persistence Hooks
 --------------------------------
 
 +------------------------+------------------------+-----------------------------+-------------------------------------+
@@ -173,6 +173,7 @@ Redis Command Line Parameters
 
 +----------------------+-----------------------------------------------+-------------------------------------------------+
 | hook                 | Parameter                                      | Example (Fields separated exactly by one space) |
+
 +======================+===============================================+=================================================+
 | client.connected     | clientid                                      | SET conn:${clientid} clientid                   |
 +----------------------+-----------------------------------------------+-------------------------------------------------+
@@ -189,7 +190,7 @@ Redis Command Line Parameters
 | message.delivered    | msgid, topic, clientid                        | HSET delivered:${clientid} topic msgid          |
 +----------------------+-----------------------------------------------+-------------------------------------------------+
 
-config 'action' utilizing Redis Command Line
+Config 'action' utilizing Redis Command Line
 ---------------------------------------------
 
 Redis backend supports using 'commands' in 'action', e.g.:
@@ -199,11 +200,10 @@ Redis backend supports using 'commands' in 'action', e.g.:
     ## After a client connected to the EMQ X server, it executes a redis command (multiple redis commands also supported)
     backend.redis.hook.client.connected.3 = {"action": {"commands": ["SET conn:${clientid} clientid"]}, "pool": "pool1"}
 
-
 Using Redis Hash for Devices' Connection State
------------------------------------------------
+----------------------------------------------
 
-*mqtt:client* hashes devices' connection state::
+*mqtt:client* Hash for devices' connection state::
 
     hmset
     key = mqtt:client:${clientid} 
@@ -239,9 +239,9 @@ Client with ClientId 'test' goes offline::
     6) "1481685924"
 
 Using Redis Hash for Retained Messages
----------------------------------------
+--------------------------------------
 
-*mqtt:retain* hashes retained messages::
+*mqtt:retain* Hash for retained messages::
 
     hmset
     key = mqtt:retain:${topic}
@@ -270,9 +270,9 @@ Lookup retained messages with a topic of 'retain'::
     14) "1481690659"
 
 Using Redis Hash for messages
-------------------------------
+-----------------------------
 
-*mqtt:msg* hashes MQTT messages::
+*mqtt:msg* Hash for MQTT messages::
 
     hmset
     key = mqtt:msg:${msgid}
@@ -284,7 +284,7 @@ Using Redis Hash for messages
     value = ${msgid}
 
 Using Redis Set for Message Acknowledgements
----------------------------------------------
+--------------------------------------------
 
 *mqtt:acked* SET stores acknowledgements from the clients::
 
@@ -293,9 +293,9 @@ Using Redis Set for Message Acknowledgements
     value = ${msgid}
 
 Using Redis Hash for Subscription
-------------------------------------
+---------------------------------
 
-*mqtt:sub* hashes relationship of Subscription::
+*mqtt:sub* Hash for Subscriptions::
 
     hset
     key = mqtt:sub:${clientid}
@@ -305,12 +305,12 @@ Using Redis Hash for Subscription
 A client subscribes to a topic::
     
     HSET mqtt:sub:${clientid} ${topic} ${qos}
-    
+
 A client with ClientId of 'test' subscribes to topic1 and topic2::
 
     HSET "mqtt:sub:test" "topic1" 1
     HSET "mqtt:sub:test" "topic2" 2
-    
+
 Lookup the subscribed topics of client with ClientId of 'test::
  
     HGETALL mqtt:sub:test
@@ -322,7 +322,7 @@ Lookup the subscribed topics of client with ClientId of 'test::
 Redis SUB/UNSUB Publish
 -----------------------
 
-When a device subscribes / unsubscribes topics, EMQ X server publish to the Redis::
+When a device subscribes / unsubscribes to topics, EMQ X broker publish an event to the Redis::
 
     PUBLISH
     channel = "mqtt_channel"
@@ -337,7 +337,7 @@ Client with ClientId 'test' unsubscribes to 'test_topic0'::
 
     PUBLISH "mqtt_channel" "{\"type\": \"unsubscribe\", \"topic\": \"test_topic0\", \"clientid\": \"test\"}"
 
-Enable Redis Plugin
+Enable Redis Backend
 --------------------
 
 .. code-block:: bash
@@ -346,9 +346,9 @@ Enable Redis Plugin
 
 .. _mysql_backend:
 
------------------------------
+----------------------------
 Data Persistence Using MySQL
------------------------------
+----------------------------
 
 Config file: emqx_backend_mysql.conf
 
@@ -374,8 +374,8 @@ Connection pool of multiple MySQL servers is supported::
     ## Mysql Database
     backend.mysql.pool1.database = mqtt
 
-Config MySQL Properties
------------------------
+Config MySQL Persistence Hooks
+------------------------------
 
 .. code-block:: properties
 
@@ -406,8 +406,8 @@ Config MySQL Properties
     ## Store Ack
     backend.mysql.hook.message.acked.1       = {"topic": "#", "action": {"function": "on_message_acked"}, "pool": "pool1"}
 
-Description of MySQL Properties
----------------------------------
+Description of MySQL Persistence Hooks
+--------------------------------------
 
 +------------------------+------------------------+-------------------------+----------------------------------+
 | hook                   | topic                  | action                  | Description                      |
@@ -453,7 +453,7 @@ SQL Parameters Description
 +----------------------+---------------------------------------+----------------------------------------------------------------+
 
 Config 'action' utilizing SQL
-------------------------------
+-----------------------------
 
 MySQL backend supports using SQL in 'action':
 
@@ -463,14 +463,14 @@ MySQL backend supports using SQL in 'action':
     backend.mysql.hook.client.connected.3 = {"action": {"sql": ["insert into conn(clientid) values(${clientid})"]}, "pool": "pool1"}
 
 Create MySQL DB
-----------------------
+---------------
 
 .. code-block:: sql
 
     create database mqtt;
 
-Import MySQL DB & Table Structures
-----------------------------------
+Import MySQL DB & Table Schema
+------------------------------
     
 .. code-block:: bash
     
@@ -479,7 +479,7 @@ Import MySQL DB & Table Structures
 .. NOTE:: DB name is free of choice
 
 MySQL Client Connection Table
-------------------------------
+-----------------------------
 
 *mqtt_client* stores client connection states:
 
@@ -532,7 +532,7 @@ If client 'test' is offline:
     1 rows in set (0.00 sec)
 
 MySQL Subscription TABLE
--------------------------
+------------------------
 
 *mqtt_sub* stores subscriptions of clients:
 
@@ -578,7 +578,7 @@ E.g., inquiring the Subscription of client 'test':
     2 rows in set (0.00 sec)
 
 MySQL Message Table
---------------------
+-------------------
 
 *mqtt_msg* stores MQTT messages:
 
@@ -677,23 +677,22 @@ MySQL Acknowledgement Table
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 Enable MySQL Backend
----------------------
+--------------------
 
 .. code-block:: bash
 
     ./bin/emqx_ctl plugins load emqx_backend_mysql
 
-
 .. _postgre_backend:
 
------------------------------------
+---------------------------------
 Data Persistence using PostgreSQL
------------------------------------
+---------------------------------
 
 Config file: emqx_backend_pgsql.conf
 
 Config PostgreSQL Server
--------------------------
+------------------------
 
 Connection pool of multiple PostgreSQL servers is supported:
 
@@ -717,8 +716,8 @@ Connection pool of multiple PostgreSQL servers is supported:
     ## Pgsql Ssl
     backend.pgsql.pool1.ssl = false  
 
-Config PostgreSQL Properties
-----------------------------
+Config PostgreSQL Persistence Hooks
+-----------------------------------
 
 .. code-block:: properties
 
@@ -749,8 +748,8 @@ Config PostgreSQL Properties
     ## Store Ack
     backend.pgsql.hook.message.acked.1       = {"topic": "#", "action": {"function": "on_message_acked"}, "pool": "pool1"}
 
-Description of PostgreSQL Properties 
--------------------------------------
+Description of PostgreSQL Persistence Hooks
+-------------------------------------------
 
 +------------------------+------------------------+-------------------------+----------------------------------+
 | hook                   | topic                  | action                  | Description                      |
@@ -777,6 +776,7 @@ Description of PostgreSQL Properties
 SQL Parameters Description 
 --------------------------
 
+
 +----------------------+---------------------------------------+----------------------------------------------------------------+
 | hook                 | Parameters                             | Example (${name} represents available parameter)                |
 +======================+=======================================+================================================================+
@@ -796,7 +796,7 @@ SQL Parameters Description
 +----------------------+---------------------------------------+----------------------------------------------------------------+
 
 Config 'action' utilizing SQL
-------------------------------
+-----------------------------
 
 PostgreSQL backend supports using SQL in 'action':
 
@@ -812,8 +812,8 @@ Create PostgreSQL DB
 
     createdb mqtt -E UTF8 -e
 
-Import PostgreSQL DB & Table Structures
-----------------------------------------
+Import PostgreSQL DB & Table Schema
+-----------------------------------
     
 .. code-block:: bash
     
@@ -822,7 +822,7 @@ Import PostgreSQL DB & Table Structures
 .. NOTE:: DB name is free of choice 
 
 PostgreSQL Client Connection Table
-------------------------------------
+-----------------------------------
 
 *mqtt_client* stores client connection states::
 
@@ -895,7 +895,7 @@ Inquiring subscription of client 'test'::
     (2 rows) 
 
 PostgreSQL Message Table
---------------------------
+------------------------
 
 *mqtt_msg* stores MQTT messages:
 
@@ -927,7 +927,7 @@ Inquiring messages published by client 'test'::
     (2 rows)
 
 PostgreSQL Retained Message Table
-----------------------------------
+---------------------------------
 
 *mqtt_retain* stores retained messages:
 
@@ -956,9 +956,9 @@ Inquiring retained messages with topic 'retain'::
     ----+----------+-------------------------------+---------+------+------+---------+---------------------
       1 | retain   | 53F33F7E4741E7007000004B70001 | test    | NULL |    1 | www     | 2016-12-24 16:55:18 
     (1 rows)
-    
+ 
 PostgreSQL Acknowledgement Table
----------------------------------
+--------------------------------
 
 *mqtt_acked* stores acknowledgements from the clients:
 
@@ -974,24 +974,22 @@ PostgreSQL Acknowledgement Table
     );
 
 Enable PostgreSQL Backend
---------------------------
+-------------------------
 
-.. code-block:: bash    
+.. code-block:: bash
 
     ./bin/emqx_ctl plugins load emqx_backend_pgsql
 
-
-
 .. _mongodb_backend:
 
----------------------------------
+------------------------------
 Data Persistence using MongoDB
----------------------------------
+------------------------------
 
 Config file: emqx_backend_mongo.conf
 
 Config MongoDB Server
------------------------
+---------------------
 
 Connection pool of multiple PostgreSQL servers is supported:
 
@@ -1006,8 +1004,8 @@ Connection pool of multiple PostgreSQL servers is supported:
     ## MongoDB Database
     backend.mongo.pool1.database = mqtt
 
-Config MongoDB Properties 
---------------------------
+Config MongoDB Persistence Hooks
+--------------------------------
 
 .. code-block:: properties
 
@@ -1038,8 +1036,8 @@ Config MongoDB Properties
     ## Store Ack
     backend.mongo.hook.message.acked.1       = {"topic": "#", "action": {"function": "on_message_acked"}, "pool": "pool1"}
 
-Description of MongoDB Properties
------------------------------------
+Description of MongoDB Persistence Hooks
+----------------------------------------
 
 +------------------------+------------------------+-------------------------+----------------------------------+
 | hook                   | topic                  | action                  | Description                      |
@@ -1064,7 +1062,7 @@ Description of MongoDB Properties
 +------------------------+------------------------+-------------------------+----------------------------------+
 
 Create MongoDB DB & Collections
----------------------------------
+-------------------------------
 
 .. code-block:: javascript
 
@@ -1083,7 +1081,7 @@ Create MongoDB DB & Collections
 .. NOTE:: DB name is free of choice
 
 MongoDB Client Connection Collection
--------------------------------------
+------------------------------------
 
 *mqtt_client* stores client connection states:
 
@@ -1134,7 +1132,7 @@ Client 'test' is offline:
     }
 
 MongoDB Subscription Collection
----------------------------------
+-------------------------------
 
 *mqtt_sub* stores subscriptions of clients:
 
@@ -1203,7 +1201,7 @@ Inquiring messages published by client 'test':
     }
 
 MongoDB Retained Message Collection
-------------------------------------
+-----------------------------------
 
 *mqtt_retain* stores retained messages:
 
@@ -1261,9 +1259,9 @@ Enable MongoDB Backend
 
 .. _cassandra_backend:
 
-----------------------------------
+--------------------------------
 Data Persistence using Cassandra
-----------------------------------
+--------------------------------
 
 Config file: etc/plugins/emqx_backend_cassa.conf
 
@@ -1295,8 +1293,8 @@ Multi node Cassandra cluster is supported:
     ## Cassandra Logger type
     backend.ecql.pool1.logger = info
 
-Config Cassandra Properties
------------------------------
+Config Cassandra Persistence Hooks
+----------------------------------
 
 .. code-block:: properties
 
@@ -1324,14 +1322,14 @@ Config Cassandra Properties
     ## Store Retain Message 
     backend.cassa.hook.message.publish.2     = {"topic": "#", "action": {"function": "on_message_retain"}, "pool": "pool1"}
 
-    ## Delete Retain Message 
+    ## Delete Retain Message
     backend.cassa.hook.message.publish.3     = {"topic": "#", "action": {"function": "on_retain_delete"}, "pool": "pool1"}
 
     ## Store Ack
     backend.cassa.hook.message.acked.1       = {"topic": "#", "action": {"function": "on_message_acked"}, "pool": "pool1"}
 
-Description of Cassandra Properties
-------------------------------------
+Description of Cassandra Persistence Hooks
+------------------------------------------
 
 +------------------------+------------------------+-------------------------+----------------------------------+
 | hook                   | topic                  | action                  | Description                      |
@@ -1379,7 +1377,7 @@ Customized CQL command parameters includes:
 +----------------------+---------------------------------------+----------------------------------------------------------------+		
 
 Config 'action' utlizing CQL
--------------------------------
+----------------------------
 
 Cassandra backend supports using CLQ in 'action':
 
@@ -1389,7 +1387,7 @@ Cassandra backend supports using CLQ in 'action':
     backend.cassa.hook.client.connected.3 = {"action": {"cql": ["insert into conn(clientid) values(${clientid})"]}, "pool": "pool1"}
 
 Initializing Cassandra 
------------------------
+----------------------
 
 Create KeySpace:
 
@@ -1471,7 +1469,7 @@ Inquiring subscriptions of client 'test'::
           test | test_topic2 |   2
     
 Cassandra Message Table
-------------------------
+-----------------------
 
 *mqtt.msg* stores MQTT messages::
     
@@ -1500,7 +1498,7 @@ Inquiring messages published by client 'test'::
      world | 2PguFrHsrzEvIIBdctmb | 2017-02-14 09:07:13.785000+0000 | Hello world! |   1 |      0 |   test
 
 Cassandra Retained Message Table
----------------------------------
+--------------------------------
 
 *mqtt.retain* stores retained messages::
     
@@ -1535,7 +1533,7 @@ Cassandra Acknowledgement Table
       );
 
 Enable Cassandra Backend
--------------------------
+------------------------
 
 .. code-block:: bash
 

@@ -1,13 +1,11 @@
 
 .. _plugins:
 
-========
+=======
 Plugins
-========
+=======
 
 EMQ X message broker can be extended by plugins. Ultilizing the module registration and hook mechanism, developers can customize the broker with plugins to extended the authentication, access control, data persistence, bridge and management functions.
-
-EMQ X provides plugins for management and maintenance: 
 
 +---------------------+-------------------------+----------------+---------------------------+
 | Plugin              | Config file             | Load by default| Description               |
@@ -16,26 +14,25 @@ EMQ X provides plugins for management and maintenance:
 +---------------------+-------------------------+----------------+---------------------------+
 | emqx_modules        | emqx_modules.conf       | Y              | Modules plugins           |
 +---------------------+-------------------------+----------------+---------------------------+
-| emq_retainer        | emqx_retainer.conf      | Y              | Store retained message    |
+| emq_retainer        | emqx_retainer.conf      | Y              | Retained message          |
 +---------------------+-------------------------+----------------+---------------------------+
 | emq_recon           | emqx_recon.conf         | Y              | Recon plugin              |
 +---------------------+-------------------------+----------------+---------------------------+
 | emq_reloader        | emqx_reloader.conf      | Y              | Reloader plugin           |
 +---------------------+-------------------------+----------------+---------------------------+
 
--------------
-Dashboard
--------------
+----------------
+Dashboard Plugin
+----------------
 
 EMQ X Web Dashboard, loaded by default. URL: http://host:18083, default username/password: admin/public。
 
 On the dashboard, following information can be queried: Status of EMQ X, statistics and metrics of clients, sessions, topics and subscriptions.
 
-
 .. image:: ./_static/images/dashboard.png
 
 Dashboard Listener
--------------------
+------------------
 
 Config file: 'emqx_dashboard.conf'，default port of listener: 18083.
 
@@ -57,9 +54,9 @@ Config file: 'emqx_dashboard.conf'，default port of listener: 18083.
     ## dashboard.listener.https.verify = verify_peer
     ## dashboard.listener.https.fail_if_no_peer_cert = true
 
-------------
-Retainer
-------------
+---------------
+Retainer Plugin
+---------------
 
 Retainer plugin is responsible for the persistence of MQTT retained messages. Config file: 'emqx_retainer.conf'.
 
@@ -81,14 +78,14 @@ Retainer plugin is responsible for the persistence of MQTT retained messages. Co
     ## s - second
     retainer.expiry_interval = 0
 
------------
-Modules
------------
+---------------
+Modules Plugin
+---------------
 
 Consists of modules like Presence, Subscription, Rewrite and etc.
 
 Configure the presence module
-------------------------------
+-----------------------------
 
 Presence module published presence message to $SYS/ when a client connected or disconnected: 
 
@@ -99,8 +96,8 @@ Presence module published presence message to $SYS/ when a client connected or d
 
     module.presence.qos = 1
 
-Subscriptions Module
--------------------------
+Subscription Module
+-------------------
 
 Subscription module forces clients to subscribe to some particular topics when connected to the EMQ X:
 
@@ -118,7 +115,7 @@ Subscription module forces clients to subscribe to some particular topics when c
     ## module.subscription.2.qos = 1
  
 Rewrite Module
--------------------
+--------------
 
 Rewrite module supports topic rewrite:
 
@@ -131,9 +128,9 @@ Rewrite module supports topic rewrite:
     ## module.rewrite.rule.1 = "x/# ^x/y/(.+)$ z/y/$1"
     ## module.rewrite.rule.2 = "y/+/z/# ^y/(.+)/z/(.+)$ y/z/$2"
 
------------------
+------------
 Recon Plugin
------------------
+------------
 
 Recon plugin loads the recon library on a running EMQ X. Recon library helps by debugging and optimizing Erlang applications. It supports periodically global garbage collection. This plugin registers 'recon' command to the './bin/emqx_ctl' CLI tool. Config file: 'emqx_recon.conf'.
 
@@ -149,7 +146,7 @@ Setup the interval of global GC
     recon.gc_interval = 5m
 
 Recon Plugin CLI
------------------
+----------------
 
 .. code-block:: bash
 
@@ -161,9 +158,9 @@ Recon Plugin CLI
     recon node_stats        #recon:node_stats(10, 1000)
     recon remote_load Mod   #recon:remote_load(Mod)
 
-----------------------
-Reloader
-----------------------
+---------------
+Reloader Plugin
+---------------
 
 Erlang Module Reloader for development. If this plugin is loaded, EMQ X hot-updates the codes automatically.
 

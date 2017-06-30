@@ -5,9 +5,9 @@
 MQTT Protocol
 =============
 
-------------------------------------------------------
-MQTT Light Weight Publish/Subscribe Messaging Protocol
-------------------------------------------------------
+--------------------------------------------------------
+MQTT - Light Weight Publish/Subscribe Messaging Protocol
+--------------------------------------------------------
 
 Introduction
 ------------

@@ -1,17 +1,17 @@
 
 .. _authentication:
 
-==============
+===========
 AuthN/AuthZ
-==============
+===========
 
-------------------------------
+--------------------
 Design of MQTT Auth
-------------------------------
+--------------------
 
 EMQ X utilizes plugins to provide Auth. EMQ X supports username / password, ClientID and anonymous Auth. It also supports Auth integration with MySQL, PostgreSQL, Redis, MongoDB, HTTP and LDAP.
 
-By default, anonymous Auth is enabled by the system. By means of loading multiple Auth plugins, an Auth chain can be thus built:: 
+By default, anonymous Auth is enabled by the system. By means of loading multiple Auth plugins, an Auth chain can be thus built::
 
                -----------------           -----------------           ------------------
     Client --> | Username Auth | -ignore-> | ClientID Auth | -ignore-> | Anonymous Auth |
@@ -20,11 +20,11 @@ By default, anonymous Auth is enabled by the system. By means of loading multipl
                      \|/                       \|/                               \|/
                 allow | deny              allow | deny                      allow | deny
 
--------------------------------
+---------------------
 Config Anonymous Auth
--------------------------------
+---------------------
 
-Anonymous Auth is a last measure of Auth chain. By default, it is enabled in file 'etc/emqx.conf'. We suggest disabling it by deployment:
+Anonymous Auth is the last measure of Auth chain. By default, it is enabled in file 'etc/emqx.conf'. We suggest disabling it in deployment:
 
 .. code-block:: properties
 
@@ -35,13 +35,13 @@ Anonymous Auth is a last measure of Auth chain. By default, it is enabled in fil
 Access Control List (ACL)
 -------------------------
 
-EMQ X Server utilizing Access Control List (ACL) to realize the access control on the clients.
+EMQ X Server utilizes Access Control List (ACL) to realize the access control on the clients.
 
 ACL defines::
 
     Allow|Deny Whom Subscribe|Publish Topics
 
-When MQTT clients subscribe to topics or published messages, The EMQ X access control module tries to match the rules in the list till successfully matching or t fallbacks to default routine::
+When MQTT clients subscribe to topics or publish messages, the EMQ X access control module tries to match the rules in the list till successfully matching otherwise it fallbacks to default routine::
 
               ---------              ---------              ---------
     Client -> | Rule1 | --nomatch--> | Rule2 | --nomatch--> | Rule3 | --> Default
@@ -51,18 +51,18 @@ When MQTT clients subscribe to topics or published messages, The EMQ X access co
                  \|/                    \|/                    \|/
             allow | deny           allow | deny           allow | deny
 
--------------------------------------
+------------------------------------
 Default Access Control Configuration
--------------------------------------
+------------------------------------
 
-The default access control of EMQ X server is configured by the file: acl.conf:
+The default access control of EMQ X server is configured by the file acl.conf:
 
 .. code-block:: properties
 
     ## Default ACL File
     mqtt.acl_file = etc/acl.conf
 
-ACL is defined in 'etc/acl.conf'，it is loaded when EMQ X starts:
+ACL is defined in ‘etc/acl.conf’, and is loaded when EMQ X starts:
 
 .. code-block:: erlang
 
@@ -86,20 +86,20 @@ If ACL is modified, it can be reloaded using CLI:
 
     reload acl_internal successfully
 
--------------------------------
-List of Auth Plugins
--------------------------------
+-------------------------
+List of AuthN/ACL Plugins
+-------------------------
 
-EMQ X supports integrated authentications using ClientId, Username, HTTP, LDAP, MySQL, Redis, PostgreSQL and MongoDB. Multiple Auth plugins can be loaded simultaneously to build a authentication chain.
+EMQ X supports integrated authentications by using ClientId, Username, HTTP, LDAP, MySQL, Redis, PostgreSQL and MongoDB. Multiple Auth plugins can be loaded simultaneously to build an authentication chain.
 
 The config files of Auth plugins are located in '/etc/emqx/plugins/'(RPM/DEB installation) or in 'etc/plugins/'(standalone installation):
 
 +-------------------------+---------------------------+---------------------------------------+
 | Auth Plugin             | Config file               | Description                           |
 +=========================+===========================+=======================================+
-| emqx_auth_clientid      | emqx_auth_clientid.conf   | ClientId AuthN/AuthZ Plugin           |
+| emqx_auth_clientid      | emqx_auth_clientid.conf   | ClientId AuthN Plugin                 |
 +-------------------------+---------------------------+---------------------------------------+
-| emqx_auth_username      | emqx_auth_username.conf   | username/password AuthN/AuthZ Plugin  |
+| emqx_auth_username      | emqx_auth_username.conf   | Username/Password AuthN Plugin        |
 +-------------------------+---------------------------+---------------------------------------+
 | emqx_auth_ldap          | emqx_auth_ldap.conf       | LDAP AuthN/AuthZ Plugin               |
 +-------------------------+---------------------------+---------------------------------------+
@@ -114,11 +114,11 @@ The config files of Auth plugins are located in '/etc/emqx/plugins/'(RPM/DEB ins
 | emqx_auth_mongo         | emqx_auth_mongo.conf      | MongoDB AuthN/AuthZ                   |
 +-------------------------+---------------------------+---------------------------------------+
 
--------------------------------
+------------------------------
 Configure ClientID Auth Plugin
--------------------------------
+------------------------------
 
-Modify the 'emqx_auth_clientid.conf' to configure th ClientID / Password list:
+Modify the 'emqx_auth_clientid.conf' to configure the ClientID / Password list:
 
 .. code-block:: properties
 
@@ -141,9 +141,9 @@ Load ClientId Auth plugin:
 
     ./bin/emqx_ctl plugins load emqx_auth_clientid
 
--------------------------------
+------------------------------
 Configure Username Auth Plugin
--------------------------------
+------------------------------
 
 Modify the 'emqx_auth_username.conf' to configure the Username / Password list:
 
@@ -166,7 +166,7 @@ Load Username Auth plugin:
 
     ./bin/emqx_ctl plugins load emqx_auth_username
 
-After the plugin is loaded, there are two possibilities to add users:
+After the plugin is loaded, there are two possible ways to add users:
 
 1. Modify the 'emqx_auth_username.conf' and add user using plain text::
 
@@ -179,11 +179,11 @@ After the plugin is loaded, there are two possibilities to add users:
 
    $ ./bin/emqx_ctl users add <Username> <Password>
 
--------------------------------
+--------------------------
 Configure LDAP Auth Plugin
--------------------------------
+--------------------------
 
-Modify the 'emqx_auth_ldap.conf'file and configure the LDAP Auth Plugin:
+Modify the 'emqx_auth_ldap.conf' file and configure the LDAP Auth Plugin:
 
 .. code-block:: properties
 
@@ -203,9 +203,9 @@ Load the LDAP Auth plugin:
 
     ./bin/emqx_ctl plugins load emqx_auth_ldap
 
-----------------------------
+--------------------------
 Configure HTTP Auth Plugin
-----------------------------
+--------------------------
 
 Modify the 'emqx_auth_http.conf' and configure the HTTP Auth plugin:
 
@@ -217,7 +217,7 @@ Modify the 'emqx_auth_http.conf' and configure the HTTP Auth plugin:
     auth.http.auth_req.method = post
     auth.http.auth_req.params = clientid=%c,username=%u,password=%P
 
-Setup the Super User URL and arguements:
+Setup the Super User URL and parameters:
 
 .. code-block:: properties
 
@@ -248,9 +248,9 @@ Load HTTP Auth plugin:
 
     ./bin/emqx_ctl plugins load emqx_auth_http
 
-----------------------------
+---------------------------
 Configure MySQL Auth Plugin
-----------------------------
+---------------------------
 
 Modify the 'emqx_auth_mysql.conf' to configure the default MQTT user, ACL and Auth:
 
@@ -263,7 +263,7 @@ MQTT Auth User List
       `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
       `username` varchar(100) DEFAULT NULL,
       `password` varchar(100) DEFAULT NULL,
-      `salt` varchar(20) DEFAULT NULL,
+      `salt` varchar(40) DEFAULT NULL,
       `is_superuser` tinyint(1) DEFAULT 0,
       `created` datetime DEFAULT NULL,
       PRIMARY KEY (`id`),
@@ -340,7 +340,7 @@ Configure MySQL Auth Query Statement
     auth.mysql.super_query = select is_superuser from mqtt_user where username = '%u' limit 1
 
 Configure MySQL ACL Query Statement
-------------------------------------
+-----------------------------------
 
 .. code-block:: properties
 
@@ -423,7 +423,7 @@ Postgre Server Address
     auth.pgsql.ssl = false
 
 Configure PostgreSQL Auth Query Statement
-----------------------------------------------
+-----------------------------------------
 
 .. code-block:: properties
 
@@ -445,7 +445,7 @@ Configure PostgreSQL Auth Query Statement
     auth.pgsql.super_query = select is_superuser from mqtt_user where username = '%u' limit 1
 
 Configure PostgreSQL ACL Query Statement
-------------------------------------------
+----------------------------------------
 
 .. code-block:: properties
 
@@ -456,20 +456,20 @@ Configure PostgreSQL ACL Query Statement
     auth.pgsql.acl_nomatch = deny
 
 Load Postgre Auth Plugin
--------------------------
+------------------------
 
 .. code-block:: bash
 
     ./bin/emqx_ctl plugins load emqx_auth_pgsql
 
-----------------------------
+---------------------------
 Configure Redis Auth Plugin
-----------------------------
+---------------------------
 
 Config file 'emqx_auth_redis.conf':
 
 Redis Server Address 
----------------------
+--------------------
 
 .. code-block:: properties
 
@@ -486,7 +486,7 @@ Redis Server Address
     ## auth.redis.password =
 
 Configure Auth Query Command
------------------------------
+----------------------------
 
 .. code-block:: properties
 
@@ -502,7 +502,7 @@ Configure Auth Query Command
     auth.redis.super_cmd = HGET mqtt_user:%u is_superuser
 
 Configure ACL Query Command
-----------------------------
+---------------------------
 
 .. code-block:: properties
 
@@ -513,7 +513,7 @@ Configure ACL Query Command
     auth.redis.acl_nomatch = deny
 
 Redis Authed Users Hash
-------------------------
+-----------------------
 
 By default, Hash is used to store Authed users::
 
@@ -521,7 +521,7 @@ By default, Hash is used to store Authed users::
     HSET mqtt_user:<username> password "passwd"
 
 Redis ACL Rules Hash
----------------------
+--------------------
 
 By default, Hash is used to store ACL rules::
 
@@ -532,7 +532,7 @@ By default, Hash is used to store ACL rules::
 .. NOTE:: 1: subscribe, 2: publish, 3: pubsub
 
 Load Redis Auth Plugin
------------------------
+----------------------
 
 .. code-block:: bash
 
@@ -545,7 +545,7 @@ Configure MongoDB Auth Plugin
 Modify the 'emqx_auth_mongo.conf' file to configure MongoDB, MQTT users and ACL Collection:
 
 MongoDB Server
------------------
+--------------
 
 .. code-block:: properties
 
