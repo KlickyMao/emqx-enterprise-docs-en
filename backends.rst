@@ -1,12 +1,12 @@
 .. _backends:
 
-=================
-Data Persistence
-=================
+========
+Backends
+========
 
---------------------------
-Design of Data Persistence
---------------------------
+------------------------
+MQTT Message Persistence
+------------------------
 
 One to one message Persistence
 ------------------------------
@@ -73,9 +73,9 @@ EMQ X supports storing messages in Redis, MySQL, PostgreSQL, MongoDB and Cassand
 
 .. _redis_backend:
 
-----------------------------
-Data Persistence using Redis
-----------------------------
+-------------
+Redis Backend
+-------------
 
 Config file: emqx_backend_redis.conf
 
@@ -346,9 +346,9 @@ Enable Redis Backend
 
 .. _mysql_backend:
 
-----------------------------
-Data Persistence Using MySQL
-----------------------------
+-------------
+MySQL Backend
+-------------
 
 Config file: emqx_backend_mysql.conf
 
@@ -685,9 +685,9 @@ Enable MySQL Backend
 
 .. _postgre_backend:
 
----------------------------------
-Data Persistence using PostgreSQL
----------------------------------
+------------------
+PostgreSQL Backend
+------------------
 
 Config file: emqx_backend_pgsql.conf
 
@@ -982,9 +982,9 @@ Enable PostgreSQL Backend
 
 .. _mongodb_backend:
 
-------------------------------
-Data Persistence using MongoDB
-------------------------------
+---------------
+MongoDB Backend
+---------------
 
 Config file: emqx_backend_mongo.conf
 
@@ -1259,9 +1259,9 @@ Enable MongoDB Backend
 
 .. _cassandra_backend:
 
---------------------------------
-Data Persistence using Cassandra
---------------------------------
+-----------------
+Cassandra Backend
+-----------------
 
 Config file: etc/plugins/emqx_backend_cassa.conf
 
