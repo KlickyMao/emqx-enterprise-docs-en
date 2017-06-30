@@ -23,6 +23,7 @@ EMQ X Enterprise
    plugins
    tune
    mqtt
+   rest
 
 Contact & service:
 
