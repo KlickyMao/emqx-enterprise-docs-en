@@ -1,9 +1,9 @@
 
-.. _bridge:
+.. _bridges:
 
-=====================
-Bridge and Forwarding
-=====================
+=======
+Bridges
+=======
 
 EMQ X can bridge and forward messages to Kafka, RabbitMQ or other EMQ X nodes. Meanwhile, mosquitto and rsm can be bridged to EMQ X using common MQTT connection.
 
