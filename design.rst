@@ -8,7 +8,7 @@ Design
 .. _intro:
 
 ------------
-Intro
+Introduction
 ------------
 
 Upgraded from EMQ R1, EMQ X R 2.0 separated the Message Flow Plane and Monitor/Control Plane. This makes possible of sustaining million-level MQTT connections. Separating of Flow Plane and Monitor/Control Plane also makes the EMQ cluster more reliable and provides higher performance. The Architecture of EMQ X R2 is like following::
@@ -166,9 +166,9 @@ The PacketId and MessageId in a End-to-End Message PubSub Sequence::
 
 .. _route_layer:
 
--------------
-PuBSub Layer
--------------
+------------
+PubSub Layer
+------------
 
 The PubSub layer maintains a subscription table and is responsible to dispatch MQTT messages to subscribers.
 
