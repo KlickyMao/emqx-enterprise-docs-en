@@ -37,11 +37,7 @@ Linux: If EMQ X is installed using binary package, the config files are located 
 Environment Variables
 ---------------------
 
-<<<<<<< HEAD
-EMQ X supports setting system parameters using environment variables when it starts up:
-=======
-EMQ X supports setting system arguments by using environment variables when it starts up:
->>>>>>> f5967ac2c2a4c0a3efcc5421b177c30631ec9146
+EMQ X supports setting system parameters by using environment variables when it starts up:
 
 +--------------------+-----------------------------------------------+
 | EMQX_NODE_NAME     | Erlang node name, e.g. emqx@192.168.0.6       |
@@ -81,11 +77,7 @@ The node name and cookie of EMQ X should be configured when clustering:
 Erlang VM Parameters
 --------------------
 
-<<<<<<< HEAD
-Erlang VM parameters, by default 100,000 concurrent connection:
-=======
-Erlang VM arguments, by default 100,000 concurrent connections:
->>>>>>> f5967ac2c2a4c0a3efcc5421b177c30631ec9146
+Erlang VM parameters, by default 100,000 concurrent connections:
 
 .. code-block:: properties
 
@@ -512,11 +504,7 @@ Default enabled EMQ X listeners are: MQTT, MQTT/SSL, MQTT/WS and MQTT/WS/SSL lis
 | 8084      | MQTT/WebSocket/SSL port           |
 +-----------+-----------------------------------+
 
-<<<<<<< HEAD
-EMQ X allows enabling multiple listeners on a single service, most important listener parameters:
-=======
-EMQ X allows enabling multiple listeners on a single server, and the most important listener arguments are listed below:
->>>>>>> f5967ac2c2a4c0a3efcc5421b177c30631ec9146
+EMQ X allows enabling multiple listeners on a single server, and the most important listener parameters are listed below:
 
 +-----------------------------------+--------------------------------------------------+
 | listener.tcp.${name}.acceptors    | TCP Acceptor pool                                |
