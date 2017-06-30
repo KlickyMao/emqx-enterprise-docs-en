@@ -168,20 +168,9 @@ Routing Layer
 
 The routing(distributed) layer maintains and replicates the global Topic Trie and Routing Table. The topic tire is composed of wildcard topics created by subscribers. The Routing Table maps a topic to nodes in the cluster.
 
-For example, if node1 subscribed ‘t/+/x’ and ‘t/+/y’, node2 subscribed ‘t/#’ and node3 subscribed ‘t/a’, there will be a topic trie and route table::
+For example, if node1 subscribed ‘t/+/x’ and ‘t/+/y’, node2 subscribed ‘t/#’ and node3 subscribed ‘t/a’, there will be a topic trie and route table:
 
-    -------------------------
-    |            t          |
-    |           / \         |
-    |          +   #        |
-    |        /  \           |
-    |      x      y         |
-    -------------------------
-    | t/+/x -> node1, node3 |
-    | t/+/y -> node1        |
-    | t/#   -> node2        |
-    | t/a   -> node3        |
-    -------------------------
+.. image:: _static/images/10_2.png
 
 The routing layer would route MQTT messages among clustered nodes by topic trie match and routing table lookup:
 
