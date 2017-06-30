@@ -19,12 +19,14 @@ MQTT client library: https://github.com/mqtt/mqtt.github.io/wiki/libraries
 
 E.g., using mosquitto_sub/pub CLI to subscribe to topics and publish messages.
 
+.. code-block:: properties
+
     mosquitto_sub -t topic -q 2
     mosquitto_pub -t topic -q 1 -m "Hello, MQTT!"
 
 MQTT V3.1.1 Standard: http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html
 
-EMQ X MQTT protocol TCP listener. Configurable in 'emqx.conf:
+EMQ X MQTT protocol TCP listener. Configurable in 'emqx.conf':
 
 .. code-block:: properties
 
