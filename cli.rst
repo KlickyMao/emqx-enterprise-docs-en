@@ -116,7 +116,7 @@ Query metrics of Bytes, MQTT Packets and Messages(sent/received)::
 cluster
 -----------
 
-Cluster Multiple EMQ X nodes (processes):
+Manage EMQ X nodes (processes) in a cluster:
 
 +-----------------------+-----------------------------+
 | cluster join <Node>   | Join the cluster            |
@@ -232,7 +232,7 @@ Kick out client by ClientId::
 sessions
 ------------
 
-Query all MQTT sessions. The broker will create a session for each MQTT client. Persistent Session if clean_session flag is true, transient session otherwise.
+Query all MQTT sessions. The broker will create a session for each MQTT client. Session type will be persistent if clean_session flag is true, transient otherwise.
 
 +--------------------------+-----------------------------+
 | sessions list            | List all sessions           |
@@ -265,7 +265,7 @@ Properties of session:
 +-------------------+----------------------------------------------------------------+
 | message_queue     | Message Queue Size                                             |
 +-------------------+----------------------------------------------------------------+
-| message_dropped   | Number of Messages Dropped for queue is full                   |
+| message_dropped   | Number of Messages Dropped since queue is full                   |
 +-------------------+----------------------------------------------------------------+
 | awaiting_rel      | The number of QoS2 messages received and waiting for PUBREL    |
 +-------------------+----------------------------------------------------------------+
@@ -360,7 +360,7 @@ Query a particular topic::
 subscriptions
 -----------------
 
-Query the sbuscrition table of the broker.
+Query the subscription table of the broker.
 
 +--------------------------------------------+--------------------------------+
 | subscriptions list                         | List all subscriptions         |
@@ -660,7 +660,7 @@ Lista all traces::
 listeners
 ---------
 
-Show all TCP listener::
+Show all TCP listeners::
 
     $ ./bin/emqx_ctl listeners
 
