@@ -11,20 +11,9 @@ Clustering
 Distributed Erlang/OTP
 ----------------------
 
-Erlang/OTP is a concurrent, fault-tolerant, distributed programming platform. A distributed Erlang/OTP system consists of a number of Erlang runtime systems called ‘node’. Nodes connect to each other with TCP/IP sockets and communicate by Message Passing::
+Erlang/OTP is a concurrent, fault-tolerant, distributed programming platform. A distributed Erlang/OTP system consists of a number of Erlang runtime systems called ‘node’. Nodes connect to each other with TCP/IP sockets and communicate by Message Passing:
 
-
-    ---------         ---------
-    | Node1 | --------| Node2 |
-    ---------         ---------
-        |     \     /    |
-        |       \ /      |
-        |       / \      |
-        |     /     \    |
-    ---------         ---------
-    | Node3 | --------| Node4 |
-    ---------         ---------
-
+.. image:: _static/images/10_1.png
 
 Node
 ----------
@@ -111,20 +100,9 @@ Suppose that we create subscriptions:
 | client3        | node3       | t/+/x, t/a                 |
 +----------------+-------------+----------------------------+
 
-Finally the topic trie and route table in the cluster::
+Finally the topic trie and route table in the cluster:
 
-    --------------------------
-    |             t          |
-    |            / \         |
-    |           +   #        |
-    |         /  \           |
-    |       x      y         |
-    --------------------------
-    | t/+/x -> node1, node3  |
-    | t/+/y -> node1         |
-    | t/#   -> node2         |
-    | t/a   -> node3         |
-    --------------------------
+.. image:: _static/images/10_2.png
 
 Message Route and Deliver
 ----------------------------
@@ -239,14 +217,7 @@ The persistent MQTT sessions (clean session = false) are across nodes in the EMQ
 
 Consider two load-balanced nodes in a cluster: node1 and node2. A MQTT client connects to node1 at the first place, node1 creates persistent session for the client, and then disconnects from node1. Later when this client tries to connect to node2, the connection is then created on node2, but the persistent session will be still on where it was (in this case node1)::
 
-                                      node1
-                                   -----------
-                               |-->| session |
-                               |   -----------
-                 node2         |
-              --------------   |
-     client-->| connection |<--|
-              --------------
+.. image:: _static/images/10_3.png
 
 .. _cluster_firewall:
 

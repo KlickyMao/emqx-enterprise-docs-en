@@ -113,7 +113,7 @@ Fastlane limitations:
 
 Fastlane subscription is suitable for IoT sensor data collection:
 
-.. image:: _static/images/fastlane_sensor.jpg
+.. image:: _static/images/3_1.png
 
 ----------------------
 Subscription by Broker

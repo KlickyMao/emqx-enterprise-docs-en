@@ -13,11 +13,9 @@ EMQ X can bridge and forward messages to Kafka, RabbitMQ or other EMQ X nodes. M
 Kafka Bridge
 -------------
 
-EMQ X bridges and forwards MQTT messages to Kafka cluster::
+EMQ X bridges and forwards MQTT messages to Kafka cluster:
 
-                  ---------             ---------
-    Publisher --> | EMQ X | --Bridge--> | Kafka | --> Subscriber
-                  ---------             ---------
+.. image:: _static/images/8_1.png
 
 Config file for Kafka bridge plugin: etc/plugins/emqx_bridge_kafka.conf
 
@@ -230,11 +228,9 @@ Enable Kafka Bridge
 RabbitMQ Bridge
 ---------------
 
-EMQ X bridges and forwards MQTT messages to RabbitMQ cluster::
+EMQ X bridges and forwards MQTT messages to RabbitMQ cluster:
 
-                  ----------             ------------ 
-    Publisher --> | EMQ X  | --Bridge--> | RabbitMQ |  --> Subscriber
-                  ----------             ------------ 
+.. image:: _static/images/8_2.png
 
 Config file of RabbitMQ bridge plugin: etc/plugins/emqx_bridge_rabbit.conf
 
@@ -376,11 +372,9 @@ Enable RabbitMQ Bridge
 Bridging EMQ X Nodes
 --------------------
 
-EMQ X supports bridging between multiple nodes::
+EMQ X supports bridging between multiple nodes:
 
-                  ---------             ---------
-    Publisher --> | EMQ X | --Bridge--> | EMQ X | --> Subscriber
-                  ---------             --------- 
+.. image:: _static/images/8_3.png
 
 Given EMQ nodes emqx1 and emqx2:
 
@@ -430,12 +424,7 @@ mosquitto Bridge
 
 Mosquitto can be bridged to EMQ X cluster using common MQTT connection::
 
-                 -------------             -----------------
-    Sensor ----> | mosquitto | --Bridge--> |               |
-                 -------------             |     EMQ X     |
-                 -------------             |    Cluster    |
-    Sensor ----> | mosquitto | --Bridge--> |               |
-                 -------------             -----------------
+.. image:: _static/images/8_4.png
 
 An example of mosquitto bridge plugin config file: mosquitto.conf::
 

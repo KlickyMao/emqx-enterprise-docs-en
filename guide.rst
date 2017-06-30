@@ -58,13 +58,9 @@ MQTT(SSL) TCP listener. Default port 8883:
 Shared Subscription
 -------------------
 
-Shared Subscription dispatches messages among multiple subscribers in a manner of client load balancing::
+Shared Subscription dispatches messages among multiple subscribers in a manner of client load balancing:
 
-                                ---------
-                                |       | --Msg1--> Subscriber1
-    Publisher--Msg1,Msg2,Msg3-->| EMQ X | --Msg2--> Subscriber2
-                                |       | --Msg3--> Subscriber3
-                                ---------
+.. image:: _static/images/9_1.png
 
 Usage of shared subscription: 
 
@@ -109,14 +105,9 @@ Limitation on Fastlane:
 1. CleanSession = true
 2. Qos = 0
 
-Fastlane is suitable for IoT sensor data collection::
+Fastlane is suitable for IoT sensor data collection:
 
-                 -----------------
-    Sensor ----> |               |
-                 |     EMQ X     | --$fastlane/$queue/#--> Subscriber
-                 |    Cluster    | --$fastlane/$queue/#--> Subscriber
-    Sensor ----> |               |
-                 -----------------
+.. image:: _static/images/9_2.png
 
 .. _http_publish:
 

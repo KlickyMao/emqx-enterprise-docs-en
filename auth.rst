@@ -11,14 +11,9 @@ Design of MQTT Auth
 
 EMQ X utilizes plugins to provide Auth. EMQ X supports username / password, ClientID and anonymous Auth. It also supports Auth integration with MySQL, PostgreSQL, Redis, MongoDB, HTTP and LDAP.
 
-By default, anonymous Auth is enabled by the system. By means of loading multiple Auth plugins, an Auth chain can be thus built::
+By default, anonymous Auth is enabled by the system. By means of loading multiple Auth plugins, an Auth chain can be thus built:
 
-               -----------------           -----------------           ------------------
-    Client --> | Username Auth | -ignore-> | ClientID Auth | -ignore-> | Anonymous Auth |
-               -----------------           -----------------           ------------------
-                      |                         |                                 |
-                     \|/                       \|/                               \|/
-                allow | deny              allow | deny                      allow | deny
+.. image:: _static/images/7.png
 
 ---------------------
 Config Anonymous Auth
@@ -41,15 +36,9 @@ ACL defines::
 
     Allow|Deny Whom Subscribe|Publish Topics
 
-When MQTT clients subscribe to topics or publish messages, the EMQ X access control module tries to match the rules in the list till successfully matching otherwise it fallbacks to default routine::
+When MQTT clients subscribe to topics or publish messages, the EMQ X access control module tries to match the rules in the list till successfully matching otherwise it fallbacks to default routine:
 
-              ---------              ---------              ---------
-    Client -> | Rule1 | --nomatch--> | Rule2 | --nomatch--> | Rule3 | --> Default
-              ---------              ---------              ---------
-                  |                      |                      |
-                match                  match                  match
-                 \|/                    \|/                    \|/
-            allow | deny           allow | deny           allow | deny
+.. image:: _static/images/6.png
 
 ------------------------------------
 Default Access Control Configuration

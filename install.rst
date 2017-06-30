@@ -97,11 +97,11 @@ Deploying on QingCloud
 
 6. Create MQTT TCP listener:
 
-.. image:: _static/images/lb_tcp_1883.png
+.. image:: _static/images/1_1.png
  
 Or create SSL listener and terminate the SSL links on LB:
 
-.. image:: _static/images/lb_ssl_8883.png
+.. image:: _static/images/2_1.png
  
 7. Connect the MQTT clients to the LB using the public IP address and test the deployment.
 
@@ -129,11 +129,11 @@ Deploying on AWS
 
 7. Create MQTT TCP listener on the ELB:
 
-.. image:: _static/images/elb_tcp_1883.png
+.. image:: _static/images/4_1.png
 
    Or create SSL listener and terminate the SSL links on the ELB:
 
-.. image:: _static/images/elb_ssl_8883.png
+.. image:: _static/images/5_1.png
 
 8. Connect the MQTT clients to the ELB using the public IP address and test the deployment.
 

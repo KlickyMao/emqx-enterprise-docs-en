@@ -237,15 +237,9 @@ Defining ACL rules in 'acl.conf'::
 
     allow|deny user|IP_Address|ClientID PUBLISH|SUBSCRIBE TOPICS 
 
-ACL rules are Erlang Tuples, which are matched one by one:: 
+ACL rules are Erlang Tuples, which are matched one by one:
 
-              ---------              ---------              ---------
-    Client -> | Rule1 | --nomatch--> | Rule2 | --nomatch--> | Rule3 | --> Default
-              ---------              ---------              ---------
-                  |                      |                      |
-                match                  match                  match
-                 \|/                    \|/                    \|/
-            allow | deny           allow | deny           allow | deny
+.. image:: _static/images/6.png
 
 Setting default rules in 'acl.conf':
 
