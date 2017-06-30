@@ -25,7 +25,7 @@ EMQ X message broker can be extended by plugins. Ultilizing the module registrat
 Dashboard Plugin
 ----------------
 
-EMQ X Web Dashboard, loaded by default. URL: http://host:18083, default username/password: admin/public。
+EMQ X Web Dashboard, loaded by default. URL: http://host:18083, default username/password: admin/public.
 
 On the dashboard, following information can be queried: Status of EMQ X, statistics and metrics of clients, sessions, topics and subscriptions.
 

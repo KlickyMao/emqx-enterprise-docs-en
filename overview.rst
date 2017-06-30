@@ -104,7 +104,7 @@ EMQ X supports Fastlane Subscription, it greatly enhanced the message routing ef
 
 .. image:: _static/images/fastlane.png
 
-Fastlane usage: *$fastlane/* prefix + topic。
+Fastlane usage: *$fastlane/* prefix + topic.
 
 Fastlane limitations:
 
