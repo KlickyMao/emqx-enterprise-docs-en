@@ -111,14 +111,9 @@ Fastlane limitations:
 1. CleanSession = true
 2. Qos = 0
 
-Fastlane subscription is suitable for IoT sensor data collection::
+Fastlane subscription is suitable for IoT sensor data collection:
 
-                 -----------------
-    Sensor ----> |               |
-                 |     EMQ X     | --$fastlane/$queue/#--> Subscriber
-                 |    Cluster    | --$fastlane/$queue/#--> Subscriber
-    Sensor ----> |               |
-                 -----------------
+.. image:: _static/images/fastlane_sensor.jpg
 
 ----------------------
 Subscription by Broker

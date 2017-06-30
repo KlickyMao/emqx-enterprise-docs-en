@@ -95,27 +95,14 @@ Deploying on QingCloud
     
 5. Create LB and assign the public IP address.
 
-6. Create MQTT TCP listener::
+6. Create MQTT TCP listener:
 
-
-                  -----
-                  |   |
-                  | L | --TCP 1883--> EMQ X
-    --TCP 1883--> |   |
-                  | B | --TCP 1883--> EMQ X
-                  |   |
-                  -----
+.. image:: _static/images/lb_tcp_1883.png
  
-Or create SSL listener and terminate the SSL links on LB::
+Or create SSL listener and terminate the SSL links on LB:
 
-                  -----
-                  |   |
-                  | L | --TCP 1883--> EMQ X
-    --SSL 8883--> |   |
-                  | B | --TCP 1883--> EMQ X
-                  |   |
-                  -----
-  
+.. image:: _static/images/lb_ssl_8883.png
+ 
 7. Connect the MQTT clients to the LB using the public IP address and test the deployment.
 
 ----------------
@@ -140,25 +127,13 @@ Deploying on AWS
 
 6. Create ELB (Classic Load Balancer), assign the VPC network, and assign the public IP address.
 
-7. Create MQTT TCP listener on the ELB::
+7. Create MQTT TCP listener on the ELB:
 
-                 -----
-                 |   |
-                 | E | --TCP 1883--> EMQ X
-    --TCP 1883-->| L |
-                 | B | --TCP 1883--> EMQ X
-                 |   |
-                 -----
+.. image:: _static/images/elb_tcp_1883.png
 
-   Or create SSL listener and terminate the SSL links on the ELB::
+   Or create SSL listener and terminate the SSL links on the ELB:
 
-                 -----
-                 |   |
-                 | E | --TCP 1883--> EMQ X
-    --SSL 8883-->| L |
-                 | B | --TCP 1883--> EMQ X
-                 |   |
-                 -----
+.. image:: _static/images/elb_ssl_8883.png
 
 8. Connect the MQTT clients to the ELB using the public IP address and test the deployment.
 
