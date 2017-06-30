@@ -95,7 +95,7 @@ Response
     }
     
 
-Client in a cluster
+Client in a Cluster
 -------------------
 
 .. code-block:: bash
@@ -296,6 +296,7 @@ Response
 
 
 A Client of a Router
+--------------------
 
 .. code-block:: bash
 
