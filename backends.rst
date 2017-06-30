@@ -354,7 +354,7 @@ Config file: emqx_backend_mysql.conf
 Config MySQL Server
 --------------------
 
-Connection pool of multiple MySQL servers is supported::
+Connection pool of multiple MySQL servers is supported:
 
 .. code-block:: properties
 

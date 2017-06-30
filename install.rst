@@ -553,7 +553,7 @@ Maximum of file handles for current session:
 /etc/sysctl.conf
 ----------------
 
-Add 'fs.file-max' to '/etc/sysctl.conf' and make the changes permanent::
+Add 'fs.file-max' to '/etc/sysctl.conf' and make the changes permanent:
 
 .. code-block:: console
 
