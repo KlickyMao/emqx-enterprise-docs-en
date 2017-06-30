@@ -451,9 +451,9 @@ Stop the server::
 
 .. _install_on_freebsd:
 
------------------------
-Installation on FreeBSD
------------------------
+------------------
+Install on FreeBSD
+------------------
 
 Please contact us for the software package: http://emqtt.com/about#contacts
 
@@ -461,9 +461,9 @@ Installation on FreeBSD is the same as on Linux.
 
 .. _install_on_mac:
 
-------------------------
-Installation on Mac OS X
-------------------------
+--------------------
+Install on Mac OS X
+--------------------
 
 Same procedure as Linux.
 
