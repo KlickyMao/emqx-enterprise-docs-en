@@ -29,26 +29,26 @@ EMQ X MQTT protocol TCP listener. Configurable in 'emqx.conf:
 .. code-block:: properties
 
     ## TCP Listener: 1883, 127.0.0.1:1883, ::1:1883
-    mqtt.listener.tcp.external = 1883
+    listener.tcp.external = 1883
 
     ## Size of acceptor pool
-    mqtt.listener.tcp.external.acceptors = 8
+    listener.tcp.external.acceptors = 8
 
     ## Maximum number of concurrent clients
-    mqtt.listener.tcp.external.max_clients = 1024
+    listener.tcp.external.max_clients = 1024
 
 MQTT(SSL) TCP listener. Default port 8883:
 
 .. code-block:: properties
 
     ## SSL Listener: 8883, 127.0.0.1:8883, ::1:8883
-    mqtt.listener.ssl.external = 8883
+    listener.ssl.external = 8883
 
     ## Size of acceptor pool
-    mqtt.listener.ssl.external.acceptors = 4
+    listener.ssl.external.acceptors = 4
 
     ## Maximum number of concurrent clients
-    mqtt.listener.ssl.external.max_clients = 512
+    listener.ssl.external.max_clients = 512
 
 .. _shared_subscription:
 
@@ -200,7 +200,7 @@ $SYS publish interval can be changed in 'etc/emq.conf':
 
 .. _sys_brokers:
 
-Broker Version, Up-Time and Description
+Broker Version, Uptime and Description
 ---------------------------------------
 
 +--------------------------------+---------------------------+
