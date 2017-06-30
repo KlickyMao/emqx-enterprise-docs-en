@@ -34,11 +34,11 @@ LB products of public cloud providers:
 LBs for Private Cloud:
 
 +----------------+-----------------+------------------------------------------------------+
-| Open-Source LB| SSL Termination | DOC/URL                                              |
+| Open-Source LB | SSL Termination | DOC/URL                                              |
 +================+=================+======================================================+
 | `HAProxy`_     | Y               | https://www.haproxy.com/solutions/load-balancing.html|
 +----------------+-----------------+------------------------------------------------------+
-| `NGINX`_       | PLUS Edition     | https://www.nginx.com/solutions/load-balancing/      |
+| `NGINX`_       | PLUS Edition    | https://www.nginx.com/solutions/load-balancing/      |
 +----------------+-----------------+------------------------------------------------------+
 
 Recommend AWS with LB for a public cloud deployment, and HAProxy for a private cloud deployment.  
@@ -451,9 +451,9 @@ Stop the server::
 
 .. _install_on_freebsd:
 
----------------------
+-----------------------
 Installation on FreeBSD
----------------------
+-----------------------
 
 Please contact us for the software package: http://emqtt.com/about#contacts
 
@@ -461,9 +461,9 @@ Installation on FreeBSD is the same as on Linux.
 
 .. _install_on_mac:
 
-----------------------
+------------------------
 Installation on Mac OS X
-----------------------
+------------------------
 
 Same procedure as Linux.
 

@@ -134,25 +134,25 @@ Web servers (PHP/Java/Python/NodeJS/Ruby on Rails) publish MQTT messages using H
 
 HTTP interface:
 
-+---------+----------------+
++----------+----------------+
 | Parameter| Description    |
-+=========+================+
-| client  | MQTT ClientID  |
-+---------+----------------+
-| qos     | QoS: 0 | 1 | 2 |
-+---------+----------------+
-| retain  | Retain: 0 | 1  |
-+---------+----------------+
-| topic   | Topic          |
-+---------+----------------+
-| message | Message        |
-+---------+----------------+
++==========+================+
+| client   | MQTT ClientID  |
++----------+----------------+
+| qos      | QoS: 0 | 1 | 2 |
++----------+----------------+
+| retain   | Retain: 0 | 1  |
++----------+----------------+
+| topic    | Topic          |
++----------+----------------+
+| message  | Message        |
++----------+----------------+
 
 .. NOTE:: HTTP interface uses Basic authentication
 
-------------------
+--------------
 MQTT WebSocket
-------------------
+--------------
 
 EMQ X supports MQTT WebSocket connection, web browsers can directly connect to broker through MQTT protocol:
 

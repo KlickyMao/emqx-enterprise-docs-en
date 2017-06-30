@@ -26,11 +26,11 @@ Linux: If EMQ X is installed using binary package, the config files are located 
 +----------------------------+----------------------------------------------------+
 | Config file                | Description                                        |
 +============================+====================================================+
-| etc/emqx.conf              | EMQ X server configuration                        |
+| etc/emqx.conf              | EMQ X server configuration                         |
 +----------------------------+----------------------------------------------------+
 | etc/acl.conf               | EMQ X default ACL file                             |
 +----------------------------+----------------------------------------------------+
-| etc/plugins/\*.conf        | EMQ X plugins, persistence and bridge configuration |
+| etc/plugins/\*.conf        | EMQ X plugins, persistence and bridge configuration|
 +----------------------------+----------------------------------------------------+
 
 ---------------------
@@ -454,15 +454,9 @@ System interval of publishing $SYS/# message:
     ## System Interval of publishing broker $SYS Messages
     mqtt.broker.sys_interval = 60
 
-<<<<<<< HEAD
---------------------
-PubSub Parameters
---------------------
-=======
 -----------------
 PubSub Parameters
 -----------------
->>>>>>> f5967ac2c2a4c0a3efcc5421b177c30631ec9146
 
 .. code-block:: properties
 
@@ -474,15 +468,9 @@ PubSub Parameters
     ## Subscribe Asynchronously
     mqtt.pubsub.async = true
 
-<<<<<<< HEAD
------------------
-Bridge Parameters
------------------
-=======
 ----------------------
 MQTT Bridge Parameters
 ----------------------
->>>>>>> f5967ac2c2a4c0a3efcc5421b177c30631ec9146
 
 EMQ X nodes can be bridged:
 
