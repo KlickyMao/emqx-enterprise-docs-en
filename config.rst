@@ -37,7 +37,7 @@ Linux: If EMQ X is installed using binary package, the config files are located 
 Environment Variables
 ---------------------
 
-EMQ X supports setting system arguments using environment variables when it starts up:
+EMQ X supports setting system parameters using environment variables when it starts up:
 
 +--------------------+-----------------------------------------------+
 | EMQX_NODE_NAME     | Erlang node name, e.g.: emqx@192.168.0.6      |
@@ -73,11 +73,11 @@ EMQ X node name, Cookie for distributed nodes:
 
     Erlang/OTP platform application consists of Erlang nodes(process). Each node(process) is assigned with a node name for communication between nodes. All the connected nodes share cookie to authenticate each other.
 
--------------------
-Erlang VM Arguments
--------------------
+--------------------
+Erlang VM Parameters
+--------------------
 
-Erlang VM arguments, by default 100,000 concurrent connection:
+Erlang VM parameters, by default 100,000 concurrent connection:
 
 .. code-block:: properties
 
@@ -121,7 +121,7 @@ Erlang VM arguments, by default 100,000 concurrent connection:
     node.dist_listen_min = 6369
     node.dist_listen_max = 6369
 
-Description of most important arguments of Erlang VM:
+Description of most important parameters of Erlang VM:
 
 +-------------------------+-----------------------------------------------------------------------------------------------------------+
 | node.process_limit      | Max Erlang VM processes. A MQTT connection consumes 2 processes. It should larger than max_clients * 2.   | 
@@ -280,7 +280,7 @@ Enable Cache of ACL of PUBLISH messages:
 .. NOTE:: If a client cached too much ACLs, it causes high memory occupancy.
 
 ------------------------
-MQTT Protocol Arguments
+MQTT Protocol Parameters
 ------------------------
 
 Max Length of ClientId
@@ -312,7 +312,7 @@ Max time interval from Socket connection establishing to receiving CONNECT packe
 Client Connection Force GC
 --------------------------
 
-This argument is used to optimize the CPU / memory occupancy of MQTT connection. When certain amount of messages are transferred, the connection is forced to GC: 
+This parameter is used to optimize the CPU / memory occupancy of MQTT connection. When certain amount of messages are transferred, the connection is forced to GC: 
 
 .. code-block:: properties
 
@@ -330,7 +330,7 @@ Enable client stats:
     mqtt.client.enable_stats = off
 
 -----------------------
-MQTT Session Arguments
+MQTT Session Parameters
 -----------------------
 
 EMQ X creates session for every MQTT connection:
@@ -396,7 +396,7 @@ For every session EMQ X creates a message queues caching QoS1/2 messages:
 
 2. Pending messages for inflight window is full.
 
-Queue Arguments:
+Queue Parameters:
 
 .. code-block:: properties
 
@@ -419,7 +419,7 @@ Queue Arguments:
     ## Queue Qos0 messages?
     mqtt.mqueue.store_qos0 = true
 
-Description of queue arguments:
+Description of queue parameters:
 
 +-----------------------------+-------------------------------------------------------------+
 | mqueue.type                 | Queue type. simple: simple queue, priority: priority queue  |
@@ -448,7 +448,7 @@ System interval of publishing $SYS/# message:
     mqtt.broker.sys_interval = 60
 
 --------------------
-PubSub Arguments
+PubSub Parameters
 --------------------
 
 .. code-block:: properties
@@ -461,9 +461,9 @@ PubSub Arguments
     ## Subscribe Asynchronously
     mqtt.pubsub.async = true
 
-----------------
-Bridge Arguments
-----------------
+-----------------
+Bridge Parameters
+-----------------
 
 EMQ X nodes can be bridged:
 
@@ -505,7 +505,7 @@ Default enabled EMQ X listener are: MQTT, MQTT/SSL, MQTT/WS and MQTT/WS/SSL list
 | 8084      | MQTT/WebSocket/SSL port           |
 +-----------+-----------------------------------+
 
-EMQ X allows enabling multiple listeners on a single servic, most important listener arguments:
+EMQ X allows enabling multiple listeners on a single service, most important listener parameters:
 
 +-----------------------------------+--------------------------------------------------+
 | listener.tcp.${name}.acceptors    | TCP Acceptor pool                                |

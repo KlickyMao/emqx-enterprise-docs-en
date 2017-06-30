@@ -168,11 +168,11 @@ Description of Redis Properties
 | message.acked          | pubsub/#               | on_message_acked_for_pubsub | Process ACK of one to many messages |
 +------------------------+------------------------+-----------------------------+-------------------------------------+
 
-Redis Command Line Arguments
+Redis Command Line Parameters
 -----------------------------
 
 +----------------------+-----------------------------------------------+-------------------------------------------------+
-| hook                 | Argument                                      | Example (Fields separated exactly by one space) |
+| hook                 | Parameter                                      | Example (Fields separated exactly by one space) |
 +======================+===============================================+=================================================+
 | client.connected     | clientid                                      | SET conn:${clientid} clientid                   |
 +----------------------+-----------------------------------------------+-------------------------------------------------+
@@ -431,11 +431,11 @@ Description of MySQL Properties
 | message.acked          | #                      | on_message_acked        | Process ACK                      |
 +------------------------+------------------------+-------------------------+----------------------------------+
 
-SQL Arguments Description 
+SQL Parameters Description 
 --------------------------
 
 +----------------------+---------------------------------------+----------------------------------------------------------------+
-| hook                 | Arguments                             | Example (${name} represents available argument)                |
+| hook                 | Parameters                             | Example (${name} represents available parameter)                |
 +======================+=======================================+================================================================+
 | client.connected     | clientid                              | insert into conn(clientid) values(${clientid})                 |
 +----------------------+---------------------------------------+----------------------------------------------------------------+
@@ -774,11 +774,11 @@ Description of PostgreSQL Properties
 | message.acked          | #                      | on_message_acked        | Process ACK                      |
 +------------------------+------------------------+-------------------------+----------------------------------+
 
-SQL Arguments Description 
+SQL Parameters Description 
 --------------------------
 
 +----------------------+---------------------------------------+----------------------------------------------------------------+
-| hook                 | Arguments                             | Example (${name} represents available argument)                |
+| hook                 | Parameters                             | Example (${name} represents available parameter)                |
 +======================+=======================================+================================================================+
 | client.connected     | clientid                              | insert into conn(clientid) values(${clientid})                 |
 +----------------------+---------------------------------------+----------------------------------------------------------------+
@@ -1355,13 +1355,13 @@ Description of Cassandra Properties
 | message.acked          | #                      | on_message_acked        | Process ACK                      |
 +------------------------+------------------------+-------------------------+----------------------------------+
 
-CQL Arguments Description
+CQL Parameters Description
 -------------------------
 
-Customized CQL command arguments includes:
+Customized CQL command parameters includes:
 
 +----------------------+---------------------------------------+----------------------------------------------------------------+		
-| hook                 | Argument                              | Example (${name} in CQL represents available argument          |		
+| hook                 | Parameter                              | Example (${name} in CQL represents available parameter          |		
 +======================+=======================================+================================================================+		
 | client.connected     | clientid                              | insert into conn(clientid) values(${clientid})                 |		
 +----------------------+---------------------------------------+----------------------------------------------------------------+		

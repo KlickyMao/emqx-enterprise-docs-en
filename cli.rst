@@ -695,7 +695,7 @@ Show all TCP listener::
       current_clients : 0
       shutdown_count  : []
 
-listener Arguments:
+listener Parameters:
 
 +-----------------+--------------------------------------+
 | acceptors       | TCP Acceptor Pool                    |

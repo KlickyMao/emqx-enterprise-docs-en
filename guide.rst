@@ -135,7 +135,7 @@ Web servers (PHP/Java/Python/NodeJS或Ruby on Rails) publishes MQTT messages usi
 HTTP interface:
 
 +---------+----------------+
-| Argument| Description    |
+| Parameter| Description    |
 +=========+================+
 | client  | MQTT ClientID  |
 +---------+----------------+

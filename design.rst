@@ -353,7 +353,7 @@ EMQ X uses (`Chain-of-responsibility_pattern`_) to implement hook mechanism. The
   
 .. image:: ./_static/images/hooks_chain.jpg
 
-The input arguments for a callback function are depending on the types of hook. Clone the emqx_plugin_template project to check the argument in detail: 
+The input parameters for a callback function are depending on the types of hook. Clone the emqx_plugin_template project to check the parameter in detail: 
 
 +-----------------+------------------------+
 | Return          | Description            |

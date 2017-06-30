@@ -225,7 +225,7 @@ Setup the Super User URL and arguements:
     auth.http.super_req.method = post
     auth.http.super_req.params = clientid=%c,username=%u
 
-Setup the ACL URL and arguments:
+Setup the ACL URL and parameters:
 
 .. code-block:: properties
 
