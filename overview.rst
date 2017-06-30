@@ -1,17 +1,17 @@
 
 .. _overview:
 
-=========
+=======
 Oerview
-=========
+=======
 
-EMQ is one of the most deployed MQTT message broker which can sustain million level connection. It is chosen worldwide by more than 5000 enterprise user. More than 100,000 nodes are deployed and serve 30 million connections.
+EMQ is a distributed, massively scalable, highly extensible MQTT message broker which can sustain million level connections. It is chosen by more than 3000 enterprises worldwide. More than 10,000 nodes are deployed and serve 30 million mobile and IoT connections.
 
-EMQ X extends the function and performance of EMQ. It is a commercial version for enterprise. It improves the system architecture of EMQ, adopts Scalable RPC mechanism, provides more reliable clustering and higher performance of message routing.
+EMQ X is the enterprise edition of the EMQ broker which extends the function and performance of EMQ. It improves the system architecture of EMQ, adopts Scalable RPC mechanism, provides more reliable clustering and higher performance of message routing.
 
-EMQ X supports persistence MQTT messages to Redis , MySQL, PostgreSQL, MongoDB, Cassandra and other Database. It also supports bridging and forwarding messages to enterprise middleware like Kafka and RabbitMQ.
+EMQ X supports persistence MQTT messages to Redis , MySQL, PostgreSQL, MongoDB, Cassandra and other Database. It also supports bridging and forwarding messages to enterprise messaging middleware like Kafka and RabbitMQ.
 
-EMQ X can be used as access platform for smart hardware, smart home, IoT, automotive networking applications that serve millions end device.
+EMQ X can be used as access platform for smart hardware, smart home, IoT, automotive networking applications that serve millions of device terminals.
 
 .. image:: _static/images/emqx_enterprise.png
 
@@ -21,19 +21,19 @@ Design Objective
 
 EMQ (Erlang MQTT Broker) is an open source MQTT broker written in Erlang/OTP. Erlang/OTP is a concurrent, fault-tolerant, soft-realtime and distributed programming platform. MQTT is an extremely lightweight publish/subscribe messaging protocol powering IoT, M2M and Mobile applications.
 
-The design objectives of EMQ X focus on enterprise level applications which require high reliability, ability to sustain massive IoT end devices' MQTT connections and meanwhile to keep the message latency very low.
+The design objectives of EMQ X focus on enterprise-level requirements, such as high reliability, massive connections and extremely low message latency.
 
-1. Steadily sustains massive MQTT client connect, a single node handles 0.5 to 1 million connect.
+1. Steadily sustains massive MQTT client connections. A single node is able to handles 0.5 to 1 million connections.
 
-2. Distributed clustering, low message routing latency. Single cluster handles 10 million level message routing.
+2. Distributed clustering, low-latency message routing. Single cluster handles 10 million level subscriptions.
 
-3. Extensible server design. Ability of customizition of various  Auth and high performance data persistence.
+3. Extensible broker design. Allow customizing various Auth/ACL extensions and data persistence extensions.
 
-4. Comprehensive IoT protocol supporting: MQTT, MQTT-SN, CoAP, WebSocket and other protocols by properties.
+4. Support comprehensive IoT protocols: MQTT, MQTT-SN, CoAP, WebSocket and other proprietary protocols.
 
--------------
+--------
 Features
--------------
+--------
 
 1. Scalable RPC Architecture: segregated cluster management channel and data channel between nodes.
 
@@ -43,13 +43,13 @@ Features
 
 4. Persistence to MySQL: subscriptions, client connection status, MQTT messages, retained messages.
    
-5. Persistence to PostgreSQL: subscription, client connection status, MQTT messages, retained messages.
+5. Persistence to PostgreSQL: subscriptions, client connection status, MQTT messages, retained messages.
  
-6. Persistence to MongoDB: subscription, client connection status, MQTT messages, retained messages.
+6. Persistence to MongoDB: subscriptions, client connection status, MQTT messages, retained messages.
 
-7. Bridge to Kafka: EMQ X bridges MQTT messages, client connected/disconnected event to Kafka.
+7. Bridge to Kafka: EMQ X forwards MQTT messages, client connected/disconnected event to Kafka.
 
-8. Bridge to RabbitMQ: EMQ X bridges MQTT messages, client connected/disconnected event to RabbitMQ.
+8. Bridge to RabbitMQ: EMQ X forwards MQTT messages, client connected/disconnected event to RabbitMQ.
 
 .. _scalable_rpc:
 
@@ -57,7 +57,7 @@ Features
 Scalable RPC Architecture
 -------------------------
 
-EMQ X improved the communication mechanism between distributed nodes, the cluster management channel and the data channel are segregated, the message throughput and the cluster reliability are greatly improved.
+EMQ X improved the communication mechanism between distributed nodes, the cluster management channel and the data channel are seperated, the message throughput and the cluster reliability are greatly improved.
 
 .. NOTE:: the dash line indicates the cluster management and the solid line indicates the data exchange.
 
@@ -92,7 +92,7 @@ Scalable RPC configuration::
     ## Probes lost to close the connection
     rpc.socket_keepalive_count = 9
 
-.. NOTE:: If firewalls are deployed among the nodes, the 5369 port on them must be opened.
+.. NOTE:: If firewalls are deployed between nodes, the 5369 port on each node must be opened.
 
 .. _fastlane:
 
@@ -120,30 +120,29 @@ Fastlane subscription is suitable for IoT sensor data collection::
     Sensor ----> |               |
                  -----------------
 
-------------------
-Agent Subscription
-------------------
+----------------------
+Subscription by Broker
+----------------------
 
-EMQ X supports agent subscription. It is not necessary that a client subscribes to any topics after connect, the EQM X agent can load the subscriptions for it from the database.
+EMQ X supports subscription by broker. A client does not need an explicit subscribes action and will get some topics subscribed. The EMQ X broker will subscribe a specified topics on behalf of the client. The topics are loaded from Redis or databases.
 
-In a context of low power consumption and low network bandwidth,EMQ X agent subscription saves the packets exchanged and the transport volume.
+EMQ X subscription by broker is suitable for devices require low power consumption and narrow network bandwidth. The feature brings convenience to massive device management too.
 
-------------------------
-Message Data Persistence
-------------------------
+---------------------
+MQTT Data Persistence
+---------------------
 
-EMQ X supports message data (subscription, messages, client status) persistence to Redis, MySQL, PostgreSQL, MongoDB and Cassandra database:
+EMQ X supports MQTT data (subscription, messages, client status) persistence to Redis, MySQL, PostgreSQL, MongoDB and Cassandra database:
 
 .. image:: _static/images/storage.png
 
 For details please refer to the "Data Persistence" chapter.
 
-
 ------------------------
-Message bridge & Forward 
+Message Bridge & Forward 
 ------------------------
 
-EMQ X supports bridging and forwarding MQTT messages to systems like RabbitMQ and Kafka. It can be deployed as IoT Hub:
+EMQ X allows bridging and forwarding MQTT messages to systems such as RabbitMQ and Kafka. It can be deployed as an IoT Hub:
 
 .. image:: _static/images/iothub.png
 

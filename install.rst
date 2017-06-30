@@ -1,25 +1,25 @@
 
 .. _deploy:
 
-===========
+==========
 Deployment
-===========
+==========
 
-EMQ X Cluster can be deployed as the IoT Hub on private cloud of an enterprise or on public cloud like QingCloud, AliYun or AWS. 
+EMQ X Cluster can be deployed as an IoT Hub on an enterprise's private cloud, or on public clouds such as AWS, Azure and QingCloud.
 
-Typical deployment:
+Typical deployment architecture:
 
 .. image:: _static/images/emqx_deploy.png
 
--------------------
+------------------
 Load Balancer (LB)
--------------------
+------------------
 
-The Load Balancer (LB) distributes MQTT connections and traffic across the device and the EMQ X cluster. LB enhances the HA of the clusters, balances the loads among the cluster and makes the dynamic expansion possible.
+The Load Balancer (LB) distributes MQTT connections and traffic from devices across the EMQ X clusters. LB enhances the HA of the clusters, balances the loads among the cluster noes and makes the dynamic expansion possible.
 
-Also, we recommend that the SSL connection terminates at the LB. The links between the devices and the LB are secured by SSL, while the LB and the EMQ X is connected per plain TCP. By this setup, a single EMQ X cluster can serve a million devices.
+It is recommended that SSL connections are terminated by a LB. The links between devices and the LB are secured by SSL, while the links between the LB and EMQ X cluster nodes are plain TCP connections. By this setup, a single EMQ X cluster can serve a million devices.
 
-LB products by public cloud providers:
+LB products of public cloud providers:
 
 +---------------+-----------------+----------------------------------------------------+
 | Cloud provider| SSL Termination | LB Product DOC/URL                                 |
@@ -30,9 +30,6 @@ LB products by public cloud providers:
 +---------------+-----------------+----------------------------------------------------+
 | `aliyun`_     | N               | https://www.aliyun.com/product/slb                 |
 +---------------+-----------------+----------------------------------------------------+
-| `QCloud`_     | N/A             | https://www.qcloud.com/product/clb                 |
-+---------------+-----------------+----------------------------------------------------+
-
 
 LBs for Private Cloud:
 
@@ -44,15 +41,15 @@ LBs for Private Cloud:
 | `NGINX`_       | PLUS Edition     | https://www.nginx.com/solutions/load-balancing/      |
 +----------------+-----------------+------------------------------------------------------+
 
-We recommend AWS with LB for public cloud and HAProxy as LB for private cloud deployment.  
+Recommend AWS with LB for a public cloud deployment, and HAProxy for a private cloud deployment.  
 
---------------
+-------------
 EMQ X Cluster
---------------
+-------------
 
-EMQ X cluster nodes are deployed behind LB. It is suggested that the nodes are deployed on VPCs or on a private network. Cloud provider -- like QingCloud, AWS, UCloud and QCloud -- usually provides VPC network.
+EMQ X cluster nodes are deployed behind LB. It is suggested that the nodes are deployed on VPCs or on a private network. Cloud provider -- like AWS, Azure or QingCloud  -- usually provides VPC network.
 
-EMQ X Provides the MQTT service on the following TCP ports by default:
+EMQ X Provides the MQTT service on following TCP ports by default:
 
 +-----------+-----------------------------------+
 | 1883      | MQTT                              |
@@ -64,7 +61,7 @@ EMQ X Provides the MQTT service on the following TCP ports by default:
 | 8084      | MQTT/WebSocket/SSL                |
 +-----------+-----------------------------------+
 
-According to the chosen protocol and ports, the firewall should make the relevant ports accessible. 
+According to the protocol and ports, the firewall should make the relevant ports accessible. 
 
 For the clustering, the following ports of EMQ X node are used:
 
@@ -73,7 +70,7 @@ For the clustering, the following ports of EMQ X node are used:
 +-----------+-----------------------------------+
 | 5369      | Data channel                      |
 +-----------+-----------------------------------+
-| 6369      | Control channel                   |
+| 6369      | Cluster channel                   |
 +-----------+-----------------------------------+
 
 When firewalls are deployed between nodes, the firewalls should be configured that the above ports are inter-accessible between the nodes.
@@ -88,11 +85,11 @@ Deploying on QingCloud
 
 3. Create 2 EMQ X hosts inside the private network, like:
 
-+-------+-------------+
-| emqx1 | 192.168.0.2 |
-+-------+-------------+
-| emqx2 | 192.168.0.3 |
-+-------+-------------+
+    +-------+-------------+
+    | emqx1 | 192.168.0.2 |
+    +-------+-------------+
+    | emqx2 | 192.168.0.3 |
+    +-------+-------------+
 
 4. Install and cluster EMQ X on these two hosts. Please refer to the sections of cluster installation for details.
     
@@ -121,9 +118,9 @@ Or create SSL listener and terminate the SSL links on LB::
   
 7. Connect the MQTT clients to the LB using the public IP address and test the deployment.
 
------------------
+----------------
 Deploying on AWS
------------------
+----------------
 
 1. Create VPC network.
 
@@ -131,13 +128,13 @@ Deploying on AWS
 
 3. Create 2 EMQ X hosts inside the private network, like:
 
-+-------+-------------+
-| emqx1 | 192.168.0.2 |
-+-------+-------------+
-| emqx2 | 192.168.0.3 |
-+-------+-------------+
+    +-------+-------------+
+    | emqx1 | 192.168.0.2 |
+    +-------+-------------+
+    | emqx2 | 192.168.0.3 |
+    +-------+-------------+
 
-4. Open the TCP ports for MQTT services (e.g. 1883,8883) on the security group. 
+4. Open the TCP ports for MQTT services (e.g. 1883,8883) on the security group.
 
 5. Install and cluster EMQ X on these two hosts. Please refer to the sections of cluster installation for details.
 
@@ -174,9 +171,9 @@ Direct connection of EMQ X cluster
 
 EMQ X cluster DNS-resolvable and the clients access the cluster via domain name or IP list:
 
-1. Deploy EMQ X cluster. Please refer to the sections of 'program packet installation' and 'EMQ X nodes clustering' for details.
+1. Deploy EMQ X cluster. Please refer to the sections of 'Installation' and 'EMQ X nodes clustering' for details.
 
-2. On the firewall enable the access to the MQTT ports (e.g. 1883, 8883).
+2. Enable the access to the MQTT ports on the firewall (e.g. 1883, 8883).
 
 3. Client devices access the EMQ X cluster via domain name or IP list.
 
@@ -189,13 +186,13 @@ HAProxy as LB for EMQ X cluster and terminates the SSL connections:
 
 1. Create EMQ X Cluster nodes like following:
 
-+-------+-------------+
-| node  | IP          |
-+=======+=============+
-| emqx1 | 192.168.0.2 |
-+-------+-------------+
-| emqx2 | 192.168.0.3 |
-+-------+-------------+
+    +-------+-------------+
+    | node  | IP          |
+    +=======+=============+
+    | emqx1 | 192.168.0.2 |
+    +-------+-------------+
+    | emqx2 | 192.168.0.3 |
+    +-------+-------------+
 
 2. Modify the /etc/haproxy/haproxy.cfg accordingly. 
    An example::
@@ -225,13 +222,13 @@ NGINX Plus as LB for EMQ X cluster and terminates the SSL links:
 
 2. Create EMQ X cluster nodes like following:
 
-+-------+-------------+
-| node  | IP          |
-+=======+=============+
-| emqx1 | 192.168.0.2 |
-+-------+-------------+
-| emqx2 | 192.168.0.3 |
-+-------+-------------+
+    +-------+-------------+
+    | node  | IP          |
+    +=======+=============+
+    | emqx1 | 192.168.0.2 |
+    +-------+-------------+
+    | emqx2 | 192.168.0.3 |
+    +-------+-------------+
 
 3. Modify the /etc/nginx/nginx.conf.
    An example::
@@ -257,9 +254,9 @@ NGINX Plus as LB for EMQ X cluster and terminates the SSL links:
         }
     }
 
-=====================
+============
 Installation
-=====================
+============
 
 -------------------
 System Requirements
@@ -268,37 +265,36 @@ System Requirements
 Operating System
 ----------------
 
-EMQ X is developed utilizing the Erlang/OTP language / platform. It runs on the following OS: Linux, FreeBSD, MAC OS X and Windows Server.
+EMQ X depends the Erlang/OTP language/platform, runs on following OSes: Linux, FreeBSD, MAC OS X and Windows Server.
 
-We recommend the 64-bit Linux-based cloud host or server for the deployment.
+Recommend a 64-bit Linux-based cloud host or server for the deployment.
 
 CPU/MEM
---------
+-------
 
-In the test scenario, EMQ X with 1G memory sustains 80K TCP links or 15K SSL links.  
+In the test scenario, EMQ X with 1G memory is able to sustain 80K TCP links or 15K SSL links.  
 
-In production environment, it is suggested to deploy at least 2 nodes in the cluster. Planning the CPU and Memory capacity on the basic of concurrent connections and the message throughput.
+In production environment, it is recommended to deploy at least 2 nodes in a cluster. Evaluate CPU and Memory capacity on concurrent connections and the message throughput.
 
----------------------------------
+-------------------------------
 Naming Rule of Software Package
----------------------------------
+-------------------------------
 
-For every EMQ X release, it is distributed as software packages for Ubuntu, CentOs, FreeBSD, Mac OS X and windows. Besides, an image for Docker is also released. 
+For every EMQ X release, it is distributed as software packages for Ubuntu, CentOs, FreeBSD, Mac OS X and windows. Besides, an image for Docker is also released.
 
 Please contact us for the software package: http://emqtt.com/about#contacts
 
 The package name consists of the platform name and the version number. E.g. emqx-enterprise-centos7-v2.1.0.zip
 
-.. _install_rpm:
+.. _install_via_rpm:
 
------------------
-RPM Package
------------------
+---------------
+Install via RPM
+---------------
 
-RPM is recommended for CentOS and RedHat. After installation, EMQ X service is managed by the OS. 
+RPM is recommended for CentOS and RedHat. After installation, EMQ X service is managed by the OS.
 
-Installation
-------------
+Install the package:
 
 .. code-block:: console
 
@@ -310,35 +306,35 @@ Installation
 
     yum install lksctp-tools
 
-Config Files
-------------
+Config, Data and Log Files:
 
-EMQ X config file: /etc/emqx/emqx.conf, config file for plugins: /etc/emqx/plugins/\*.conf
+    +---------------------------+------------------------------------------+
+    | File                      | Description                              |
+    +===========================+==========================================+
+    | /etc/emqx/emqx.conf       | EMQ X Config File                        |
+    +---------------------------+------------------------------------------+
+    | /etc/emqx/plugins/\*.conf | Plugins's config files                   |
+    +---------------------------+------------------------------------------+
+    | /var/log/emqx             | Log Files                                |
+    +---------------------------+------------------------------------------+
+    | /var/lib/emqx/            | Data Files                               |
+    +---------------------------+------------------------------------------+
 
-Log Files
-----------
-
-Log files directory: /var/log/emqx
-
-Data Files
-----------
-
-Data files derectory: /var/lib/emqx/
-
-Start/Stop
-----------
+Start/Stop the broker:
 
 .. code-block:: console
 
     service emqx start|stop|restart
 
-.. _install_deb:
+.. _install_via_deb:
 
-----------------
-DEB package
-----------------
+---------------
+Install via DEB
+---------------
 
 DEB is recommended for Debian and Ubuntu. After installation, EMQ X service is managed by the OS.
+
+Install the package:
 
 .. code-block:: console
 
@@ -350,23 +346,21 @@ DEB is recommended for Debian and Ubuntu. After installation, EMQ X service is m
 
     apt-get install lksctp-tools
 
-Config Files
-------------
+Config, Data and Log Files:
 
-EMQ X config file: /etc/emqx/emqx.conf, plugins config file: /etc/emqx/plugins/\*.conf。
+    +---------------------------+------------------------------------------+
+    | File                      | Description                              |
+    +===========================+==========================================+
+    | /etc/emqx/emqx.conf       | EMQ X Config File                        |
+    +---------------------------+------------------------------------------+
+    | /etc/emqx/plugins/\*.conf | Plugins's config files                   |
+    +---------------------------+------------------------------------------+
+    | /var/log/emqx             | Log Files                                |
+    +---------------------------+------------------------------------------+
+    | /var/lib/emqx/            | Data Files                               |
+    +---------------------------+------------------------------------------+
 
-Log Files
-----------
-
-Log files directory: /var/log.emqx
-
-Data Files
------------
-
-Data files directory: /var/lib/emqx/
-
-Start/Stop
-----------
+Start/Stop the broker:
 
 .. code-block:: console
 
@@ -374,9 +368,9 @@ Start/Stop
 
 .. _install_on_linux:
 
----------------------------
-EMQ X Packages for Linux
----------------------------
+--------------------------
+General Packages for Linux
+--------------------------
 
 EMQ X Linux General Packages:
 
@@ -458,20 +452,20 @@ Stop the server::
 .. _install_on_freebsd:
 
 ---------------------
-Installing on FreeBSD
+Installation on FreeBSD
 ---------------------
 
 Please contact us for the software package: http://emqtt.com/about#contacts
 
-Installing on FreeBSD is the same as which on Linux.
+Installation on FreeBSD is the same as on Linux.
 
 .. _install_on_mac:
 
 ----------------------
-Installing on Mac OS X
+Installation on Mac OS X
 ----------------------
 
-The to install and start EMQ X on Mac OS X is the same as which of on Linux.
+Same procedure as Linux.
 
 When developing MQTT applications on Mac, modify the 'etc/emqx.conf' file as following to check the MQTT massages on the console: 
 
@@ -486,11 +480,11 @@ When developing MQTT applications on Mac, modify the 'etc/emqx.conf' file as fol
     ## Console log file
     log.console.file = log/console.log
 
-.. _install_docker:
+.. _install_via_docker:
 
----------------------------
-Installing the Docker Image
----------------------------
+------------------------
+Install via Docker Image
+------------------------
 
 Please contact us to get the docker image: http://emqtt.com/about#contacts
 
@@ -522,7 +516,7 @@ Enter the running container:
 Quick Setup
 ===========
 
-Assuming a EMQ X Cluster with two Linux nodes deployed on cloud VPC network or private network:
+Suppose a EMQ X Cluster with two Linux nodes deployed on a cloud VPC network or a private network:
 
 +---------------------+---------------------+
 | Node name           |    IP               |
@@ -536,7 +530,7 @@ Assuming a EMQ X Cluster with two Linux nodes deployed on cloud VPC network or p
 System Parameters
 -----------------
 
-Deployed under Linux, EMQ X sustains 100 concurrent connections. To achieve this, the system Kernel, Networking, the Erlang VM and EMQ X itself must be tuned.
+Deployed under Linux, EMQ X sustains 100k concurrent connections by default. To achieve this, the system Kernel, Networking, the Erlang VM and EMQ X itself must be tuned.
 
 System-Wide File Handles
 ------------------------
@@ -595,9 +589,9 @@ Set the node name and cookies(communicating between nodes)
     node.name   = emqx2@192.168.0.20
     node.cookie = secret_dist_cookie
 
-------------------
+-----------------
 Start EMQ X Nodes
-------------------
+-----------------
 
 If EMQ X is installed using RPM or DEB::
 
@@ -607,9 +601,9 @@ if EMQ X is installed using zip package::
 
     ./bin/emqx start
 
-----------------------------
+--------------------------
 Clustering the EMQ X Nodes
-----------------------------
+--------------------------
 
 Start the two nodes, on the emqx1@192.168.0.10 run:: 
 
@@ -635,7 +629,7 @@ Check the cluster status on any node::
 Managing utlizing Web Console
 -----------------------------
 
-'emxq-dashboard' plugin starts the web management and provides the management service on port 18083.
+'emqx-dashboard' plugin starts the web management and provides the management service on port 18083.
 
 Web console URL: http://localhost:18083/, default user-name: admin, password: public.
 
@@ -656,7 +650,7 @@ By default, EMQ X starts following service on these ports:
 +-----------+-----------------------------------+
 | 8083      | MQTT/WebSocket                    |
 +-----------+-----------------------------------+
-| 8084      | MQTT/WebSocket(SSL)               |
+| 8084      | MQTT/WebSocket/SSL                |
 +-----------+-----------------------------------+
 | 18083     | Web Management Console            |
 +-----------+-----------------------------------+
@@ -690,14 +684,12 @@ The firewalls must allow the nodes access each other on the following ports:
 +-----------+-----------------------------------+
 | 5369      | Data channel                      |
 +-----------+-----------------------------------+
-| 6369      | Control channel                   |
+| 6369      | Cluster channel                   |
 +-----------+-----------------------------------+
 
 .. _qingcloud:  https://qingcloud.com
 .. _AWS:        https://aws.amazon.com
 .. _aliyun:     https://www.aliyun.com
-.. _UCloud:     https://ucloud.cn
-.. _QCloud:     https://www.qcloud.com
 .. _HAProxy:    https://www.haproxy.org
 .. _NGINX:      https://www.nginx.com 
 

@@ -13,7 +13,7 @@ MQTT is light weight publish/subscribe message transport protocol. EMQ X is a me
 
 .. image:: ./_static/images/pubsub_concept.png
 
-EMQ X is running, any clients that support MQTT protocol can connect to the EMQ X broker and then publish / subscribe messages.
+When EMQ X is running, any clients that support MQTT protocol can connect to the EMQ X broker and then publish / subscribe messages.
 
 MQTT client library: https://github.com/mqtt/mqtt.github.io/wiki/libraries
 
@@ -24,7 +24,7 @@ E.g., using mosquitto_sub/pub CLI to subscribe to topics and publish messages.
 
 MQTT V3.1.1 Standard: http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html
 
-EMQ X QTT protocol TCP listener. Configurable in 'emqx.conf:
+EMQ X MQTT protocol TCP listener. Configurable in 'emqx.conf:
 
 .. code-block:: properties
 
@@ -80,7 +80,7 @@ Usage of shared subscription:
 Local Subscription
 ------------------
 
-By mean of Local Subscription, subscription and route table is created on localhost only:
+By mean of Local Subscription, subscription and route table are created on localhost only:
 
 .. code-block:: shell
 
@@ -126,7 +126,7 @@ EMQ X provides a HTTP publish interface. Application server or Web server can pu
 
     HTTP POST http://host:8083/mqtt/publish
 
-Web servers (PHP/Java/Python/NodeJS或Ruby on Rails) publishes MQTT messages using HTTP POST:
+Web servers (PHP/Java/Python/NodeJS/Ruby on Rails) publish MQTT messages using HTTP POST:
 
 .. code-block:: bash
 
@@ -162,11 +162,11 @@ EMQ X supports MQTT WebSocket connection, web browsers can directly connect to b
 | Sec-WebSocket-Protocol: | 'mqttv3.1' or 'mqttv3.1.1' |
 +-------------------------+----------------------------+
 
-Dashboard plugin provides a test page for MQTT WebSocketconnection::
+Dashboard plugin provides a test page for MQTT WebSocket connection::
 
     http://127.0.0.1:18083/websocket.html
 
-EMQ X uses an embed HTTP server to implement MQTT WebSocket and HTTP publish interface. Configurabl in file 'etc/emqx.conf':
+EMQ X uses an embedded HTTP server to implement MQTT WebSocket and HTTP publish interface. Configurable in file 'etc/emqx.conf':
 
 .. code-block:: properties
 
@@ -181,7 +181,7 @@ EMQ X uses an embed HTTP server to implement MQTT WebSocket and HTTP publish int
 $SYS -- System Topic
 --------------------
 
-EMQ X periodically publish its server status, MQTT protocol statistics, client connection status to topics starting with '$SYS/'.
+EMQ X periodically publishes its server status, MQTT protocol statistics, client connection status to topics starting with '$SYS/'.
 
 $SYS topic path starts with "$SYS/brokers/{node}/", where '${node}' is the Erlang node name::
 

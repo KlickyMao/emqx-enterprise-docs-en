@@ -37,10 +37,10 @@ Linux: If EMQ X is installed using binary package, the config files are located 
 Environment Variables
 ---------------------
 
-EMQ X supports setting system arguments using environment variables when it starts up:
+EMQ X supports setting system arguments by using environment variables when it starts up:
 
 +--------------------+-----------------------------------------------+
-| EMQX_NODE_NAME     | Erlang node name, e.g.: emqx@192.168.0.6      |
+| EMQX_NODE_NAME     | Erlang node name, e.g. emqx@192.168.0.6       |
 +--------------------+-----------------------------------------------+
 | EMQX_NODE_COOKIE   | Cookie for distributed erlang node            |
 +--------------------+-----------------------------------------------+
@@ -55,11 +55,11 @@ EMQ X supports setting system arguments using environment variables when it star
 | EMQX_HTTPS_PORT    | HTTPS/WebSocket listener port, default: 8084  |
 +--------------------+-----------------------------------------------+
 
------------------
-EMQ X Node Name
------------------
+---------------------
+EMQ X Node and Cookie
+---------------------
 
-EMQ X node name, Cookie for distributed nodes:
+The node name and cookie of EMQ X should be configured when clustering:
 
 .. code-block:: properties
 
@@ -71,13 +71,13 @@ EMQ X node name, Cookie for distributed nodes:
 
 .. NOTE::
 
-    Erlang/OTP platform application consists of Erlang nodes(process). Each node(process) is assigned with a node name for communication between nodes. All the connected nodes share cookie to authenticate each other.
+    Erlang/OTP platform application consists of Erlang nodes(processes). Each node(process) is assigned with a node name for communication between nodes. All the connected nodes share the same cookie to authenticate each other.
 
 -------------------
 Erlang VM Arguments
 -------------------
 
-Erlang VM arguments, by default 100,000 concurrent connection:
+Erlang VM arguments, by default 100,000 concurrent connections:
 
 .. code-block:: properties
 
@@ -123,21 +123,21 @@ Erlang VM arguments, by default 100,000 concurrent connection:
 
 Description of most important arguments of Erlang VM:
 
-+-------------------------+-----------------------------------------------------------------------------------------------------------+
-| node.process_limit      | Max Erlang VM processes. A MQTT connection consumes 2 processes. It should larger than max_clients * 2.   | 
-+-------------------------+-----------------------------------------------------------------------------------------------------------+
-| node.max_ports          | Max port number of a node. A MQTT connection consumes 1 port. It should larger than max_clients.          | 
-+-------------------------+-----------------------------------------------------------------------------------------------------------+
-| node.dist_listen_min    | Min TCP port for nodes internal communication. If firewall presents, it should be configured accordingly. |
-+-------------------------+-----------------------------------------------------------------------------------------------------------+
-| node.dist_listen_max    | Max TCP port for nodes internal communication. If firewall presents, it should be configured accordingly. |
-+-------------------------+-----------------------------------------------------------------------------------------------------------+
++-------------------------+------------------------------------------------------------------------------------------------------------+
+| node.process_limit      | Max Erlang VM processes. A MQTT connection consumes 2 processes. It should be larger than max_clients * 2. |
++-------------------------+------------------------------------------------------------------------------------------------------------+
+| node.max_ports          | Max port number of a node. A MQTT connection consumes 1 port. It should be larger than max_clients.        |
++-------------------------+------------------------------------------------------------------------------------------------------------+
+| node.dist_listen_min    | Min TCP port for nodes internal communication. If firewall presents, it should be configured accordingly.  |
++-------------------------+------------------------------------------------------------------------------------------------------------+
+| node.dist_listen_max    | Max TCP port for nodes internal communication. If firewall presents, it should be configured accordingly.  |
++-------------------------+------------------------------------------------------------------------------------------------------------+
 
-----------------------------
+---------------------------
 EMQ X Cluster Communication
-----------------------------
+---------------------------
 
-EMQ X supports Scalable RPC architecture, the data channel and the cluster control channel are separated to improve the cluster reliability and performance:
+EMQ X supports Scalable RPC architecture, the data channel and the cluster control channel are separated to improve the cluster’s reliability and performance:
 
 .. code-block:: properties
 
@@ -168,9 +168,9 @@ EMQ X supports Scalable RPC architecture, the data channel and the cluster contr
     ## Probes lost to close the connection
     rpc.socket_keepalive_count = 9
 
----------------------
-Log Level & Log Files 
----------------------
+-----------------
+Log Level & Files
+-----------------
 
 Console Log
 -----------
@@ -202,7 +202,7 @@ Crash Log
     log.crash.file = {{ platform_log_dir }}/crash.log
 
 Syslog
-----------
+-------
 
 .. code-block:: properties
 
@@ -224,9 +224,9 @@ By default, EMQ X enables Anonymous Auth, any client can connect to the server:
     mqtt.allow_anonymous = true
 
 Access Control List (ACL) File
--------------------------------
+------------------------------
 
-Default ACL based on 'acl.conf'. If other Auth plugin(s), e.g.MySQL and PostgreSQL Auth, is(are) loaded, this config file is then ignored. 
+Default ACL is based on 'acl.conf'. If other Auth plugin(s), e.g. MySQL and PostgreSQL Auth, is(are) loaded, this config file is then ignored.
 
 .. code-block:: properties
 
@@ -237,7 +237,7 @@ Defining ACL rules in 'acl.conf'::
 
     allow|deny user|IP_Address|ClientID PUBLISH|SUBSCRIBE TOPICS 
 
-ACL rules are Erlang Tuples, them are matched one by one:: 
+ACL rules are Erlang Tuples, which are matched one by one:: 
 
               ---------              ---------              ---------
     Client -> | Rule1 | --nomatch--> | Rule2 | --nomatch--> | Rule3 | --> Default
@@ -265,12 +265,12 @@ Setting default rules in 'acl.conf':
 
 .. NOTE:: default rules allow only local user to subscribe to '$SYS/#' and '#'
 
-After EMQ X receives MQTT clients' PUBLISH or SUBSCRIBE requests, it match the ACL rules one by one till it hits, and return 'allow' or 'deny'.
+After EMQ X receives MQTT clients' PUBLISH or SUBSCRIBE requests, it matches the ACL rules one by one till it hits, and return 'allow' or 'deny'.
 
-Cache of ACL
----------------------
+Cache of ACL Rule
+-----------------
 
-Enable Cache of ACL of PUBLISH messages:
+Enable Cache of ACL rule for PUBLISH messages:
 
 .. code-block:: properties
 
@@ -280,7 +280,7 @@ Enable Cache of ACL of PUBLISH messages:
 .. NOTE:: If a client cached too much ACLs, it causes high memory occupancy.
 
 ------------------------
-MQTT Protocol Arguments
+MQTT Protocol Parameters
 ------------------------
 
 Max Length of ClientId
@@ -291,18 +291,18 @@ Max Length of ClientId
     ## Max ClientId Length Allowed.
     mqtt.max_clientid_len = 1024
 
-Max Length of MQTT packet
---------------------------
+Max Length of MQTT Packet
+-------------------------
 
 .. code-block:: properties
 
     ## Max Packet Size Allowed, 64K by default.
     mqtt.max_packet_size = 64KB
 
-Timeout of Client Connection 
------------------------------
+MQTT Client Idle Timeout
+------------------------
 
-Max time interval from Socket connection establishing to receiving CONNECT packet: 
+Max time interval from Socket connection establishing to receiving CONNECT packet:
 
 .. code-block:: properties
 
@@ -319,10 +319,10 @@ This argument is used to optimize the CPU / memory occupancy of MQTT connection.
     ## Force GC: integer. Value 0 disabled the Force GC.
     mqtt.conn.force_gc_count = 100
 
-Client stats
---------------
+Enable Per Client Statistics
+----------------------------
 
-Enable client stats:
+Enable per client stats:
 
 .. code-block:: properties
 
@@ -330,10 +330,10 @@ Enable client stats:
     mqtt.client.enable_stats = off
 
 -----------------------
-MQTT Session Arguments
+MQTT Session Parameters
 -----------------------
 
-EMQ X creates session for every MQTT connection:
+EMQ X creates a session for every MQTT connection:
 
 .. code-block:: properties
 
@@ -375,7 +375,7 @@ EMQ X creates session for every MQTT connection:
 | session.max_inflight      | Inflight window. Maximum allowed simultaneous QoS1/2 packet. 0 means unlimited. Higher      |
 |                           | value means higher throughput while lower value means stricter packet transmission order.   |        
 +---------------------------+---------------------------------------------------------------------------------------------+
-| session.retry_interval    | Retry interval between QoS1/2 messages and PUBACK message                                   |
+| session.retry_interval    | Retry interval between QoS1/2 messages and PUBACK messages                                  |
 +---------------------------+---------------------------------------------------------------------------------------------+
 | session.max_awaiting_rel  | Maximum number of packets awaiting PUBREL packet                                            |
 +---------------------------+---------------------------------------------------------------------------------------------+
@@ -383,18 +383,18 @@ EMQ X creates session for every MQTT connection:
 +---------------------------+---------------------------------------------------------------------------------------------+
 | session.enable_stats      | Enable session stats                                                                        |
 +---------------------------+---------------------------------------------------------------------------------------------+
-| session.expiry_interval   | Session expiry time. Counting from disconnection of client, in minutes.                     |
+| session.expiry_interval   | Session expiry time. Start counting from disconnection of the client, in minutes.           |
 +---------------------------+---------------------------------------------------------------------------------------------+
 
--------------------
+------------------
 MQTT Message Queue
--------------------
+------------------
 
-For every session EMQ X creates a message queues caching QoS1/2 messages:
+For every session EMQ X creates a message queue caching QoS1/2 messages:
 
 1. Offline messages for persistent session.
 
-2. Pending messages for inflight window is full.
+2. Pending messages when inflight window is full.
 
 Queue Arguments:
 
@@ -432,9 +432,8 @@ Description of queue arguments:
 +-----------------------------+-------------------------------------------------------------+
 | mqueue.high_watermark       | High watermark                                              |
 +-----------------------------+-------------------------------------------------------------+
-| mqueue.store_qos0           | Maintain Queue for QoS0 message?                            |
+| mqueue.store_qos0           | Maintain Queue for QoS0 messages                            |
 +-----------------------------+-------------------------------------------------------------+
-
 
 ----------------------
 Sys Interval of Broker
@@ -447,9 +446,9 @@ System interval of publishing $SYS/# message:
     ## System Interval of publishing broker $SYS Messages
     mqtt.broker.sys_interval = 60
 
---------------------
-PubSub Arguments
---------------------
+-----------------
+PubSub Parameters
+-----------------
 
 .. code-block:: properties
 
@@ -461,9 +460,9 @@ PubSub Arguments
     ## Subscribe Asynchronously
     mqtt.pubsub.async = true
 
-----------------
-Bridge Arguments
-----------------
+----------------------
+MQTT Bridge Parameters
+----------------------
 
 EMQ X nodes can be bridged:
 
@@ -489,11 +488,11 @@ EMQ X plugin config file location:
     ## File to store loaded plugin names.
     mqtt.plugins.loaded_file = {{ platform_data_dir }}/loaded_plugins
 
----------------
+--------------
 MQTT Listeners
----------------
+--------------
 
-Default enabled EMQ X listener are: MQTT, MQTT/SSL, MQTT/WS and MQTT/WS/SSL listener:
+Default enabled EMQ X listeners are: MQTT, MQTT/SSL, MQTT/WS and MQTT/WS/SSL listeners:
 
 +-----------+-----------------------------------+
 | 1883      | MQTT/TCP port                     |
@@ -505,7 +504,7 @@ Default enabled EMQ X listener are: MQTT, MQTT/SSL, MQTT/WS and MQTT/WS/SSL list
 | 8084      | MQTT/WebSocket/SSL port           |
 +-----------+-----------------------------------+
 
-EMQ X allows enabling multiple listeners on a single servic, most important listener arguments:
+EMQ X allows enabling multiple listeners on a single server, and the most important listener arguments are listed below:
 
 +-----------------------------------+--------------------------------------------------+
 | listener.tcp.${name}.acceptors    | TCP Acceptor pool                                |
@@ -517,9 +516,9 @@ EMQ X allows enabling multiple listeners on a single servic, most important list
 | listener.tcp.${name}.access.${id} | limitation on client IP Address                  |
 +-----------------------------------+--------------------------------------------------+
 
---------------------------
+-------------------------
 MQTT/TCP Listener - 1883
---------------------------
+-------------------------
 
 .. code-block:: properties
 
@@ -556,7 +555,7 @@ MQTT/TCP Listener - 1883
 MQTT/SSL Listener - 8883
 ------------------------
 
-One way authentication by default:
+One way SSL authentication by default:
 
 .. code-block:: properties
 
@@ -610,9 +609,9 @@ One way authentication by default:
     ### Notice: 'verify' should be configured as 'verify_peer'
     ## listener.ssl.external.peer_cert_as_username = cn
 
--------------------------------
+------------------------------
 MQTT/WebSocket Listener - 8083
--------------------------------
+------------------------------
 
 .. code-block:: properties
 

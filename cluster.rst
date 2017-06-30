@@ -88,7 +88,7 @@ The cluster design could be summarized by the following two rules::
     When a MQTT client SUBSCRIBE a Topic on a node, the node will tell all the other nodes in the cluster: I subscribed a Topic.
     When a MQTT Client PUBLISH a message to a node, the node will lookup the Topic table and forward the message to nodes that subscribed the Topic.
 
-Finally there will be a global route table(Topic -> Node) that replicated to all nodes in the cluster::
+Finally there will be a global route table(Topic -> Node) that is replicated to all nodes in the cluster::
 
     topic1 -> node1, node2
     topic2 -> node3
@@ -129,7 +129,7 @@ Finally the topic trie and route table in the cluster::
 Message Route and Deliver
 ----------------------------
 
-The brokers in the cluster route messages by topic trie and route table, deliver messages to MQTT clients by subscriptions. Subscriptions are mapping from topic to subscribers, are stored only in the local node, will not be replicated to other nodes.
+The brokers in the cluster route messages by topic trie and route table, deliver messages to MQTT clients by subscriptions. Subscriptions are mapping from topic to subscribers, and are stored only in the local node, and will not be replicated to other nodes.
 
 Suppose client1 PUBLISH a message to the topic ‘t/a’, the message Route and Deliver process::
 
@@ -237,7 +237,7 @@ Session across Nodes
 
 The persistent MQTT sessions (clean session = false) are across nodes in the EMQ X cluster.
 
-Consider two load-balanced nodes in a cluster: node1 and node2. A MQTT client connects to node1 at the first place, node1 creates persistent session for the client, and then disconnects from node1. Later when this client tries connect to node2, the connection is then created on node2, but the persistent session will be still on where is was (in this case node1)::
+Consider two load-balanced nodes in a cluster: node1 and node2. A MQTT client connects to node1 at the first place, node1 creates persistent session for the client, and then disconnects from node1. Later when this client tries to connect to node2, the connection is then created on node2, but the persistent session will be still on where it was (in this case node1)::
 
                                       node1
                                    -----------
@@ -284,7 +284,7 @@ Network Partitions
 
 EMQ X cluster requires reliable network to avoid network partition. The cluster will not recover from a network partition automatically. If network partition occurs, manual intervention is expected.
 
-.. NOTE:: Network partition means the nodes works fine but they can't reach each other (due to network failure) and thus consider the communication partner is down. EMQ X 2.2 will support Network partition automatic recovery.
+.. NOTE:: Network partition means the nodes work fine but they can't reach each other (due to network failure) and thus consider the communication partner is down. EMQ X 2.2 will support Network partition automatic recovery.
 
 .. _cluster_hash:
 
