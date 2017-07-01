@@ -57,7 +57,7 @@ Features
 Scalable RPC Architecture
 -------------------------
 
-EMQ X improves the communication mechanism between distributed nodes, seperates the cluster management channel and the data channel, and greatly improved the message throughput and the cluster reliability.
+EMQ X improves the communication mechanism between distributed nodes, segregates the cluster management channel and the data channel, and greatly improved the message throughput and the cluster reliability.
 
 .. NOTE:: the dash line indicates the cluster management and the solid line indicates the data exchange.
 
