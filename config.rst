@@ -39,25 +39,25 @@ Environment Variables
 
 EMQ X supports setting system parameters by using environment variables when it starts up:
 
-+--------------------+-----------------------------------------------+
-| EMQX_NODE_NAME     | Erlang node name, e.g. emqx@192.168.0.6       |
-+--------------------+-----------------------------------------------+
-| EMQX_NODE_COOKIE   | Cookie for distributed erlang node            |
-+--------------------+-----------------------------------------------+
-| EMQX_MAX_PORTS     | Maximum number of opened sockets              |
-+--------------------+-----------------------------------------------+
-| EMQX_TCP_PORT      | MQTT TCP listener port, default: 1883         |
-+--------------------+-----------------------------------------------+
-| EMQX_SSL_PORT      | MQTT SSL listener port, default: 8883         |
-+--------------------+-----------------------------------------------+
-| EMQX_HTTP_PORT     | HTTP/WebSocket listener port, default: 8083   |
-+--------------------+-----------------------------------------------+
-| EMQX_HTTPS_PORT    | HTTPS/WebSocket listener port, default: 8084  |
-+--------------------+-----------------------------------------------+
++--------------------+-------------------------------------------------+
+| EMQX_NODE_NAME     | Erlang node name, e.g. emqx@192.168.0.6         |
++--------------------+-------------------------------------------------+
+| EMQX_NODE_COOKIE   | Cookie for distributed erlang node              |
++--------------------+-------------------------------------------------+
+| EMQX_MAX_PORTS     | Maximum number of opened sockets                |
++--------------------+-------------------------------------------------+
+| EMQX_TCP_PORT      | MQTT/TCP listener port, default: 1883           |
++--------------------+-------------------------------------------------+
+| EMQX_SSL_PORT      | MQTT/SSL listener port, default: 8883           |
++--------------------+-------------------------------------------------+
+| EMQX_WS_PORT       | MQTT/WebSocket listener port, default: 8083     |
++--------------------+-------------------------------------------------+
+| EMQX_WSS_PORT      | MQTT/WebSocket/SSL listener port, default: 8084 |
++--------------------+-------------------------------------------------+
 
----------------------
-EMQ X Node and Cookie
----------------------
+---------------
+Node and Cookie
+---------------
 
 The node name and cookie of EMQ X should be configured when clustering:
 
@@ -77,7 +77,7 @@ The node name and cookie of EMQ X should be configured when clustering:
 Erlang VM Parameters
 --------------------
 
-Erlang VM parameters, by default 100,000 concurrent connections:
+Erlang VM parameters, by default 100,000 concurrent connections allowed:
 
 .. code-block:: properties
 
@@ -133,11 +133,11 @@ Description of most important parameters of Erlang VM:
 | node.dist_listen_max    | Max TCP port for nodes internal communication. If firewall presents, it should be configured accordingly.  |
 +-------------------------+------------------------------------------------------------------------------------------------------------+
 
----------------------------
-EMQ X Cluster Communication
----------------------------
+---------------------
+Cluster Communication
+---------------------
 
-EMQ X supports Scalable RPC architecture, the data channel and the cluster control channel are separated to improve the cluster’s reliability and performance:
+EMQ X adopts Scalable RPC architecture, the data channel and the cluster control channel are separated to improve the cluster’s reliability and performance:
 
 .. code-block:: properties
 
@@ -259,7 +259,7 @@ Setting default rules in 'acl.conf':
 
 .. NOTE:: default rules allow only local user to subscribe to '$SYS/#' and '#'
 
-After EMQ X receives MQTT clients' PUBLISH or SUBSCRIBE requests, it matches the ACL rules one by one till it hits, and return 'allow' or 'deny'.
+After EMQ X receives MQTT clients' PUBLISH or SUBSCRIBE packets, it matches the ACL rules one by one till it hits, and return 'allow' or 'deny'.
 
 Cache of ACL Rule
 -----------------
@@ -271,7 +271,7 @@ Enable Cache of ACL rule for PUBLISH messages:
     ## Cache ACL for PUBLISH
     mqtt.cache_acl = true
 
-.. NOTE:: If a client cached too much ACLs, it causes high memory occupancy.
+.. WARNING:: If a client cached too much ACLs, it causes high memory occupancy.
 
 ------------------------
 MQTT Protocol Parameters
@@ -303,7 +303,7 @@ Max time interval from Socket connection establishing to receiving CONNECT packe
     ## Client Idle Timeout (Second)
     mqtt.client.idle_timeout = 30
 
-Client Connection Force GC
+Force GC Client Connection
 --------------------------
 
 This parameter is used to optimize the CPU / memory occupancy of MQTT connection. When certain amount of messages are transferred, the connection is forced to GC: 
@@ -327,7 +327,7 @@ Enable per client stats:
 MQTT Session Parameters
 -----------------------
 
-EMQ X creates a session for every MQTT connection:
+EMQ X creates a session for each MQTT connection:
 
 .. code-block:: properties
 
@@ -486,7 +486,7 @@ EMQ X plugin config file location:
 MQTT Listeners
 --------------
 
-Default enabled EMQ X listeners are: MQTT, MQTT/SSL, MQTT/WS and MQTT/WS/SSL listeners:
+Listeners enabled by default are: MQTT, MQTT/SSL, MQTT/WS and MQTT/WS/SSL:
 
 +-----------+-----------------------------------+
 | 1883      | MQTT/TCP port                     |

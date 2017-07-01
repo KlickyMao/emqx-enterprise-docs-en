@@ -142,11 +142,9 @@ Format of the globally unique message id:
 
 4. Sequence: 2 bytes sequence in one process
 
-The PacketId and MessageId in an End-to-End Message PubSub Sequence::
+The PacketId and MessageId in an End-to-End Message PubSub Sequence:
 
 .. image:: _static/images/11_5.png
-
-    PktId <-- Session --> MsgId <-- Router --> MsgId <-- Session --> PktId
 
 .. _route_layer:
 
