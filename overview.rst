@@ -29,7 +29,7 @@ The design objectives of EMQ X focus on enterprise-level requirements, such as h
 
 3. Extensible broker design. Allow customizing various Auth/ACL extensions and data persistence extensions.
 
-4. Support comprehensive IoT protocols: MQTT, MQTT-SN, CoAP, WebSocket and other proprietary protocols.
+4. Supports comprehensive IoT protocols: MQTT, MQTT-SN, CoAP, WebSocket and other proprietary protocols.
 
 --------
 Features
@@ -57,7 +57,7 @@ Features
 Scalable RPC Architecture
 -------------------------
 
-EMQ X improved the communication mechanism between distributed nodes, the cluster management channel and the data channel are seperated, the message throughput and the cluster reliability are greatly improved.
+EMQ X improves the communication mechanism between distributed nodes, seperates the cluster management channel and the data channel, and greatly improved the message throughput and the cluster reliability.
 
 .. NOTE:: the dash line indicates the cluster management and the solid line indicates the data exchange.
 
@@ -100,7 +100,7 @@ Scalable RPC configuration::
 Fastlane Subscription
 ---------------------
 
-EMQ X supports Fastlane Subscription, it greatly enhanced the message routing efficience and is thus very suitable for big data collection of IoT applications.
+EMQ X supports Fastlane Subscription, it can greatly enhance the message routing efficiency and is thus very suitable for big data collection of IoT applications.
 
 .. image:: _static/images/fastlane.png
 
@@ -121,7 +121,7 @@ Subscription by Broker
 
 EMQ X supports subscription by broker. A client does not need an explicit subscribes action and will get some topics subscribed. The EMQ X broker will subscribe a specified topics on behalf of the client. The topics are loaded from Redis or databases.
 
-EMQ X subscription by broker is suitable for devices require low power consumption and narrow network bandwidth. The feature brings convenience to massive device management too.
+EMQ X subscription by broker is suitable for devices requiring low power consumption and narrow network bandwidth. The feature brings convenience to massive device management too.
 
 ---------------------
 MQTT Data Persistence
