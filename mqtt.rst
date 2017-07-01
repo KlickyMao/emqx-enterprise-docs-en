@@ -246,11 +246,11 @@ MQTT Retained Message
 When a MQTT client sends PUBLISH, it can set the RETAIN flag to indicate a retained message. A retained message is stored by broker and will be sent to clients who subscribe this topic later. A topic has only one retained message which implies new retained message will take place of the old one.
 
 E.g.:
-A mosquitto client sent a retained message with topic 'a/b/c'::
+A mosquitto client sent a retained message to topic 'a/b/c'::
 
     mosquitto_pub -r -q 1 -t a/b/c -m 'hello'
 
-Later, a client sbuscribes topic 'a/b/c', and it receives::
+Later, a client sbuscribes to topic 'a/b/c', and it will receive::
 
     $ mosquitto_sub -t a/b/c -q 1
     hello
