@@ -19,8 +19,8 @@ EMQ X bridges and forwards MQTT messages to Kafka cluster:
 
 Config file for Kafka bridge plugin: etc/plugins/emqx_bridge_kafka.conf
 
-Config Kafka Cluster
----------------------
+Configure Kafka Cluster
+------------------------
 
 .. code-block:: properties
 
@@ -33,8 +33,8 @@ Config Kafka Cluster
     ## Kafka Parition Strategy
     bridge.kafka.parition_strategy = random
 
-Config Kafka Bridge Hooks
--------------------------
+Configure Kafka Bridge Hooks
+----------------------------
 
 .. code-block:: properties
     
@@ -80,8 +80,8 @@ Description of Kafka Bridge Hooks
 | on_message_acked       | Messages acknowledged            |
 +------------------------+----------------------------------+
 
-Forwarding Client Connected / Disconnected Events to Kafka
------------------------------------------------------------
+Forward Client Connected / Disconnected Events to Kafka
+--------------------------------------------------------
 
 Client goes online, EMQ X forwards 'client_connected' event message to Kafka:
 
@@ -106,8 +106,8 @@ Client goes offline, EMQ X forwards 'client_disconnected' event message to Kafka
             "ts": ${ts}
             }
 
-Forwarding Subscription Event to Kafka
----------------------------------------
+Forward Subscription Event to Kafka
+-----------------------------------
 
 .. code-block:: javascript
     
@@ -121,8 +121,8 @@ Forwarding Subscription Event to Kafka
              "ts": ${timestamp}
             }
 
-Forwarding Unsubscription Event to Kafka
-----------------------------------------
+Forward Unsubscription Event to Kafka
+--------------------------------------
 
 .. code-block:: javascript
     
@@ -136,8 +136,8 @@ Forwarding Unsubscription Event to Kafka
              "ts": ${timestamp}
             }
 
-Forwarding MQTT Messages to Kafka
----------------------------------
+Forward MQTT Messages to Kafka
+-------------------------------
 
 .. code-block:: javascript
 
@@ -234,8 +234,8 @@ EMQ X bridges and forwards MQTT messages to RabbitMQ cluster:
 
 Config file of RabbitMQ bridge plugin: etc/plugins/emqx_bridge_rabbit.conf
 
-Config RabbitMQ Cluster
------------------------
+Configure RabbitMQ Cluster
+--------------------------
 
 .. code-block:: properties
 
@@ -269,8 +269,8 @@ Config RabbitMQ Cluster
 
     # bridge.rabbit.1.heartbeat = 0
 
-Config RabbitMQ Bridge Hooks
-----------------------------
+Configure RabbitMQ Bridge Hooks
+-------------------------------
 
 .. code-block:: properties
 
@@ -285,8 +285,8 @@ Config RabbitMQ Bridge Hooks
 
     bridge.rabbit.hook.message.acked.1 = {"action": "on_message_acked", "rabbit": 1, "exchange": "topic:emq.acked"}
 
-Forwarding Subscription Event to RabbitMQ
------------------------------------------
+Forward Subscription Event to RabbitMQ
+---------------------------------------
 
 .. code-block:: javascript
 
@@ -295,8 +295,8 @@ Forwarding Subscription Event to RabbitMQ
     headers = [{<<"x-emq-client-id">>, binary, ClientId}]
     payload = jsx:encode([{Topic, proplists:get_value(qos, Opts)} || {Topic, Opts} <- TopicTable])
 
-Forwarding Unsubscription Event to RabbitMQ
--------------------------------------------
+Forward Unsubscription Event to RabbitMQ
+----------------------------------------
 
 .. code-block:: javascript
 
@@ -305,8 +305,8 @@ Forwarding Unsubscription Event to RabbitMQ
     headers = [{<<"x-emq-client-id">>, binary, ClientId}]
     payload = jsx:encode([Topic || {Topic, _Opts} <- TopicTable]),
 
-Forwarding MQTT Messages to RabbitMQ
--------------------------------------
+Forward MQTT Messages to RabbitMQ
+---------------------------------
 
 .. code-block:: javascript
 
@@ -317,8 +317,8 @@ Forwarding MQTT Messages to RabbitMQ
                {<<"x-emq-publish-msgid">>, binary, emqx_base62:encode(Id)}]
     payload = Payload
 
-Forwarding MQTT Message Ack Event to RabbitMQ
----------------------------------------------
+Forward MQTT Message Ack Event to RabbitMQ
+-------------------------------------------
 
 .. code-block:: javascript
 

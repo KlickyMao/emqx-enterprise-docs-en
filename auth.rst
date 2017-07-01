@@ -9,17 +9,17 @@ AuthN/AuthZ
 Design of MQTT Auth
 --------------------
 
-EMQ X utilizes plugins to provide Auth. EMQ X supports username / password, ClientID and anonymous Auth. It also supports Auth integration with MySQL, PostgreSQL, Redis, MongoDB, HTTP and LDAP.
+EMQ X utilizes plugins to provide various Authentication mechanism. EMQ X supports username / password, ClientID and anonymous Auth. It also supports Auth integration with MySQL, PostgreSQL, Redis, MongoDB, HTTP and LDAP.
 
 By default, anonymous Auth is enabled by the system. By means of loading multiple Auth plugins, an Auth chain can be thus built:
 
 .. image:: _static/images/7.png
 
----------------------
-Config Anonymous Auth
----------------------
+---------------
+Anonymous Auth
+---------------
 
-Anonymous Auth is the last measure of Auth chain. By default, it is enabled in file 'etc/emqx.conf'. We suggest disabling it in deployment:
+Anonymous Auth is the last measure of Auth chain. By default, it is enabled in file 'etc/emqx.conf'. We suggest disabling it in production deployment:
 
 .. code-block:: properties
 
@@ -40,9 +40,9 @@ When MQTT clients subscribe to topics or publish messages, the EMQ X access cont
 
 .. image:: _static/images/6.png
 
-------------------------------------
-Default Access Control Configuration
-------------------------------------
+---------------------------
+Default Access Control File
+---------------------------
 
 The default access control of EMQ X server is configured by the file acl.conf:
 
@@ -103,11 +103,11 @@ The config files of Auth plugins are located in '/etc/emqx/plugins/'(RPM/DEB ins
 | emqx_auth_mongo         | emqx_auth_mongo.conf      | MongoDB AuthN/AuthZ                   |
 +-------------------------+---------------------------+---------------------------------------+
 
-------------------------------
-Configure ClientID Auth Plugin
-------------------------------
+---------------------
+ClientID Auth Plugin
+---------------------
 
-Modify the 'emqx_auth_clientid.conf' to configure the ClientID / Password list:
+Configure the ClientID / Password list in the 'emqx_auth_clientid.conf':
 
 .. code-block:: properties
 
@@ -130,11 +130,11 @@ Load ClientId Auth plugin:
 
     ./bin/emqx_ctl plugins load emqx_auth_clientid
 
-------------------------------
-Configure Username Auth Plugin
-------------------------------
+---------------------------
+Username/Passwd Auth Plugin
+---------------------------
 
-Modify the 'emqx_auth_username.conf' to configure the Username / Password list:
+Configure the Username / Password list in the 'emqx_auth_username.conf':
 
 .. code-block:: properties
 
@@ -168,11 +168,11 @@ After the plugin is loaded, there are two possible ways to add users:
 
    $ ./bin/emqx_ctl users add <Username> <Password>
 
---------------------------
-Configure LDAP Auth Plugin
---------------------------
+-----------------
+LDAP Auth Plugin
+-----------------
 
-Modify the 'emqx_auth_ldap.conf' file and configure the LDAP Auth Plugin:
+Configure the LDAP Auth Plugin in the 'emqx_auth_ldap.conf' file:
 
 .. code-block:: properties
 
@@ -192,11 +192,11 @@ Load the LDAP Auth plugin:
 
     ./bin/emqx_ctl plugins load emqx_auth_ldap
 
---------------------------
-Configure HTTP Auth Plugin
---------------------------
+---------------------
+HTTP Auth/ACL Plugin
+---------------------
 
-Modify the 'emqx_auth_http.conf' and configure the HTTP Auth plugin:
+Configure the HTTP Auth/ACL in the 'emqx_auth_http.conf' file: 
 
 .. code-block:: properties
 
@@ -231,17 +231,17 @@ Design of HTTP Auth and ACL server API::
 
     If Auth/ACL fails, API return 4xx
 
-Load HTTP Auth plugin:
+Load HTTP Auth/ACL plugin:
 
 .. code-block:: console
 
     ./bin/emqx_ctl plugins load emqx_auth_http
 
----------------------------
-Configure MySQL Auth Plugin
----------------------------
+---------------------
+MySQL Auth/ACL Plugin
+---------------------
 
-Modify the 'emqx_auth_mysql.conf' to configure the default MQTT user, ACL and Auth:
+Create MQTT users/ACL' database, and configure the ACL and Auth queries in the 'emqx_auth_mysql.conf' file:
 
 MQTT Auth User List
 -------------------
@@ -340,20 +340,20 @@ Configure MySQL ACL Query Statement
     auth.mysql.acl_nomatch = deny
 
 Load MySQL Auth Plugin
------------------------
+----------------------
 
 .. code-block:: console
 
     ./bin/emqx_ctl plugins load emqx_auth_mysql
 
---------------------------------
-Configure PostgreSQL Auth Plugin
---------------------------------
+--------------------------
+PostgreSQL Auth/ACL Plugin
+--------------------------
 
-Modify the 'emqx_auth_pgsql.conf' file to configure the MQTT user, ACL and Auth:
+Create MQTT users' ACL tables, and configure Auth, ACL queries in the 'emqx_auth_pgsql.conf' file:
 
-Postgre MQTT User List
-----------------------
+Postgre MQTT User Table
+-----------------------
 
 .. code-block:: sql
 
@@ -367,8 +367,8 @@ Postgre MQTT User List
 
 .. NOTE:: User can define the user list table and configure it in the 'authquery' statement.
 
-Postgre MQTT Access Control List
---------------------------------
+Postgre MQTT ACL Table
+----------------------
 
 .. code-block:: sql
 
@@ -451,11 +451,11 @@ Load Postgre Auth Plugin
 
     ./bin/emqx_ctl plugins load emqx_auth_pgsql
 
----------------------------
-Configure Redis Auth Plugin
----------------------------
+---------------------
+Redis/ACL Auth Plugin
+---------------------
 
-Config file 'emqx_auth_redis.conf':
+Config file: 'emqx_auth_redis.conf':
 
 Redis Server Address 
 --------------------
@@ -527,11 +527,11 @@ Load Redis Auth Plugin
 
     ./bin/emqx_ctl plugins load emqx_auth_redis
 
------------------------------
-Configure MongoDB Auth Plugin
------------------------------
+-----------------------
+MongoDB Auth/ACL Plugin
+-----------------------
 
-Modify the 'emqx_auth_mongo.conf' file to configure MongoDB, MQTT users and ACL Collection:
+Configure MongoDB, MQTT users and ACL Collection in the 'emqx_auth_mongo.conf' file:
 
 MongoDB Server
 --------------
@@ -554,7 +554,7 @@ MongoDB Server
     auth.mongo.database = mqtt
 
 Configure Auth Query Collection
---------------------------------
+-------------------------------
 
 .. code-block:: properties
 
@@ -646,5 +646,4 @@ Load Mognodb Auth Plugin
     ./bin/emqx_ctl plugins load emqx_auth_mongo
 
 .. _recon: http://ferd.github.io/recon/
-
 

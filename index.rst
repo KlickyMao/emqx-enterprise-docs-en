@@ -3,15 +3,17 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-====================
-EMQ X Enterprise
-====================
+==============================
+EMQ X Enterprise Documentation
+==============================
 
 .. toctree::
    :maxdepth: 2
 
    overview
+   deploy
    install
+   quick
    config
    auth
    backends
@@ -21,25 +23,21 @@ EMQ X Enterprise
    design
    cli
    plugins
+   rest
    tune
    mqtt
-   rest
 
 Contact & service:
 
 +------------+--------------------------------+
-| Web :      | http://emqtt.com               |
+| Web :      | http://emqtt.io                |
 +------------+--------------------------------+
 | Tel.:      | 400-696-5502                   |
 +------------+--------------------------------+
-| email:     | contact@emqtt.io               |
-+------------+--------------------------------+
-| WeChat:    | emqttd                         |
-+------------+--------------------------------+
-| Weibo:     | http://weibo.com/emqtt         |
+| Email:     | contact@emqtt.io               |
 +------------+--------------------------------+
 | Twitter:   | @emqtt                         |
 +------------+--------------------------------+
-| Company:   | EMQ Enterprise, inc            |
+| Company:   | EMQ Enterprise, Inc.           |
 +------------+--------------------------------+
 

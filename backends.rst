@@ -42,15 +42,15 @@ One to many message Persistence
 
 6. Backend records the read position of SUB1 and SUB2, the next message’s retrieval starts from this position.
 
-Retainment of Client Connection State
--------------------------------------
+Client Connection State
+------------------------
 
 EMQ X supports retaining the client's connection state in Redis or DB.
 
 Client Subscription by Broker
 -----------------------------
 
-EMQ X Persistence supports Subscription by broker. When a client goes online, the persistence module loads the subscriptions of the client from Redis or Databases.
+EMQ X Persistence supports subscription by broker. When a client goes online, the persistence module loads the subscriptions of the client from Redis or Databases.
 
 List of Persistence Plugins
 ----------------------------
@@ -79,8 +79,8 @@ Redis Backend
 
 Config file: emqx_backend_redis.conf
 
-Config the Redis Server
------------------------
+Configure the Redis Server
+--------------------------
 
 Config Connection Pool of Multiple Redis Servers:
 
@@ -98,8 +98,8 @@ Config Connection Pool of Multiple Redis Servers:
     ## Redis subscribe channel
     backend.redis.pool1.channel = mqtt_channel
 
-Config Persistence Hooks
-------------------------
+Configure Persistence Hooks
+----------------------------
 
 .. code-block:: properties
     
@@ -189,10 +189,10 @@ Redis Command Line Parameters
 | message.delivered    | msgid, topic, clientid                        | HSET delivered:${clientid} topic msgid          |
 +----------------------+-----------------------------------------------+-------------------------------------------------+
 
-Config 'action' utilizing Redis Command Line
----------------------------------------------
+Configure 'action' with Redis Commands
+---------------------------------------
 
-Redis backend supports using 'commands' in 'action', e.g.:
+Redis backend supports raw 'commands' in 'action', e.g.:
 
 .. code-block:: properties
     
@@ -351,8 +351,8 @@ MySQL Backend
 
 Config file: emqx_backend_mysql.conf
 
-Config MySQL Server
---------------------
+Configure MySQL Server
+-----------------------
 
 Connection pool of multiple MySQL servers is supported:
 
@@ -373,8 +373,8 @@ Connection pool of multiple MySQL servers is supported:
     ## Mysql Database
     backend.mysql.pool1.database = mqtt
 
-Config MySQL Persistence Hooks
-------------------------------
+Configure MySQL Persistence Hooks
+----------------------------------
 
 .. code-block:: properties
 
@@ -451,8 +451,8 @@ SQL Parameters Description
 | message.delivered    | msgid, topic, clientid                | insert into delivered(msgid, topic) values(${msgid}, ${topic}) |
 +----------------------+---------------------------------------+----------------------------------------------------------------+
 
-Config 'action' utilizing SQL
------------------------------
+Configure 'action' with SQL
+----------------------------
 
 MySQL backend supports using SQL in 'action':
 
@@ -498,7 +498,7 @@ MySQL Client Connection Table
       UNIQUE KEY `mqtt_client_key` (`clientid`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-Inquire the client connection state:
+Query the client connection state:
 
 .. code-block:: sql
 
@@ -530,10 +530,10 @@ If client 'test' is offline:
     +----+----------+-------+----------------+---------------------+---------------------+---------------------+
     1 rows in set (0.00 sec)
 
-MySQL Subscription TABLE
+MySQL Subscription Table
 ------------------------
 
-*mqtt_sub* stores subscriptions of clients:
+*mqtt_sub* table stores MQTT subscriptions of clients:
 
 .. code-block:: sql
 
@@ -556,13 +556,13 @@ E.g., client 'test' subscribes to 'test_topic1' and 'test_topic2':
     insert into mqtt_sub(clientid, topic, qos) values("test", "test_topic1", 1);
     insert into mqtt_sub(clientid, topic, qos) values("test", "test_topic2", 2);
 
-Inquire subscription of a client:
+Query subscription of a client:
 
 .. code-block:: sql
     
     select * from mqtt_sub where clientid = ${clientid};
 
-E.g., inquiring the Subscription of client 'test':
+E.g., query the Subscription of client 'test':
 
 .. code-block:: sql
     
@@ -597,13 +597,13 @@ MySQL Message Table
       PRIMARY KEY (`id`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-Inquiring messages published by a client:
+Query messages published by a client:
 
 .. code-block:: sql
 
     select * from mqtt_msg where sender = ${clientid};
 
-Inquiring messages published by client 'test':
+Query messages published by client 'test':
 
 .. code-block:: sql
 
@@ -638,13 +638,13 @@ mqtt_retain stores retained messages:
       UNIQUE KEY `mqtt_retain_key` (`topic`)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-Inquiring retained messages:
+Query retained messages:
 
 .. code-block:: sql
 
     select * from mqtt_retain where topic = ${topic};
 
-Inquiring retained messages with topic 'retain':
+Query retained messages with topic 'retain':
 
 .. code-block:: sql
 
@@ -690,8 +690,8 @@ PostgreSQL Backend
 
 Config file: emqx_backend_pgsql.conf
 
-Config PostgreSQL Server
-------------------------
+Configure PostgreSQL Server
+---------------------------
 
 Connection pool of multiple PostgreSQL servers is supported:
 
@@ -715,8 +715,8 @@ Connection pool of multiple PostgreSQL servers is supported:
     ## Pgsql Ssl
     backend.pgsql.pool1.ssl = false  
 
-Config PostgreSQL Persistence Hooks
------------------------------------
+Configure PostgreSQL Persistence Hooks
+---------------------------------------
 
 .. code-block:: properties
 
@@ -794,7 +794,7 @@ SQL Parameters Description
 | message.delivered    | msgid, topic, clientid                | insert into delivered(msgid, topic) values(${msgid}, ${topic}) |
 +----------------------+---------------------------------------+----------------------------------------------------------------+
 
-Config 'action' utilizing SQL
+Configure 'action' with SQL
 -----------------------------
 
 PostgreSQL backend supports using SQL in 'action':
@@ -836,7 +836,7 @@ PostgreSQL Client Connection Table
       UNIQUE (clientid)
     );
 
-Inquiring a client's connection state::
+Query a client's connection state::
 
     select * from mqtt_client where clientid = ${clientid};
 
@@ -879,11 +879,11 @@ E.g., client 'test' subscribes to topic 'test_topic1' and 'test_topic2':
     insert into mqtt_sub(clientid, topic, qos) values('test', 'test_topic1', 1);
     insert into mqtt_sub(clientid, topic, qos) values('test', 'test_topic2', 2);
 
-Inquiring subscription of a client::
+Query subscription of a client::
     
     select * from mqtt_sub where clientid = ${clientid};
 
-Inquiring subscription of client 'test'::
+Query subscription of client 'test'::
     
     select * from mqtt_sub where clientid = 'test';
 
@@ -911,11 +911,11 @@ PostgreSQL Message Table
       arrived timestamp without time zone
     );
 
-Inquiring messages published by a client::
+Query messages published by a client::
     
     select * from mqtt_msg where sender = ${clientid};
 
-Inquiring messages published by client 'test'::
+Query messages published by client 'test'::
 
     select * from mqtt_msg where sender = 'test';
 
@@ -943,11 +943,11 @@ PostgreSQL Retained Message Table
       UNIQUE (topic)
     );
 
-Inquiring retained messages::
+Query retained messages::
 
     select * from mqtt_retain where topic = ${topic};
 
-Inquiring retained messages with topic 'retain'::
+Query retained messages with topic 'retain'::
 
     select * from mqtt_retain where topic = 'retain';
 
@@ -987,8 +987,8 @@ MongoDB Backend
 
 Config file: emqx_backend_mongo.conf
 
-Config MongoDB Server
----------------------
+Configure MongoDB Server
+------------------------
 
 Connection pool of multiple PostgreSQL servers is supported:
 
@@ -1003,8 +1003,8 @@ Connection pool of multiple PostgreSQL servers is supported:
     ## MongoDB Database
     backend.mongo.pool1.database = mqtt
 
-Config MongoDB Persistence Hooks
---------------------------------
+Configure MongoDB Persistence Hooks
+-----------------------------------
 
 .. code-block:: properties
 
@@ -1094,7 +1094,7 @@ MongoDB Client Connection Collection
         offline_at: timestamp
     }
 
-Inquiring client's connection state:
+Query client's connection state:
 
 .. code-block:: javascript
 
@@ -1150,7 +1150,7 @@ E.g., client 'test' subscribes to topic 'test_topic1' and 'test_topic2':
     db.mqtt_sub.insert({clientid: "test", topic: "test_topic1", qos: 1})
     db.mqtt_sub.insert({clientid: "test", topic: "test_topic2", qos: 2})
 
-Inquiring subscription of client 'test':
+Query subscription of client 'test':
 
 .. code-block:: javascript
     
@@ -1177,13 +1177,13 @@ MongoDB Message Collection
         arrived: timestamp
     }
 
-Inquiring messages published by a client:
+Query messages published by a client:
 
 .. code-block:: javascript
 
     db.mqtt_msg.find({sender: ${clientid}})
 
-Inquiring messages published by client 'test': 
+Query messages published by client 'test': 
 
 .. code-block:: javascript
     
@@ -1215,13 +1215,13 @@ MongoDB Retained Message Collection
         arrived: timestamp
     }
 
-Inquiring retained messages:
+Query retained messages:
 
 .. code-block:: javascript
 
     db.mqtt_retain.findOne({topic: ${topic}})
 
-Inquiring retained messages with topic 'retain':
+Query retained messages with topic 'retain':
 
 .. code-block:: javascript
 
@@ -1237,7 +1237,7 @@ Inquiring retained messages with topic 'retain':
     }
 
 MongoDB Acknowledgement Collection
--------------------------------------
+----------------------------------
 
 *mqtt_acked* stores acknowledgements from the clients:
 
@@ -1264,8 +1264,8 @@ Cassandra Backend
 
 Config file: etc/plugins/emqx_backend_cassa.conf
 
-Config Cassandra Cluster
--------------------------
+Configure Cassandra Cluster
+----------------------------
 
 Multi node Cassandra cluster is supported: 
 
@@ -1292,8 +1292,8 @@ Multi node Cassandra cluster is supported:
     ## Cassandra Logger type
     backend.ecql.pool1.logger = info
 
-Config Cassandra Persistence Hooks
-----------------------------------
+Configure Cassandra Persistence Hooks
+--------------------------------------
 
 .. code-block:: properties
 
@@ -1375,8 +1375,8 @@ Customized CQL command parameters includes:
 | message.delivered    | msgid, topic, clientid                | insert into delivered(msgid, topic) values(${msgid}, ${topic}) |		
 +----------------------+---------------------------------------+----------------------------------------------------------------+		
 
-Config 'action' utlizing CQL
-----------------------------
+Configure 'action' with CQL
+---------------------------
 
 Cassandra backend supports using CLQ in 'action':
 
@@ -1417,7 +1417,7 @@ Cassandra Client Connection Table
         PRIMARY KEY(client_id)
     );
 
-Inquiring a client's connection state::
+Query a client's connection state::
 
     select * from mqtt.client where clientid = ${clientid};
     
@@ -1454,11 +1454,11 @@ Client 'test' subscribes to topic 'test_topic1' and 'test_topic2'::
     insert into mqtt.sub(client_id, topic, qos) values('test', 'test_topic1', 1);
     insert into mqtt.sub(client_id, topic, qos) values('test', 'test_topic2', 2);
 
-Inquiring subscriptions of a client::
+Query subscriptions of a client::
     
     select * from mqtt_sub where clientid = ${clientid};
 
-Inquiring subscriptions of client 'test'::
+Query subscriptions of client 'test'::
     
     select * from mqtt_sub where clientid = 'test';
 
@@ -1483,11 +1483,11 @@ Cassandra Message Table
         PRIMARY KEY(topic, msgid)
       ) WITH CLUSTERING ORDER BY (msgid DESC);
 
-Inquiring messages published by a client::
+Query messages published by a client::
 
     select * from mqtt_msg where sender = ${clientid};
 
-Inquiring messages published by client 'test'::
+Query messages published by client 'test'::
 
     select * from mqtt_msg where sender = 'test';
     
@@ -1507,11 +1507,11 @@ Cassandra Retained Message Table
         PRIMARY KEY(topic)
     );
 
-Inquiring retained messages::
+Query retained messages::
 
     select * from mqtt_retain where topic = ${topic};
 
-Inquiring retained messages with topic 'retain'::
+Query retained messages with topic 'retain'::
 
     select * from mqtt_retain where topic = 'retain';
 

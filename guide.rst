@@ -13,7 +13,7 @@ MQTT is light weight publish/subscribe message transport protocol. EMQ X is a me
 
 .. image:: ./_static/images/pubsub_concept.png
 
-When EMQ X is running, any clients that support MQTT protocol can connect to the EMQ X broker and then publish / subscribe messages.
+When EMQ X is started, any clients that support MQTT protocol can connect to the EMQ X broker and then publish / subscribe messages.
 
 MQTT client library: https://github.com/mqtt/mqtt.github.io/wiki/libraries
 
@@ -26,7 +26,7 @@ E.g., using mosquitto_sub/pub CLI to subscribe to topics and publish messages.
 
 MQTT V3.1.1 Standard: http://docs.oasis-open.org/mqtt/mqtt/v3.1.1/mqtt-v3.1.1.html
 
-EMQ X MQTT protocol TCP listener. Configurable in 'emqx.conf':
+Configure MQTT/TCP listener in 'emqx.conf':
 
 .. code-block:: properties
 
@@ -39,7 +39,7 @@ EMQ X MQTT protocol TCP listener. Configurable in 'emqx.conf':
     ## Maximum number of concurrent clients
     listener.tcp.external.max_clients = 1024
 
-MQTT(SSL) TCP listener. Default port 8883:
+The default port MQTT/SSL listener is 8883:
 
 .. code-block:: properties
 
@@ -58,11 +58,11 @@ MQTT(SSL) TCP listener. Default port 8883:
 Shared Subscription
 -------------------
 
-Shared Subscription dispatches messages among multiple subscribers in a manner of client load balancing:
+Shared Subscription supports Load balancing to distribute MQTT messages between multiple subscribers in the same group::
 
 .. image:: _static/images/9_1.png
 
-Usage of shared subscription: 
+Two ways to create a shared subscription:
 
 +----------------------+-------------------------------------------+
 |  Subscription prefix | Example                                   |
@@ -78,7 +78,7 @@ Usage of shared subscription:
 Local Subscription
 ------------------
 
-By mean of Local Subscription, subscription and route table are created on localhost only:
+The *EMQ* broker will not create global routes for `Local Subscription`, and only dispatch MQTT messages on local node.
 
 .. code-block:: shell
 
@@ -86,7 +86,7 @@ By mean of Local Subscription, subscription and route table are created on local
 
     mosquitto_pub -t 'topic'
 
-Usage: add a '$local/' prefix before topic.
+Usage: subscribe a topic with `$local/` prefix.
 
 .. _fastlane_subscription:
 
@@ -111,37 +111,37 @@ Fastlane is suitable for IoT sensor data collection:
 
 .. _http_publish:
 
------------------------
-HTTP Publish Interface
------------------------
+----------------
+HTTP Publish API
+----------------
 
-EMQ X provides a HTTP publish interface. Application server or Web server can publish MQTT messages through this interface::
+EMQ X provides a HTTP publish API. Application server or Web server can publish MQTT messages through this API::
 
-    HTTP POST http://host:8083/mqtt/publish
+    HTTP POST http://host:8080/mqtt/publish
 
 Web servers (PHP/Java/Python/NodeJS/Ruby on Rails) publish MQTT messages using HTTP POST:
 
 .. code-block:: bash
 
-    curl -v --basic -u user:passwd -d "qos=1&retain=0&topic=/a/b/c&message=hello from http..." -k http://localhost:8083/mqtt/publish
+    curl -v --basic -u user:passwd -d "qos=1&retain=0&topic=/a/b/c&message=hello from http..." -k http://localhost:8080/mqtt/publish
 
-HTTP interface:
+Parameters of the HTTP API:
 
-+----------+----------------+
-| Parameter| Description    |
-+==========+================+
-| client   | MQTT ClientID  |
-+----------+----------------+
-| qos      | QoS: 0 | 1 | 2 |
-+----------+----------------+
-| retain   | Retain: 0 | 1  |
-+----------+----------------+
-| topic    | Topic          |
-+----------+----------------+
-| message  | Message        |
-+----------+----------------+
++---------+----------------+
+| Name    | Description    |
++=========+================+
+| client  | clientid       |
++---------+----------------+
+| qos     | QoS(0, 1, 2)   |
++---------+----------------+
+| retain  | Retain(0, 1)   |
++---------+----------------+
+| topic   | Topic          |
++---------+----------------+
+| message | Payload        |
++---------+----------------+
 
-.. NOTE:: HTTP interface uses Basic authentication
+.. NOTE:: The API uses HTTP Basic Authentication.
 
 --------------
 MQTT WebSocket
